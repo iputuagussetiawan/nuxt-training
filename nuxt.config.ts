@@ -1,6 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-    modules: ['@nuxtjs/google-fonts'],
+    modules: ['@nuxtjs/google-fonts', '@nuxt/image'],
     googleFonts: {
         families: {
             'DM+Sans': [400, 500, 700], // choose weights you need

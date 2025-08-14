@@ -1,5 +1,10 @@
 <script setup lang="ts">
-    defineProps(['title'])
+    interface SectionHeaderProps {
+        title: string,
+        linkText?: string,
+        linkTo?: string
+    }
+    defineProps<SectionHeaderProps>()
 </script>
 
 <template>
@@ -8,9 +13,9 @@
             <div class="section-header__inner">
                 <h2 class="section-header__title"> {{ title }}</h2>
                 <div class="section-header__action">
-                    <NuxtLink class="section-header__link" to="/Explore More">
+                    <NuxtLink class="section-header__link" :to="linkTo">
                         <span class="section-header__link-text">
-                            Explore More
+                            {{ linkText }}
                         </span>
                         <svg class="section-header__link-icon" width="34" height="24" viewBox="0 0 34 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M26.5625 13.3332H7.4375C6.8425 13.3332 6.375 12.7465 6.375 11.9998C6.375 11.2532 6.8425 10.6665 7.4375 10.6665H26.5625C27.1575 10.6665 27.625 11.2532 27.625 11.9998C27.625 12.7465 27.1575 13.3332 26.5625 13.3332Z" fill="#4B4B4B"/>
@@ -32,7 +37,7 @@
             align-items: center;
             padding-bottom: 40px;
             margin-bottom: 40px;
-            border-bottom: 1px solid #CCCCCC;
+            border-bottom: 1px solid #170101;
         }
         &__title{
             margin: 0px;
@@ -42,7 +47,6 @@
             line-height: 1.318;
             color: #222222;
         }
-
         &__link{
             padding: 8px 0px;
             display: flex;
@@ -57,3 +61,4 @@
         }
     }
 </style>
+
