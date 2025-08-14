@@ -3,6 +3,26 @@
     import 'swiper/css'
     import SectionHeader from '~/components/section/SectionHeader.vue';
     import CardStory from '~/components/ui/CardStory.vue';
+
+    const offset = ref(0)
+
+    function calculateOffset() {
+        const container = document.querySelector('.container')
+        if (container) {
+            const containerWidth = container.clientWidth
+            const documentWidth = document.documentElement.clientWidth
+            offset.value = (documentWidth - containerWidth) / 2
+        }
+    }
+
+    onMounted(() => {
+        calculateOffset()
+        window.addEventListener('resize', calculateOffset)
+    })
+
+    onBeforeUnmount(() => {
+        window.removeEventListener('resize', calculateOffset)
+    })
 </script>
 <template>
     <section class="latest-story">
@@ -15,7 +35,8 @@
             <Swiper
                 :slides-per-view="3.1"
                 :space-between="20"
-                loop
+                :slides-offset-before="offset"
+                :slides-offset-after="offset"
             >
                 class="latest-story__slider"
                 <SwiperSlide v-for="n in 5" :key="n">
