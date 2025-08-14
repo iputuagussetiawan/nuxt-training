@@ -1,4 +1,5 @@
 <script setup lang="ts">
+    import {formatDate}from '~/utils/FormatDate'
     interface CardStoryProps {
         imageUrl?: string,
         title?: string,
@@ -48,7 +49,7 @@
             </div>
             <div class="card-story__date-category">
                 <div class="card-story__date">
-                    {{ dateCreated }}
+                    {{ formatDate(dateCreated as string) }}
                 </div>
                 <div class="card-story__category">
                     {{ category }}
