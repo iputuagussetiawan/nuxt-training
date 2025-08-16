@@ -88,10 +88,10 @@
             display: grid;
             grid-template-columns: repeat(12, 1fr);
             grid-template-rows: 1fr 1fr;
+            grid-auto-rows: max-content;
             gap: 46px 30px; 
             align-items: start;
         }
-
         &__item{
             &:nth-child(1){
                 grid-column: 1 / 9;
