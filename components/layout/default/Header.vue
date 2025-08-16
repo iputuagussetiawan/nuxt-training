@@ -1,5 +1,5 @@
 <script setup lang="ts">
-
+    import Button from '~/components/ui/Button.vue';
 </script>
 
 <template>
@@ -11,10 +11,10 @@
                 </NuxtLink>
                 <nav class="navigation__menu">
                     <li class="navigation__item">
-                        <NuxtLink class="btn-primary-outline" to="/register">Register</NuxtLink>
+                        <Button type="link" href="/about" variant="primary-outline">Register</Button>
                     </li>
                     <li class="navigation__item">
-                        <NuxtLink class="btn-primary" to="/login">Login</NuxtLink>
+                        <Button type="link" href="/about" variant="primary">Login</Button>
                     </li>
                 </nav>
             </div>

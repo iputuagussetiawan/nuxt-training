@@ -41,7 +41,7 @@
         }
         &__title{
             margin: 0px;
-            font-family: $secondary-font;
+            font-family: $font-secondary;
             font-weight: 600;
             font-size: 44px;
             line-height: 1.318;

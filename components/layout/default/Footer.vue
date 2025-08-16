@@ -11,7 +11,7 @@
 <style scoped lang="scss">
     .footer {
         &__title{
-            color:$primary-color;
+            color:$color-primary;
         }
     }
 </style>
