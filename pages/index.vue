@@ -2,6 +2,7 @@
 <script setup lang="ts">
     import HomeWelcome from '~/components/section/home/HomeWelcome.vue';
     import HomeLatestStory from '~/components/section/home/HomeLatestStory.vue';
+    import HomeComedy from '~/components/section/home/HomeComedy.vue';
     import { stories as storiesData } from '~/data/stories';
 </script>
 
@@ -9,5 +10,6 @@
     <div>
         <HomeWelcome />
         <HomeLatestStory :stories="storiesData" />
+        <HomeComedy :stories="storiesData" />
     </div>
 </template>

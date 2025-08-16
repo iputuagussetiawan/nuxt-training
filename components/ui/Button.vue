@@ -1,3 +1,16 @@
+/**
+ * Button Component
+ *
+ * A reusable button component that supports:
+ * - type: "button", "submit", or "link"
+ * - variant: "primary", "primary-outline", or "secondary"
+ * - href: required when using type="link"
+ *
+ * @property {"button" | "submit" | "link"} type - Defines button type (default: "button")
+ * @property {"primary" | "primary-outline" | "secondary"} variant - Defines style variant (default: "primary")
+ * @property {string} href - Destination URL (only used if type="link")
+ *
+ */
 <script setup lang="ts">
     import { computed } from "vue";
     import { NuxtLink } from "#components";

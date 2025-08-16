@@ -11,13 +11,21 @@
         category?: string
         linkTo?: string
         loading?: boolean
+        variant?: 'default' | 'big' // you can extend with more types
+        className?: string // optional for extra custom classes
     }
 
     const props = defineProps<CardStoryProps>()
 </script>
 
 <template>
-    <div class="card-story">
+    <div 
+        :class="[
+            'card-story',
+            props.variant === 'big' ? 'card-story--big' : '',
+            props.className // for additional classes
+        ]"
+    >
         <!-- Image -->
         <div class="card-story__image-container">
             <template v-if="props.loading">
@@ -254,6 +262,13 @@
 
         &:hover &__image-container::after {
             opacity: 0.3;
+        }
+
+        &--big{
+            @extend .card-story; 
+            .card-story__image-container{
+                height: 1370px;
+            }
         }
     }
 
