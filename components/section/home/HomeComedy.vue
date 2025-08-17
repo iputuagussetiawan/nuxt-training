@@ -87,8 +87,7 @@
         &__grid{
             display: grid;
             grid-template-columns: repeat(12, 1fr);
-            grid-template-rows: 1fr 1fr;
-            grid-auto-rows: max-content;
+            grid-template-rows: auto auto;
             gap: 46px 30px; 
             align-items: start;
         }

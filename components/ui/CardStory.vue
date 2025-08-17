@@ -27,29 +27,30 @@
         ]"
     >
         <!-- Image -->
-        <div class="card-story__image-container">
+        <NuxtLink class="card-story__image-container"  :to="props.linkTo">
             <template v-if="props.loading">
                 <div class="skeleton__image"></div>
             </template>
             <NuxtImg
                 v-else
                 :src="props.imageUrl"
-                width="700"
-                height="700"
+                width="853"
+                height="480"
                 class="card-story__image"
                 alt="Story image"
+                :aspectRatio="props.variant === 'big' ? '9:16' : '16:9'"
             />
-        </div>
+        </NuxtLink>
 
         <!-- Title -->
         <div class="card-story__header">
             <h3 class="card-story__title">
                 <template v-if="props.loading">
-                    <div class="skeleton skeleton-text skeleton-title"></div>
+                    <div class="skeleton__title"></div>
                 </template>
                 <template v-else>
-                    <NuxtLink v-if="props.linkTo" :to="props.linkTo">{{ props.title }}</NuxtLink>
-                    <span v-else>{{ props.title }}</span>
+                    <NuxtLink class="card-story__title-text" v-if="props.linkTo" :to="props.linkTo">{{ props.title }}</NuxtLink>
+                    <span class="card-story__title-text" v-else>{{ props.title }}</span>
                 </template>
             </h3>
         </div>
@@ -155,7 +156,7 @@
         &__image-container {
             position: relative;
             width: 100%;
-            height: 500px;
+            /* height: 500px; */
             border-radius: 8px;
             overflow: hidden;
 
@@ -178,19 +179,14 @@
 
         &__title {
             margin: 0;
+        }
+
+        &__title-text{
             font-weight: 700;
             font-size: 36px;
             line-height: 1.27;
             color: #222;
-
-            a {
-            color: inherit;
             text-decoration: none;
-
-            &:hover {
-                text-decoration: underline;
-            }
-            }
         }
 
         &__content {
@@ -256,19 +252,8 @@
             border-radius: 8px;
         }
 
-        &:hover {
-            cursor: pointer;
-        }
-
         &:hover &__image-container::after {
             opacity: 0.3;
-        }
-
-        &--big{
-            @extend .card-story; 
-            .card-story__image-container{
-                height: 1370px;
-            }
         }
     }
 
