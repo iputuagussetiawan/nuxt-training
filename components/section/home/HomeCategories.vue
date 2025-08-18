@@ -42,10 +42,26 @@
         position: relative;
         padding: 60px 0px;
 
+        @media only screen and (max-width: 991.98px) {
+            padding: 42px 0px;
+        }
+
+        @media only screen and (max-width: 767.98px) {
+            padding: 32px 0px;
+        }
+
         &__grid{
             display: flex;
             flex-wrap: wrap;
             gap: 30px;
+
+            @media only screen and (max-width: 991.98px) {
+                gap: 20px;
+            }
+
+            @media only screen and (max-width: 767.98px) {
+                gap: 16px;
+            }
         }
     }
 </style>

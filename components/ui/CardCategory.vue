@@ -20,12 +20,24 @@
         border-radius: 8px;
         transition: 0.4s ease;
 
+        @media only screen and (max-width: 991.98px) {
+            padding: 32px;
+        }
+
         &__title{
             font-size: 28px;
             font-weight: 500;
             line-height: 1.357;
             color: #466543;
-            text-align: center
+            text-align: center;
+
+            @media only screen and (max-width: 991.98px) {
+                font-size: 20px;
+            }
+
+            @media only screen and (max-width: 767.98px) {
+                font-size: 18px;
+            }
         }
 
         &:hover{

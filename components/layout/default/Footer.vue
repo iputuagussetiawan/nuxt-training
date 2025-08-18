@@ -23,11 +23,14 @@
         padding: 32px 0px 42px 0px;
         border-top: 1px solid #4B4B4B;
 
+
         @media only screen and (max-width: 991.98px) {
+            margin-top: 42px;
             padding: 24px 0px 32px 0px;
         }
 
         @media only screen and (max-width: 767.98px) {
+            margin-top: 32px;
             padding: 16px 0px 24px 0px;
         }
         &__inner{
