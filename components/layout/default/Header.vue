@@ -23,5 +23,45 @@
 </template>
 
 <style scoped lang="scss">
-    
+    .navigation{
+        padding: 20.5px 0px;
+        box-shadow: 0px 2px 7px -4px rgba(0,0,0,0.72);
+        @media only screen and (max-width: 991.98px) {
+            padding: 16px 0px;
+        }
+        &__inner{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        &__logo{
+            max-width: 254px;
+            height: auto;
+
+            @media only screen and (max-width: 1399.98px) {
+                max-width: 200px;
+            }
+
+            @media only screen and (max-width: 1199.98px) {
+                max-width: 150px;
+            }
+        }
+
+        &__menu{
+            display: flex;
+            gap: 30px;
+
+            @media only screen and (max-width: 1399.98px) {
+                gap: 20px;
+            }
+
+            @media only screen and (max-width: 1199.98px) {
+                gap: 16px;
+            }
+        }
+        &__item{
+            list-style: none;
+        }
+    }
 </style>

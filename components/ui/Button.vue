@@ -61,6 +61,20 @@
         border-radius: 8px;
         text-decoration: none;
         transition: all 0.4s ease-in-out;
+
+        @media only screen and (max-width: 1399.98px) {
+            padding: 10px 24px;
+            font-size: 20px;
+        }
+
+        @media only screen and (max-width: 1199.98px) {
+            font-size: 18px;
+            border-radius: 6px;
+        }
+
+        @media only screen and (max-width: 991.98px) {
+            font-size: 16px;
+        }
     }
 
     .btn-primary-outline{

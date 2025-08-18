@@ -14,10 +14,13 @@
         category: string
     }
 
-    interface SectionComedy {
+    interface SectionStoryGrid {
         stories: Story[]
+        headerTitle: string
+        headerLinkText: string
+        headerLinkTo: string
     }
-    const props = defineProps<SectionComedy>()
+    const props = defineProps<SectionStoryGrid>()
     const loading = ref(true) // <-- NEW loading state
     const storiesData = ref<Story[]>([]) // we use this instead of props.stories
 
@@ -29,26 +32,24 @@
         }, 2000)
     })
 
-    // ✅ Computed: filter only comedy stories
-    const comedyStories = computed(() =>
+    const storyData = computed(() =>
         storiesData.value
-        .filter(story => story.category.toLowerCase() === 'comedy')
         .slice(0, 3)
     )
 </script>
 
 <template>
-    <section class="comedy">
+    <section class="story-grid">
         <SectionHeader
-            title="Comedy"
-            linkText="Explore More"
-            linkTo="/about"
+            :title="props.headerTitle"
+            :linkText="props.headerLinkText"
+            :linkTo="props.headerLinkTo"
         />
         <div class="container">
-            <div class="comedy__grid">
+            <div class="story-grid__grid">
                 <!-- Show skeletons when loading -->
                 <template v-if="loading">
-                    <div class="comedy__item"
+                    <div class="story-grid__item"
                         v-for="n in 3" :key="n"
                     >
                         <CardStory loading />
@@ -57,8 +58,8 @@
 
                 <!-- Show real data -->
                 <template v-else>
-                    <div class="comedy__item"
-                        v-for="(story, index) in comedyStories"
+                    <div class="story-grid__item"
+                        v-for="(story, index) in storyData"
                     >
                         <CardStory
                             :key="story.id"
@@ -73,7 +74,6 @@
                             :variant="index === 0 ? 'big' : 'default'" 
                         />
                     </div>
-
                 </template>
             </div>
         </div>
@@ -81,7 +81,7 @@
 </template>
 
 <style scoped lang="scss">
-    .comedy{
+    .story-grid{
         padding-top: 120px;
         position: relative;
         &__grid{

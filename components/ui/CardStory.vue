@@ -34,11 +34,11 @@
             <NuxtImg
                 v-else
                 :src="props.imageUrl"
-                width="853"
-                height="480"
+                :width="props.variant === 'big' ? '1080' : '1920'"
+                :height="props.variant === 'big' ? '1920' : '1080'"
                 class="card-story__image"
                 alt="Story image"
-                :aspectRatio="props.variant === 'big' ? '9:16' : '16:9'"
+                :aspectRatio="props.variant === 'big' ? '2:1' : '16:9'"
             />
         </NuxtLink>
 
@@ -152,21 +152,26 @@
     .card-story {
         display: grid;
         gap: 20px;
+        @media only screen and (max-width: 1399.98px) {
+            gap: 18px;
+        }
+        @media only screen and (max-width: 991.98px) {
+            gap: 16px;
+        }
 
         &__image-container {
             position: relative;
             width: 100%;
-            /* height: 500px; */
             border-radius: 8px;
             overflow: hidden;
 
             &::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: #fff;
-            opacity: 0;
-            transition: opacity 0.4s ease;
+                content: '';
+                position: absolute;
+                inset: 0;
+                background: #fff;
+                opacity: 0;
+                transition: opacity 0.4s ease;
             }
         }
 
@@ -187,6 +192,15 @@
             line-height: 1.27;
             color: #222;
             text-decoration: none;
+            @media only screen and (max-width:1399.98px) {
+                font-size: 32px;
+            }
+            @media only screen and (max-width: 1199.98px) {
+                font-size: 28px;
+            }
+            @media only screen and (max-width: 991.98px) {
+                font-size: 22px;
+            }
         }
 
         &__content {
@@ -194,6 +208,13 @@
             font-weight: 400;
             line-height: 1.5;
             color: #4b4b4b;
+
+            @media only screen and (max-width:1399.98px) {
+                font-size: 16px;
+            }
+            @media only screen and (max-width: 991.98px) {
+                font-size: 14px;
+            }
         }
 
         &__footer {
@@ -213,6 +234,15 @@
             height: 50px;
             border-radius: 100%;
             overflow: hidden;
+
+            @media only screen and (max-width: 1399.98px) {
+                width: 42px;
+                height: 42px;
+            }
+            @media only screen and (max-width: 991.98px) {
+                width: 32px;
+                height: 32px;
+            }
         }
 
         &__author-photo {
@@ -226,12 +256,24 @@
             font-weight: 500;
             font-size: 20px;
             line-height: 1.3;
+            @media only screen and (max-width: 1399.98px) {
+                font-size: 18px;
+            }
+            @media only screen and (max-width: 991.98px) {
+                font-size: 16px;
+            }
         }
 
         &__date-category {
             display: flex;
             align-items: center;
             gap: 20px;
+            @media only screen and (max-width: 1399.98px) {
+                gap: 18px;
+            }
+            @media only screen and (max-width: 991.98px) {
+                gap: 16px;
+            }
         }
 
         &__date,
@@ -239,6 +281,13 @@
             font-weight: 400;
             font-size: 18px;
             line-height: 1.27;
+
+            @media only screen and (max-width: 1399.98px) {
+                font-size: 16px;
+            }
+            @media only screen and (max-width: 991.98px) {
+                font-size: 14px;
+            }
         }
 
         &__date {

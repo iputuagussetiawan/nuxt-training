@@ -60,11 +60,31 @@
         />
         <div class="latest-story__slider-container">
             <Swiper
-                :slides-per-view="3.1"
-                :space-between="29"
+                :slides-per-view="1.2"
+                :space-between="16"
                 :slides-offset-before="offset"
                 :slides-offset-after="offset"
                 class="latest-story__slider"
+                :breakpoints="{
+                640: { // tablet portrait
+                    slidesPerView: 2.2,
+                    spaceBetween: 16,
+                    slidesOffsetBefore: 20,
+                    slidesOffsetAfter: 20,
+                },
+                1024: { // tablet landscape / small desktop
+                    slidesPerView: 2.5,
+                    spaceBetween: 24,
+                    slidesOffsetBefore: 30,
+                    slidesOffsetAfter: 30,
+                },
+                1440: { // large desktop
+                    slidesPerView: 3.1,
+                    spaceBetween: 30,
+                    slidesOffsetBefore: 40,
+                    slidesOffsetAfter: 40,
+                }
+            }"
             >
                 <!-- Show skeletons when loading -->
                 <template v-if="loading">
