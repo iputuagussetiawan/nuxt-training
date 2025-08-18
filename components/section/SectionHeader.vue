@@ -12,7 +12,7 @@
         <div class="container">
             <div class="section-header__inner">
                 <h2 class="section-header__title"> {{ title }}</h2>
-                <div class="section-header__action">
+                <div class="section-header__action" v-if="linkTo">
                     <NuxtLink class="section-header__link" :to="linkTo">
                         <span class="section-header__link-text">
                             {{ linkText }}

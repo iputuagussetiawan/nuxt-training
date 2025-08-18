@@ -82,7 +82,7 @@
 
 <style scoped lang="scss">
     .story-grid{
-        padding-top: 120px;
+        padding: 60px 0px;
         position: relative;
         &__grid{
             display: grid;

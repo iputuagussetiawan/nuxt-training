@@ -18,6 +18,9 @@
 
     interface SectionLatestStoryProps {
         stories: Story[]
+        headerTitle: string
+        headerLinkText: string
+        headerLinkTo: string
     }
 
     const props = defineProps<SectionLatestStoryProps>()
@@ -54,9 +57,9 @@
 <template>
     <section class="latest-story">
         <SectionHeader
-            title="Latest Stories"
-            linkText="Explore More"
-            linkTo="/about"
+            :title="props.headerTitle"
+            :linkText="props.headerLinkText"
+            :linkTo="props.headerLinkTo"
         />
         <div class="latest-story__slider-container">
             <Swiper
@@ -115,3 +118,11 @@
         </div>
     </section>
 </template>
+
+
+<style scoped lang="scss">
+    .latest-story{
+        padding: 60px 0px;
+        position: relative;
+    }
+</style>
