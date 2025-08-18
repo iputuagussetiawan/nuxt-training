@@ -25,6 +25,7 @@
         }
 
         &__title{
+            margin: 0px;
             font-size: 28px;
             font-weight: 500;
             line-height: 1.357;

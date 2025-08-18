@@ -9,6 +9,11 @@
     color: #4B4B4B;
     font-size: 18px;
     font-weight: 400;
+
+    @media only screen and (max-width: 1399.98px) {
+        margin-bottom: 18px;
+        font-size: 16px;
+    }
 }
 
 .form-control-wrapper{
@@ -26,11 +31,21 @@
     width: 100%;
     color: #222222;
 
+    @media only screen and (max-width: 1399.98px) {
+        padding: 20px 28px;
+        font-size: 16px;
+    }
+
     &__icon{
         position: absolute;
         top: 50%;
         right: 20px;
         transform: translateY(-50%);
+        width: 30px;
+        height: auto;
+        @media only screen and (max-width: 991.98px) {
+            width: 24px;
+        }
         path{
             transition: 0.4s ease;
         }

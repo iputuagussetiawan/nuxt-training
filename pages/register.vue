@@ -105,6 +105,10 @@
             display: flex;
             justify-content: flex-start;
             align-items: center;
+            @media only screen and (max-width: 1199.98px) {
+                flex-direction: column;
+                gap: 40px;
+            }
         }
         &__info-container{
             width: 50%;
@@ -114,6 +118,10 @@
 
             @media only screen and (max-width: 1399.98px) {
                 padding: 28px 50px;
+            }
+
+            @media only screen and (max-width: 1199.98px) {
+                width: 100%;
             }
 
             @media only screen and (max-width: 991.98px) {
@@ -129,8 +137,10 @@
             margin-left: 144px;
             max-width: 577px;
 
-            @media only screen and (max-width: 991.98px) {
+            @media only screen and (max-width: 1199.98px) {
+                width: 100%;
                 max-width: 100%;
+                margin-left: 0%;
             }
         }
 
@@ -144,10 +154,12 @@
             color: #222222;
 
             @media only screen and (max-width: 1399.98px) {
+                margin-bottom: 32px;
                 font-size: 50px;
             }
 
             @media only screen and (max-width: 1199.98px) {
+                margin-bottom: 24px;
                 font-size: 42px;
             }
         }
@@ -158,6 +170,14 @@
             font-weight: 400;
             font-size: 28px;
             line-height: 1.357;
+
+            @media only screen and (max-width: 1199.98px) {
+                font-size: 24px;
+            }
+
+            @media only screen and (max-width: 991.98px) {
+                font-size: 20px;
+            }
         }
 
         &__image{
@@ -172,10 +192,33 @@
             font-weight: 700;
             font-size: 44px;
             line-height: 1.318;
+
+            @media only screen and (max-width: 1199.98px) {
+                margin-bottom: 42px;
+                font-size: 37px;
+            }
+
+            @media only screen and (max-width: 991.98px) {
+                margin-bottom: 32px;
+                font-size: 32px;
+            }
+            @media only screen and (max-width: 767.98px) {
+                font-size: 27px;
+            }
         }
 
         &__action{
-            margin-top: 154px
+            margin-top: 154px;
+            @media only screen and (max-width: 1199.98px) {
+                margin-top: 120px;
+            }
+
+            @media only screen and (max-width: 991.98px) {
+                margin-top: 80px;
+            }
+            @media only screen and (max-width: 767.98px) {
+                margin-top: 64px;
+            }
         }
 
 
@@ -184,6 +227,17 @@
             color: #222222;
             font-size: 18px;
             font-weight: 400;
+            @media only screen and (max-width: 1199.98px) {
+                margin-top: 32px;
+            }
+
+            @media only screen and (max-width: 991.98px) {
+                margin-top: 24px;
+                font-size: 16px;
+            }
+            @media only screen and (max-width: 767.98px) {
+                margin-top: 18px;
+            }
         }
 
         &__link{

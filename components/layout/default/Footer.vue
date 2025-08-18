@@ -31,12 +31,15 @@
 
         @media only screen and (max-width: 767.98px) {
             margin-top: 32px;
-            padding: 16px 0px 24px 0px;
+            padding: 16px 0px 16px 0px;
         }
         &__inner{
             display: flex;
             justify-content: space-between;
             align-items: center;
+            @media only screen and (max-width: 767.98px) {
+                flex-direction: column-reverse;
+            }
         }
         &__title{
             color:$color-primary;

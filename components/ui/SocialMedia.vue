@@ -32,6 +32,9 @@
             transition: 0.4s ease;
             width: auto;
             height: 40px;
+            @media only screen and (max-width: 767.98px) {
+                height: 26px;
+            }
             path{
                 transition: 0.4s ease;
             }
