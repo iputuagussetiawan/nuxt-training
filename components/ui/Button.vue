@@ -62,6 +62,10 @@
         text-decoration: none;
         transition: all 0.4s ease-in-out;
 
+        &:hover{
+            cursor: pointer;
+        }
+
         @media only screen and (max-width: 1399.98px) {
             padding: 10px 24px;
             font-size: 20px;

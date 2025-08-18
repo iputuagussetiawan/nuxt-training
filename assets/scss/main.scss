@@ -1,4 +1,7 @@
 
+* {
+    box-sizing: border-box;
+}
 body{
     margin: 0px;
     font-family: $font-primary;
@@ -7,6 +10,8 @@ body{
     max-width: 88.541%;
     margin: 0 auto;
 }
+
+
 
 
 
