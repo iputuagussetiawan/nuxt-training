@@ -26,7 +26,7 @@
     const props = defineProps<SectionLatestStoryProps>()
 
     const offset = ref(0)
-    const loading = ref(true) // <-- NEW loading state
+    const loading = ref(false) // <-- NEW loading state
     const storiesData = ref<Story[]>([]) // we use this instead of props.stories
 
     function calculateOffset() {
