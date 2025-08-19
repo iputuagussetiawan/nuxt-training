@@ -1,11 +1,15 @@
 
 <script setup lang="ts">
-    import DefaultHeader from '~/components/layout/default/Header.vue';
 </script>
 
 <template>
-    <div>
-        <DefaultHeader />
+    <div class="simple-layout">
         <slot />
     </div>
 </template>
+
+<style scoped lang="scss">
+    .simple-layout{
+        min-height: 100vh;
+    }
+</style>

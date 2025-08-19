@@ -12,7 +12,7 @@
         <div class="container">
             <div class="section-header__inner">
                 <h2 class="section-header__title"> {{ title }}</h2>
-                <div class="section-header__action">
+                <div class="section-header__action" v-if="linkTo">
                     <NuxtLink class="section-header__link" :to="linkTo">
                         <span class="section-header__link-text">
                             {{ linkText }}
@@ -38,14 +38,31 @@
             padding-bottom: 40px;
             margin-bottom: 40px;
             border-bottom: 1px solid #170101;
+
+            @media only screen and (max-width: 991.98px) {
+                padding-bottom: 24px;
+                margin-bottom: 24px;
+            }
         }
         &__title{
             margin: 0px;
-            font-family: $secondary-font;
+            font-family: $font-secondary;
             font-weight: 600;
             font-size: 44px;
             line-height: 1.318;
             color: #222222;
+
+            @media only screen and (max-width: 1399.98px) {
+                font-size: 36px;
+            }
+
+            @media only screen and (max-width: 1199.98px) {
+                font-size: 30px;
+            }
+
+            @media only screen and (max-width: 991.98px) {
+                font-size: 24px;
+            }
         }
         &__link{
             padding: 8px 0px;
@@ -58,6 +75,26 @@
             line-height: 1.33;
             font-weight: 400;
             color: #4B4B4B;
+            @media only screen and (max-width: 991.98px) {
+                font-size: 16px;
+            }
+        }
+
+        &__link-icon{
+            width: 32px;
+            height: 32px;
+            @media only screen and (max-width: 1399.98px) {
+                width: 26px;
+                height: 26px;
+            }
+            @media only screen and (max-width: 1199.98px) {
+                width: 24px;
+                height: 24px;
+            }
+            @media only screen and (max-width: 991.98px) {
+                width: 20px;
+                height: 20px;
+            }
         }
     }
 </style>

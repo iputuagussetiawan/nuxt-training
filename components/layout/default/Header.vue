@@ -1,20 +1,19 @@
 <script setup lang="ts">
-
+    import Button from '~/components/ui/Button.vue';
+    import NavBrand from '~/components/ui/NavBrand.vue';
 </script>
 
 <template>
     <div class="navigation">
         <div class="container">
             <div class="navigation__inner">
-                <NuxtLink class="navigation__link" to="/">
-                    <img class="navigation__logo" src="~/assets/images/logo.png" alt="logo">
-                </NuxtLink>
+                <NavBrand/>
                 <nav class="navigation__menu">
                     <li class="navigation__item">
-                        <NuxtLink class="btn-primary-outline" to="/register">Register</NuxtLink>
+                        <Button type="link" href="/register" variant="primary-outline">Register</Button>
                     </li>
                     <li class="navigation__item">
-                        <NuxtLink class="btn-primary" to="/login">Login</NuxtLink>
+                        <Button type="link" href="/login" variant="primary">Login</Button>
                     </li>
                 </nav>
             </div>
@@ -26,20 +25,26 @@
     .navigation{
         padding: 20.5px 0px;
         box-shadow: 0px 2px 7px -4px rgba(0,0,0,0.72);
+        @media only screen and (max-width: 991.98px) {
+            padding: 16px 0px;
+        }
         &__inner{
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        &__logo{
-            max-width: 254px;
-            height: auto;
-        }
-
         &__menu{
             display: flex;
             gap: 30px;
+
+            @media only screen and (max-width: 1399.98px) {
+                gap: 20px;
+            }
+
+            @media only screen and (max-width: 1199.98px) {
+                gap: 16px;
+            }
         }
         &__item{
             list-style: none;

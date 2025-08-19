@@ -1,5 +1,4 @@
 <script setup lang="ts">
-    //import '~/assets/scss/components/sections/home/HomeWelcome.scss';
 </script>
 
 <template>
@@ -28,6 +27,10 @@
     .welcome{
         position: relative;
         padding: 70px 0 80px 0;
+
+        @media only screen and (max-width: 991.98px) {
+            padding: 40px 0 40px 0;
+        }
         &__inner{
             margin-left: auto;
             margin-right: auto;
@@ -39,12 +42,20 @@
         }
         &__title{
             margin: 0px;
-            font-family: $secondary-font;
+            font-family: $font-secondary;
             font-weight: 700;
             font-size: 60px;
             line-height: 1.2;
             color: #000000;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+
+            @media only screen and (max-width: 1399.98px) {
+                font-size: 50px;
+            }
+
+            @media only screen and (max-width: 1199.98px) {
+                font-size: 42px;
+            }
         }
 
         &__description{
@@ -52,11 +63,33 @@
             line-height: 1.33;
             margin-top: 30px;
             color: #4B4B4B;
+
+            @media only screen and (max-width: 1399.98px) {
+                margin-top: 24px;
+                font-size: 20px;
+            }
+
+            @media only screen and (max-width: 1199.98px) {
+                margin-top: 20px;
+                font-size: 18px;
+            }
+
+            @media only screen and (max-width: 991.98px) {
+                font-size: 16px;
+            }
         }
 
         &__search-container{
             margin-top: 40px;
             position: relative;
+
+            @media only screen and (max-width: 1399.98px) {
+                margin-top: 32px;
+            }
+
+            @media only screen and (max-width: 1199.98px) {
+                margin-top: 24px;
+            }
         }
 
         &__search-input{
@@ -64,7 +97,6 @@
             height: 80px;
             border: 2px solid #CCCCCC;
             border-radius: 8px;
-            padding-left: 60px;
             padding: 24px 60px 24px 30px;
             transition: 0.4s ease;
 
@@ -74,11 +106,33 @@
 
             &:focus{
                 outline: none;
-                border-color: $primary-color;
+                border-color: $color-primary;
             }
 
             &::placeholder{
                 color: #4B4B4B;
+            }
+
+            @media only screen and (max-width: 1399.98px) {
+                height: 72px;
+                border: 2px solid #CCCCCC;
+                padding: 20px 50px 20px 24px;
+                font-size: 20px;
+            }
+
+            @media only screen and (max-width: 1199.98px) {
+                height: 64px;
+                border: 2px solid #CCCCCC;
+                border-radius: 6px;
+                padding: 20px 50px 20px 24px;
+                font-size: 18px;
+            }
+
+            @media only screen and (max-width: 991.98px) {
+                height: 55px;
+                border: 2px solid #CCCCCC;
+                padding: 16px 40px 16px 20px;
+                font-size: 16px;
             }
         }
 
@@ -86,7 +140,22 @@
             position: absolute;
             top: 50%;
             right: 30px;
+            width: 30px;
+            height: 30px;
             transform: translateY(-50%);
+            
+
+            @media only screen and (max-width: 1399.98px) {
+                right: 24px;
+                width: 24px;
+                height: 24px;
+            }
+
+            @media only screen and (max-width: 1199.98px) {
+                right: 20px;
+                width: 20px;
+                height: 20px;
+            }
         }
 
         &__image-container{
