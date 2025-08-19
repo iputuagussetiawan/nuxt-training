@@ -1,6 +1,7 @@
 <script setup lang="ts">
-    import '~/assets/scss/components/sections/home/HomeLatestStory.scss';
+    // import '~/assets/scss/components/sections/home/HomeLatestStory.scss';
     import { Swiper, SwiperSlide } from 'swiper/vue'
+    import 'swiper/css';
     import SectionHeader from '~/components/section/SectionHeader.vue';
     import CardStory from '~/components/ui/CardStory.vue';
 
@@ -45,7 +46,7 @@
         <SectionHeader
             title="Latest Stories"
             linkText="Explore More"
-            linkTo="/explore"
+            linkTo="/about"
         />
         <div class="latest-story__slider-container">
             <Swiper

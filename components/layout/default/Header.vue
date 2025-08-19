@@ -23,5 +23,26 @@
 </template>
 
 <style scoped lang="scss">
-    
+    .navigation{
+        padding: 20.5px 0px;
+        box-shadow: 0px 2px 7px -4px rgba(0,0,0,0.72);
+        &__inner{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        &__logo{
+            max-width: 254px;
+            height: auto;
+        }
+
+        &__menu{
+            display: flex;
+            gap: 30px;
+        }
+        &__item{
+            list-style: none;
+        }
+    }
 </style>

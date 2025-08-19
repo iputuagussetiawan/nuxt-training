@@ -99,6 +99,13 @@
             font-weight: 400;
             line-height: 1.5;
             color: #4B4B4B;
+
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            text-overflow: ellipsis;
+            overflow : hidden;
+            line-height: 1.5;
         }
 
         &__footer{
