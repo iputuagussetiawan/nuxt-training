@@ -150,6 +150,18 @@ console.log(allCategoryNames.value)
         font-size: 24px;
         color: #4B4B4B;
         font-weight: 400;
+
+        @media only screen and (max-width: 1399.98px) {
+            font-size: 20px;
+        }
+
+        @media only screen and (max-width: 1199.98px) {
+            font-size: 18px;
+        }
+
+        @media only screen and (max-width: 991.98px) {
+            font-size: 16px;
+        }
     }
     :deep(.v-select) {
         .vs__dropdown-toggle {
@@ -160,6 +172,17 @@ console.log(allCategoryNames.value)
             font-size: 24px;
             color: #222222;
             font-weight: 500;
+            @media only screen and (max-width: 1399.98px) {
+                font-size: 20px;
+            }
+
+            @media only screen and (max-width: 1199.98px) {
+                font-size: 18px;
+            }
+
+            @media only screen and (max-width: 991.98px) {
+                font-size: 16px;
+            }
         }
         .vs__clear{
             display: none;
@@ -167,6 +190,17 @@ console.log(allCategoryNames.value)
 
         .vs__dropdown-option {
             font-size: 24px;
+            @media only screen and (max-width: 1399.98px) {
+                font-size: 20px;
+            }
+
+            @media only screen and (max-width: 1199.98px) {
+                font-size: 18px;
+            }
+
+            @media only screen and (max-width: 991.98px) {
+                font-size: 16px;
+            }
         }
 
         .vs__open-indicator{
@@ -185,6 +219,10 @@ console.log(allCategoryNames.value)
         display: grid;
         grid-template-columns: 1fr 547px;
         justify-content: space-between;
+
+        @media only screen and (max-width: 1399.98px) {
+            grid-template-columns: 1fr 380px;
+        }
     }
     &__filter {
         display: flex;

@@ -33,26 +33,26 @@
             :stories="storiesData" 
             headerTitle="Latest Story" 
             headerLinkText="Explore More" 
-            headerLinkTo="/about" 
+            headerLinkTo="/stories" 
         />
         <CategoryStory 
             :stories="comedyStories" 
             headerTitle="Comedy" 
             headerLinkText="Explore More" 
-            headerLinkTo="/about" 
+            headerLinkTo="/stories" 
         />
         <CategoryStory 
             :stories="romanceStories" 
             variant="column"
             headerTitle="Romance" 
             headerLinkText="Explore More" 
-            headerLinkTo="/about" 
+            headerLinkTo="/stories" 
         />
         <CategoryStory 
             :stories="horrorStories" 
             headerTitle="Horror" 
             headerLinkText="Explore More" 
-            headerLinkTo="/about" 
+            headerLinkTo="/stories" 
         />
         <HomeCategories 
             :categories=filteredCategories 
