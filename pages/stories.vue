@@ -67,6 +67,7 @@ console.log(allCategoryNames.value)
                                 <v-select 
                                     v-model="selectedOption"
                                     :options="['Newest', 'Latest']"
+                                    :searchable="false"
                                     name="sort-by"
                                     id="sort-by"
                                 />
@@ -78,6 +79,7 @@ console.log(allCategoryNames.value)
                                 <v-select 
                                     v-model="selectedOptionCategory"
                                     :options="allCategoryNames"
+                                    :searchable="false"
                                     name="category"
                                     id="category"
                                 />
@@ -142,6 +144,35 @@ console.log(allCategoryNames.value)
 </template>
 <style scoped lang="scss">
 .stories {
+    :deep(.form-label){
+        position: relative;
+        top: 4px;
+        font-size: 24px;
+        color: #4B4B4B;
+        font-weight: 400;
+    }
+    :deep(.v-select) {
+        .vs__dropdown-toggle {
+            border: 1px solid transparent;
+        }
+
+        .vs__selected{
+            font-size: 24px;
+            color: #222222;
+            font-weight: 500;
+        }
+        .vs__clear{
+            display: none;
+        }
+
+        .vs__dropdown-option {
+            font-size: 24px;
+        }
+
+        .vs__open-indicator{
+            fill: #222222;
+        }
+    }
     &__title {
         margin: 70px 0 40px 0;
         font-size: 44px;
