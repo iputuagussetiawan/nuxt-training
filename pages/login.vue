@@ -5,7 +5,7 @@
     import Button from '~/components/ui/Button.vue';
     import { ref } from 'vue'
     definePageMeta({
-        layout: 'simple',
+        layout: 'blank',
     })
     useSeoMeta({
         title: 'My Amazing Site',

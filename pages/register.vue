@@ -8,7 +8,7 @@
     const showRePassword = ref(false)
 
     definePageMeta({
-        layout: 'simple',
+        layout: 'blank',
     })
     useSeoMeta({
         title: 'Register',

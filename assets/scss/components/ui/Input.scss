@@ -20,6 +20,21 @@
     position: relative;
 }
 
+.form-control-search{
+    position: relative;
+
+    .form-control{
+        padding-right: 60px;
+    }
+
+    &__icon{
+        position: absolute;
+        top: 50%;
+        right: 20px;
+        transform: translateY(-50%);
+    }
+}
+
 .form-control{
     border: 2px solid #CCCCCC;
     border-radius: 8px;
@@ -69,3 +84,28 @@
         border-color: $color-primary;
     }
 }
+
+
+.v-select{
+    min-width: 200px;
+    height: 52px;
+    .vs__dropdown-toggle{
+        padding: 10px;
+    }
+
+    .vs__dropdown-option {
+        padding: 8px 12px;
+        background-color: #f9f9f9; // 🔵 your custom default option background
+        color: #333;              // text color (optional)
+
+        &:hover {
+            background-color: #e6e6e6; // 🔵 hover color
+        }
+
+        &.vs__dropdown-option--selected {
+            background-color: $color-primary; // 🔵 selected option background
+            color: #fff;               // text color for selected
+        }
+    }
+}
+

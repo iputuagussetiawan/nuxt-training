@@ -4,9 +4,9 @@
     import { stories as storiesData } from '~/data/stories';
     import { categories as categoriesData } from '~/data/categories';
     import HomeWelcome from '~/components/section/home/HomeWelcome.vue';
-    import HomeStoryGrid from '~/components/section/home/HomeStoryGrid.vue';
     import HomeLatestStory from '~/components/section/home/HomeLatestStory.vue';
     import HomeCategories from '~/components/section/home/HomeCategories.vue';
+    import CategoryStory from '~/components/section/home/CategoryStory.vue';
     // filter only comedy category
     const comedyStories = computed(() =>
         storiesData.filter(story => story.category.toLowerCase() === 'comedy')
@@ -35,19 +35,20 @@
             headerLinkText="Explore More" 
             headerLinkTo="/about" 
         />
-        <HomeStoryGrid 
+        <CategoryStory 
             :stories="comedyStories" 
             headerTitle="Comedy" 
             headerLinkText="Explore More" 
             headerLinkTo="/about" 
         />
-        <HomeStoryGrid 
+        <CategoryStory 
             :stories="romanceStories" 
+            variant="column"
             headerTitle="Romance" 
             headerLinkText="Explore More" 
             headerLinkTo="/about" 
         />
-        <HomeStoryGrid 
+        <CategoryStory 
             :stories="horrorStories" 
             headerTitle="Horror" 
             headerLinkText="Explore More" 
