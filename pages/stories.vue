@@ -63,22 +63,25 @@ console.log(allCategoryNames.value)
                     <div class="stories__filter">
                         <div class="stories__filter-item">
                             <label class="form-label" for="sort-by">Sort by</label>
-                            <v-select 
-                                v-model="selectedOption"
-                                :options="['Newest', 'Latest']"
-                                name="sort-by"
-                                id="sort-by"
-                            />
+                            <client-only>
+                                <v-select 
+                                    v-model="selectedOption"
+                                    :options="['Newest', 'Latest']"
+                                    name="sort-by"
+                                    id="sort-by"
+                                />
+                            </client-only>
                         </div>
                         <div class="stories__filter-item">
                             <label class="form-label" for="category">Category</label>
-                            <v-select 
-                                v-model="selectedOptionCategory"
-                                :options="allCategoryNames"
-                                label="name"        
-                                name="category"
-                                id="category"
-                            />
+                            <client-only>
+                                <v-select 
+                                    v-model="selectedOptionCategory"
+                                    :options="allCategoryNames"
+                                    name="category"
+                                    id="category"
+                                />
+                            </client-only>
                         </div>
                     </div>
                     <div class="stories__search">
