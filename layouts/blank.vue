@@ -3,13 +3,13 @@
 </script>
 
 <template>
-    <div class="simple-layout">
+    <div class="blank-layout">
         <slot />
     </div>
 </template>
 
 <style scoped lang="scss">
-    .simple-layout{
+    .blank-layout{
         min-height: 100vh;
     }
 </style>

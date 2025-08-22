@@ -192,6 +192,7 @@
             line-height: 1.27;
             color: #222;
             text-decoration: none;
+            transition: 0.4s ease;
             @media only screen and (max-width:1399.98px) {
                 font-size: 32px;
             }
@@ -303,6 +304,10 @@
 
         &:hover &__image-container::after {
             opacity: 0.3;
+        }
+
+        &:hover &__title-text {
+            color: $color-primary;
         }
     }
 

@@ -14,13 +14,14 @@
         category: string
     }
 
-    interface SectionStoryGrid {
+    interface CategoryStory {
         stories: Story[]
+        variant?: "column" | "grid"
         headerTitle: string
         headerLinkText: string
         headerLinkTo: string
     }
-    const props = defineProps<SectionStoryGrid>()
+    const props = defineProps<CategoryStory>()
     const loading = ref(true) // <-- NEW loading state
     const storiesData = ref<Story[]>([]) // we use this instead of props.stories
 
@@ -39,17 +40,17 @@
 </script>
 
 <template>
-    <section class="story-grid">
+    <section class="category-story">
         <SectionHeader
             :title="props.headerTitle"
             :linkText="props.headerLinkText"
             :linkTo="props.headerLinkTo"
         />
         <div class="container">
-            <div class="story-grid__grid">
+            <div class="category-story__column" v-if="props.variant === 'column'">
                 <!-- Show skeletons when loading -->
                 <template v-if="loading">
-                    <div class="story-grid__item"
+                    <div class="category-story__column-item"
                         v-for="n in 3" :key="n"
                     >
                         <CardStory loading />
@@ -58,7 +59,7 @@
 
                 <!-- Show real data -->
                 <template v-else>
-                    <div class="story-grid__item"
+                    <div class="category-story__column-item"
                         v-for="(story, index) in storyData"
                     >
                         <CardStory
@@ -69,19 +70,49 @@
                             :authorPhoto="story.authorAvatar"
                             :author="story.authorName"
                             :dateCreated="story.createdDate"
-                            :category="story.category"
                             :linkTo="`/stories/${story.id}`"
                             :variant="index === 0 ? 'big' : 'default'" 
                         />
                     </div>
                 </template>
             </div>
+            <div class="category-story__grid"  v-else>
+                <!-- Show skeletons when loading -->
+                <template v-if="loading">
+                    <div class="category-story__item"
+                        v-for="n in 3" :key="n"
+                    >
+                        <CardStory loading />
+                    </div>
+                </template>
+
+                <!-- Show real data -->
+                <template v-else>
+                    <div class="category-story__item"
+                        v-for="(story, index) in storyData"
+                    >
+                        <CardStory
+                            :key="story.id"
+                            :imageUrl="story.image"
+                            :title="story.title"
+                            :description="story.shortContent"
+                            :authorPhoto="story.authorAvatar"
+                            :author="story.authorName"
+                            :dateCreated="story.createdDate"
+                            :linkTo="`/stories/${story.id}`"
+                            :variant="index === 0 ? 'big' : 'default'" 
+                        />
+                    </div>
+                </template>
+            </div>
+
+          
         </div>
     </section>
 </template>
 
 <style scoped lang="scss">
-    .story-grid{
+    .category-story{
         padding: 60px 0px;
         position: relative;
         @media only screen and (max-width: 991.98px) {
@@ -128,6 +159,12 @@
                     grid-row: 3;
                 }
             }
+        }
+
+        &__column{
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
         }
     }
 </style>

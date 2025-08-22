@@ -8,7 +8,7 @@
     const showRePassword = ref(false)
 
     definePageMeta({
-        layout: 'simple',
+        layout: 'blank',
     })
     useSeoMeta({
         title: 'Register',
@@ -154,13 +154,19 @@
             color: #222222;
 
             @media only screen and (max-width: 1399.98px) {
+                margin-top: 64px;
                 margin-bottom: 32px;
                 font-size: 50px;
             }
 
             @media only screen and (max-width: 1199.98px) {
+                margin-top: 42px;
                 margin-bottom: 24px;
                 font-size: 42px;
+            }
+
+            @media only screen and (max-width: 991.98px) {
+                font-size: 32px;
             }
         }
 
@@ -217,6 +223,7 @@
                 margin-top: 80px;
             }
             @media only screen and (max-width: 767.98px) {
+                display: grid;
                 margin-top: 64px;
             }
         }
