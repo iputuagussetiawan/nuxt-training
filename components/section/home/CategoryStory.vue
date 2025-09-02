@@ -1,140 +1,167 @@
 <script setup lang="ts">
-    import SectionHeader from '~/components/section/SectionHeader.vue'
-    import CardStory from '~/components/ui/CardStory.vue'
-    import { ref, onMounted } from 'vue'
+import { ref, type Ref, onMounted, onUnmounted } from "vue"
+import SectionHeader from "~/components/section/SectionHeader.vue"
+import CardStory from "~/components/ui/CardStory.vue"
+import type { IStoryItem } from "~/types/story"
 
-    interface Story {
-        id: number
-        image: string
-        title: string
-        shortContent: string
-        authorAvatar: string
-        authorName: string
-        createdDate: string
-        category: string
+interface CategoryStory {
+    categoryId: string
+    variant?: "column" | "grid"
+    headerTitle: string
+    headerLinkText: string
+    headerLinkTo: string
+}
+const props = defineProps<CategoryStory>()
+
+const storyComedyList: Ref<IStoryItem[]> = ref([])
+const isLoading = ref(true) // skeleton state
+const targetRef = ref<HTMLElement | null>(null) // for Intersection Observer
+
+const getStoriesComedy = async (): Promise<void> => {
+    isLoading.value = true
+    try {
+        const response: { data: IStoryItem[] } = await $fetch("https://timestory.tmdsite.my.id/api/story", {
+        method: "GET",
+        params: {
+            category_id: props.categoryId,
+            limit: 3,
+        },
+        })
+        storyComedyList.value = response.data
+    } catch (error) {
+        console.error("Failed to fetch stories:", error)
+    } finally {
+        isLoading.value = false
     }
+}
 
-    interface CategoryStory {
-        stories: Story[]
-        variant?: "column" | "grid"
-        headerTitle: string
-        headerLinkText: string
-        headerLinkTo: string
-    }
-    const props = defineProps<CategoryStory>()
-    const loading = ref(true) // <-- NEW loading state
-    const storiesData = ref<Story[]>([]) // we use this instead of props.stories
-
-    onMounted(() => {
-        // simulate API fetch
-        setTimeout(() => {
-            storiesData.value = props.stories // load real stories
-            loading.value = false
-        }, 2000)
-    })
-
-    const storyData = computed(() =>
-        storiesData.value
-        .slice(0, 3)
+let observer: IntersectionObserver | null = null
+onMounted(() => {
+  if (targetRef.value) {
+    observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          getStoriesComedy()
+          if (observer && targetRef.value) {
+            observer.unobserve(targetRef.value) // stop observing after first fetch
+          }
+        }
+      },
+      { threshold: 0.2 }
     )
+    observer.observe(targetRef.value)
+  }
+})
+
+onUnmounted(() => {
+  if (observer && targetRef.value) {
+    observer.unobserve(targetRef.value)
+  }
+})
 </script>
 
 <template>
-    <section class="category-story">
-        <SectionHeader
-            :title="props.headerTitle"
-            :linkText="props.headerLinkText"
-            :linkTo="props.headerLinkTo"
-        />
-        <div class="container">
-            <div class="category-story__column" v-if="props.variant === 'column'">
-                <!-- Show skeletons when loading -->
-                <template v-if="loading">
-                    <div class="category-story__column-item"
-                        v-for="n in 3" :key="n"
-                    >
-                        <CardStory loading />
-                    </div>
-                </template>
+  <section class="category-story" ref="targetRef">
+    <SectionHeader
+      :title="props.headerTitle"
+      :linkText="props.headerLinkText"
+      :linkTo="props.headerLinkTo"
+    />
+    <div class="container">
+      <div class="category-story__column" v-if="props.variant === 'column'">
+        <!-- Skeletons -->
+        <template v-if="isLoading">
+          <div class="category-story__column-item" v-for="n in 3" :key="n">
+            <CardStory loading />
+          </div>
+        </template>
 
-                <!-- Show real data -->
-                <template v-else>
-                    <div class="category-story__column-item"
-                        v-for="(story, index) in storyData"
-                    >
-                        <CardStory
-                            :key="story.id"
-                            :imageUrl="story.image"
-                            :title="story.title"
-                            :description="story.shortContent"
-                            :authorPhoto="story.authorAvatar"
-                            :author="story.authorName"
-                            :dateCreated="story.createdDate"
-                            :linkTo="`/stories/${story.id}`"
-                            :variant="index === 0 ? 'big' : 'default'" 
-                        />
-                    </div>
-                </template>
-            </div>
-            <div class="category-story__grid"  v-else>
-                <!-- Show skeletons when loading -->
-                <template v-if="loading">
-                    <div class="category-story__item"
-                        v-for="n in 3" :key="n"
-                    >
-                        <CardStory loading />
-                    </div>
-                </template>
+        <!-- Real data -->
+        <template v-else>
+          <div
+            class="category-story__column-item"
+            v-for="(story, index) in storyComedyList"
+            :key="story.id"
+          >
+            <CardStory
+              :imageUrl="story.content_image"
+              :title="story.title"
+              :description="story.content"
+              :authorPhoto="
+                story.author.profile_image ??
+                'https://picsum.photos/50/50?random=' + story.id
+              "
+              :author="story.author.name"
+              :dateCreated="story.created_at"
+              :linkTo="`/story/${story.id}`"
+              :variant="index === 0 ? 'big' : 'default'"
+            />
+          </div>
+        </template>
+      </div>
 
-                <!-- Show real data -->
-                <template v-else>
-                    <div class="category-story__item"
-                        v-for="(story, index) in storyData"
-                    >
-                        <CardStory
-                            :key="story.id"
-                            :imageUrl="story.image"
-                            :title="story.title"
-                            :description="story.shortContent"
-                            :authorPhoto="story.authorAvatar"
-                            :author="story.authorName"
-                            :dateCreated="story.createdDate"
-                            :linkTo="`/stories/${story.id}`"
-                            :variant="index === 0 ? 'big' : 'default'" 
-                        />
-                    </div>
-                </template>
-            </div>
+      <div class="category-story__grid" v-else>
+        <!-- Skeletons -->
+        <template v-if="isLoading">
+          <div class="category-story__item" v-for="n in 3" :key="n">
+            <CardStory loading />
+          </div>
+        </template>
 
-          
-        </div>
-    </section>
+        <!-- Real data -->
+        <template v-else>
+          <div
+            class="category-story__item"
+            v-for="(story, index) in storyComedyList"
+            :key="story.id"
+          >
+            <CardStory
+              :imageUrl="story.content_image"
+              :title="story.title"
+              :description="story.content"
+              :authorPhoto="
+                story.author.profile_image ??
+                'https://picsum.photos/50/50?random=' + story.id
+              "
+              :author="story.author.name"
+              :dateCreated="story.created_at"
+              :linkTo="`/story/${story.id}`"
+              :variant="index === 0 ? 'big' : 'default'"
+            />
+          </div>
+        </template>
+      </div>
+    </div>
+  </section>
 </template>
 
+
 <style scoped lang="scss">
-    .category-story{
+    .category-story {
         padding: 60px 0px;
         position: relative;
+
         @media only screen and (max-width: 991.98px) {
             padding: 42px 0px;
         }
-
         @media only screen and (max-width: 767.98px) {
             padding: 32px 0px;
         }
-        &__grid{
+
+        &__grid {
             display: grid;
             grid-template-columns: repeat(12, 1fr);
             grid-template-rows: auto auto;
-            gap: 46px 30px; 
+            gap: 46px 30px;
             align-items: start;
 
             @media only screen and (max-width: 991.98px) {
                 gap: 32px;
             }
         }
-        &__item{
-            &:nth-child(1){
+
+        &__item {
+            &:nth-child(1) {
                 grid-column: 1 / 9;
                 grid-row: 1/-1;
 
@@ -143,7 +170,7 @@
                     grid-row: 1;
                 }
             }
-            &:nth-child(2){
+            &:nth-child(2) {
                 grid-column: 9 / -1;
                 grid-row: 1;
                 @media only screen and (max-width: 1199.98px) {
@@ -151,7 +178,7 @@
                     grid-row: 2;
                 }
             }
-            &:nth-child(3){
+            &:nth-child(3) {
                 grid-column: 9 / -1;
                 grid-row: 2;
                 @media only screen and (max-width: 1199.98px) {
@@ -161,7 +188,7 @@
             }
         }
 
-        &__column{
+        &__column {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 30px;

@@ -110,7 +110,7 @@
                             :author="story.authorName"
                             :dateCreated="story.createdDate"
                             :category="story.category"
-                            :linkTo="`/stories/${story.id}`"
+                            :linkTo="`/story/${story.slug}`"
                         />
                     </SwiperSlide>
                 </template>

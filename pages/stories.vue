@@ -9,6 +9,7 @@ import vSelect from 'vue-select'
 import 'vue-select/dist/vue-select.css' // ✅ must import the CSS
 import { computed, onMounted, ref } from "vue";
 import CardStory from "~/components/ui/CardStory.vue";
+import Pagination from "~/components/ui/Pagination.vue";
 
 
 const selectedOption = ref("Newest") // ✅ default value
@@ -16,6 +17,7 @@ const selectedOptionCategory = ref("Romance") // ✅ default value
 
 interface Story {
     id: number;
+    slug: string;
     image: string;
     title: string;
     shortContent: string;
@@ -46,9 +48,6 @@ onMounted(() => {
 });
 
 const allCategoryNames = computed(() => categoriesMock.map(cat => cat.title))
-
-
-console.log(allCategoryNames.value)  
 </script>
 
 <template>
@@ -134,9 +133,12 @@ console.log(allCategoryNames.value)
                                 :author="story.authorName"
                                 :dateCreated="story.createdDate"
                                 :category="story.category"
-                                :linkTo="`/stories/${story.id}`"
+                                :linkTo="`/story/${story.slug}`"
                             />
                     </template>
+                </div>
+                <div class="stories__pagination">
+                    <Pagination />
                 </div>
             </div>
         </section>
@@ -243,6 +245,12 @@ console.log(allCategoryNames.value)
         .form-label{
             margin: 0px;
         }
+    }
+    &__pagination{
+        display: flex;
+        justify-content: center;
+        margin: 200px 0px;
+
     }
 }
 </style>
