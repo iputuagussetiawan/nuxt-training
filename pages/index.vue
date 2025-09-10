@@ -11,12 +11,12 @@
 <template>
     <div>
         <HomeWelcome />
-        <!-- <HomeLatestStory 
+        <HomeLatestStory 
             :stories="storiesData" 
             headerTitle="Latest Story" 
             headerLinkText="Explore More" 
             headerLinkTo="/stories" 
-        /> -->
+        />
         <CategoryStory 
             categoryId="1"
             headerTitle="Comedy" 
@@ -25,7 +25,14 @@
         />
         <CategoryStory 
             categoryId="2"
-            headerTitle="Comedy" 
+            headerTitle="Romance" 
+            headerLinkText="Explore More" 
+            headerLinkTo="/stories" 
+            variant="column"
+        />
+        <CategoryStory 
+            categoryId="3"
+            headerTitle="Horror" 
             headerLinkText="Explore More" 
             headerLinkTo="/stories" 
         />
