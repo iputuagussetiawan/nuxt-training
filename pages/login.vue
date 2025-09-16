@@ -15,8 +15,6 @@
         ogImage: 'https://example.com/image.png',
         twitterCard: 'summary_large_image',
     })
-
-  
     const showPassword = ref(false)
 </script>
 
