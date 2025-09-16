@@ -38,7 +38,7 @@
                 :height="props.variant === 'big' ? '1920' : '1080'"
                 class="card-story__image"
                 alt="Story image"
-                :aspectRatio="props.variant === 'big' ? '2:1' : '16:9'"
+                :aspect-ratio="props.variant === 'big' ? '1123:1066' : '16:9'"
             />
         </NuxtLink>
 
@@ -164,6 +164,7 @@
             width: 100%;
             border-radius: 8px;
             overflow: hidden;
+            width: auto;
 
             &::after {
                 content: '';
@@ -184,6 +185,11 @@
 
         &__title {
             margin: 0;
+            display: -webkit-box;
+            -webkit-line-clamp: 2; 
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         &__title-text{
@@ -209,6 +215,12 @@
             font-weight: 400;
             line-height: 1.5;
             color: #4b4b4b;
+
+            display: -webkit-box;
+            -webkit-line-clamp: 3; /* Limit to 3 lines */
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
 
             @media only screen and (max-width:1399.98px) {
                 font-size: 16px;

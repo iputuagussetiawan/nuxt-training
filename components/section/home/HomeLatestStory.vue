@@ -3,31 +3,63 @@
     import 'swiper/css'
     import SectionHeader from '~/components/section/SectionHeader.vue'
     import CardStory from '~/components/ui/CardStory.vue'
-    import { ref, onMounted, onBeforeUnmount } from 'vue'
-
-    interface Story {
-        id: number
-        image: string
-        title: string
-        shortContent: string
-        authorAvatar: string
-        authorName: string
-        createdDate: string
-        category: string
-    }
+    import { ref,type Ref, onMounted,onUnmounted, onBeforeUnmount } from 'vue'
+    import type { IStoryItem } from "~/types/story";
 
     interface SectionLatestStoryProps {
-        stories: Story[]
         headerTitle: string
         headerLinkText: string
         headerLinkTo: string
     }
 
     const props = defineProps<SectionLatestStoryProps>()
-
+    const latestStoryList: Ref<IStoryItem[]> = ref([]);
     const offset = ref(0)
-    const loading = ref(false) // <-- NEW loading state
-    const storiesData = ref<Story[]>([]) // we use this instead of props.stories
+    const isLoading = ref(true); // skeleton state
+    const targetRef = ref<HTMLElement | null>(null); // for Intersection Observer
+
+
+    const getStories = async (): Promise<void> => {
+        isLoading.value = true;
+        try {
+            const response: { data: IStoryItem[] } = await $fetch("https://timestory.tmdsite.my.id/api/story",{
+                    method: "GET",
+                    params: {
+                        limit: 10,
+                    },
+                }
+            );
+            latestStoryList.value = response.data;
+        } catch (error) {
+            console.error("Failed to fetch latest stories:", error);
+        } finally {
+            isLoading.value = false;
+        }
+    };
+
+    let observer: IntersectionObserver | null = null;
+    onMounted(() => {
+        if (targetRef.value) {
+            observer = new IntersectionObserver(
+                (entries) => {
+                    if (entries[0].isIntersecting) {
+                        getStories();
+                        if (observer && targetRef.value) {
+                            observer.unobserve(targetRef.value); // stop observing after first fetch
+                        }
+                    }
+                },
+                { threshold: 0.2 }
+            );
+            observer.observe(targetRef.value);
+        }
+    });
+
+    onUnmounted(() => {
+        if (observer && targetRef.value) {
+            observer.unobserve(targetRef.value);
+        }
+    });
 
     function calculateOffset() {
         const container = document.querySelector('.container')
@@ -41,12 +73,6 @@
     onMounted(() => {
         calculateOffset()
         window.addEventListener('resize', calculateOffset)
-
-        // simulate API fetch
-        setTimeout(() => {
-            storiesData.value = props.stories // load real stories
-            loading.value = false
-        }, 2000)
     })
 
     onBeforeUnmount(() => {
@@ -55,7 +81,7 @@
 </script>
 
 <template>
-    <section class="latest-story">
+    <section class="latest-story" ref="targetRef">
         <SectionHeader
             :title="props.headerTitle"
             :linkText="props.headerLinkText"
@@ -90,7 +116,7 @@
             }"
             >
                 <!-- Show skeletons when loading -->
-                <template v-if="loading">
+                <template v-if="isLoading">
                     <SwiperSlide v-for="n in 3" :key="n">
                         <CardStory loading />
                     </SwiperSlide>
@@ -99,19 +125,21 @@
                 <!-- Show real data -->
                 <template v-else>
                     <SwiperSlide
-                        v-for="story in storiesData"
+                        v-for="story in latestStoryList"
                         :key="story.id"
                     >
-                        <CardStory
-                            :imageUrl="story.image"
-                            :title="story.title"
-                            :description="story.shortContent"
-                            :authorPhoto="story.authorAvatar"
-                            :author="story.authorName"
-                            :dateCreated="story.createdDate"
-                            :category="story.category"
-                            :linkTo="`/story/${story.slug}`"
-                        />
+                    <CardStory
+                        :imageUrl="story.content_image"
+                        :title="story.title"
+                        :description="story.content"
+                        :authorPhoto="
+                            story.author.profile_image ??
+                            'https://picsum.photos/50/50?random=' + story.id
+                        "
+                        :author="story.author.name"
+                        :dateCreated="story.created_at"
+                        :linkTo="`/story/${story.id}`"
+                    />
                     </SwiperSlide>
                 </template>
             </Swiper>
