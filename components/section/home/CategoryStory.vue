@@ -189,11 +189,17 @@ onUnmounted(() => {
             }
         }
     }
-
     &__column {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
         gap: 30px;
+        @media only screen and (max-width: 991.98px) {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px 20px;
+        }
+        @media only screen and (max-width: 767.98px) {
+            grid-template-columns: repeat(1, 1fr);
+        }
     }
 }
 </style>

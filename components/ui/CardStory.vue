@@ -34,11 +34,10 @@
             <NuxtImg
                 v-else
                 :src="props.imageUrl"
-                :width="props.variant === 'big' ? '1080' : '1920'"
-                :height="props.variant === 'big' ? '1920' : '1080'"
+                width="200"
+                height="200"
                 class="card-story__image"
                 alt="Story image"
-                :aspect-ratio="props.variant === 'big' ? '1123:1066' : '16:9'"
             />
         </NuxtLink>
 
@@ -121,8 +120,8 @@
         &__image{
             @extend .skeleton-bg;
             width: 100%;
-            height: 500px;
             border-radius: 8px;
+            aspect-ratio: 547/500;
         }
 
         &__title{
@@ -181,6 +180,7 @@
             height: 100%;
             object-fit: cover;
             display: block;
+            aspect-ratio: 547/500;
         }
 
         &__title {

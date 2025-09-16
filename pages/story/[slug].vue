@@ -1,24 +1,26 @@
 <script setup lang="ts">
-    import { computed } from 'vue';
-    import { useRoute } from 'vue-router';
-    import { stories as storiesData } from '~/data/stories';
-    let slug=useRoute().params.slug
-    const StoryDetails = computed(() =>
-        storiesData.find((story) => story.slug === slug)
-    )
+    import Breadcrumb from "~/components/ui/Breadcrumb.vue";
+    import SimilarStory from "~/components/section/storydetail/SimilarStory.vue";
+    import StoryDetail from "~/components/section/storydetail/StoryDetail.vue";
+
+    interface BreadcrumbItem {
+        label: string;
+        href?: string;
+    }
+
+    const breadcrumbItems: BreadcrumbItem[] = [
+        { label: "Home", href: "/" },
+        { label: "Guardians of the Galaxy Vol. 3 " }, // last item has no href
+    ];
 </script>
 
 <template>
-    <section class="story-detail">
-        <div class="container">
-            <div class="story-detail__header">
-                
-            </div>
-        </div>
-        <h2>Story Detail: {{ StoryDetails?.title }}</h2>
-    </section>
+    <Breadcrumb :items="breadcrumbItems" />
+    <StoryDetail />
+    <SimilarStory 
+        headerTitle="Similar Story" 
+    />
 </template>
-
 
 <style scoped lang="scss">
     
