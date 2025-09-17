@@ -1,5 +1,6 @@
 <script setup>
     import AuthorInfo from '~/components/section/mystory/AuthorInfo.vue';
+    import MyStories from '~/components/section/mystory/MyStories.vue';
 
     // definePageMeta({
     //     layout: 'simple',
@@ -23,5 +24,6 @@
 <template>
     <div>
         <AuthorInfo/>
+        <MyStories/>
     </div>
 </template>

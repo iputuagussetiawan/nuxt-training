@@ -28,6 +28,10 @@
         margin: 0px;
         display: flex;
         gap: 20px;
+
+        @media only screen and (max-width: 1399.98px) {
+            gap: 16px;
+        }
         
         &__item.active  &__link{
             background-color: #466543;
@@ -35,6 +39,7 @@
         }
 
         &__link{
+            display: block;
             padding: 16px 30px;
             border: 1px solid #F0F5ED;
             background-color: #F0F5ED;
@@ -46,6 +51,11 @@
             transition: 0.4s ease;
             text-decoration: none;
             transition: 0.4s ease;
+
+            @media only screen and (max-width: 1399.98px) {
+                padding: 14px 20px;
+                font-size: 18px;
+            }
 
             &:hover{
                 background-color: #466543;
