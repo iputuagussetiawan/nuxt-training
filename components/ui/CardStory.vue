@@ -200,13 +200,13 @@
             text-decoration: none;
             transition: 0.4s ease;
             @media only screen and (max-width:1399.98px) {
-                font-size: 32px;
+                font-size: 24px;
             }
             @media only screen and (max-width: 1199.98px) {
-                font-size: 28px;
+                font-size: 22px;
             }
             @media only screen and (max-width: 991.98px) {
-                font-size: 22px;
+                font-size: 20px;
             }
         }
 

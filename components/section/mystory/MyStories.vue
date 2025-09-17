@@ -88,7 +88,6 @@ import MyStoriesBlank from './MyStoriesBlank.vue';
                     <div class="my-story__blank" v-else>
                         <MyStoriesBlank/>
                     </div>
-                   
                 </div>
             </div>
         </div>
@@ -144,7 +143,11 @@ import MyStoriesBlank from './MyStoriesBlank.vue';
             }
         }
 
+
+
         &__action-card{
+            position: sticky;
+            top: 100px;
             padding: 80px 70px;
             border: 1px solid #CCCCCC;
             border-radius: 8px;

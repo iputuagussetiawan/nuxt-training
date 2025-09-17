@@ -215,6 +215,16 @@ const allCategoryNames = computed(() => categoriesMock.map(cat => cat.title))
         font-weight: 600;
         line-height: 1.318;
         font-family: $font-secondary;
+
+        @media only screen and (max-width: 1399.98px) {
+            margin: 50px 0 40px 0;
+            font-size: 32px;
+        }
+
+        @media only screen and (max-width: 1199.98px) {
+            margin: 40px 0 30px 0;
+            font-size: 28px;
+        }   
     }
     &__action {
         margin-top: 40px;
@@ -236,6 +246,20 @@ const allCategoryNames = computed(() => categoriesMock.map(cat => cat.title))
         display: grid;
         grid-template-columns: repeat(3, 1fr);
         gap: 60px 29px;
+
+        @media only screen and (max-width: 1399.98px) {
+            gap: 50px 24px;
+        }
+
+        @media only screen and (max-width: 991.98px) {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 42px 20px;
+        }
+
+        @media only screen and (max-width: 767.98px) {
+            grid-template-columns: repeat(1, 1fr);
+            gap: 24px;
+        }
     }
 
     &__filter-item{
@@ -249,7 +273,11 @@ const allCategoryNames = computed(() => categoriesMock.map(cat => cat.title))
     &__pagination{
         display: flex;
         justify-content: center;
-        margin: 200px 0px;
+        margin: 200px 0px 60px 0px;
+
+        @media only screen and (max-width: 991.98px) {
+            margin: 100px 0px 60px 0px;
+        }
 
     }
 }
