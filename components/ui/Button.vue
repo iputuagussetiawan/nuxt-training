@@ -15,7 +15,7 @@
     import { computed } from "vue";
     import { NuxtLink } from "#components";
     type ButtonType = "button" | "submit" | "link";
-    type ButtonVariant = "primary" | "primary-outline" | "secondary";
+    type ButtonVariant = "primary" | "primary-outline" | "secondary" | "icon";
 
     interface ButtonProps {
         type?: ButtonType;
@@ -35,6 +35,7 @@
             "btn-primary": props.variant === "primary",
             "btn-primary-outline": props.variant === "primary-outline",
             "btn-secondary": props.variant === "secondary",
+            "btn-icon": props.variant === "icon",
         };
     });
 </script>
@@ -99,5 +100,15 @@
             border: 2px solid $color-primary-hover;
             color: #fff;
         }
+    }
+
+    .btn-icon{
+        border: none;
+        padding: 0px;
+        border-radius: 0px;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 </style>

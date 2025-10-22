@@ -4,7 +4,7 @@
     import type { IStoryItem } from '~/types/story';
     import CardStory from '~/components/ui/CardStory.vue';
     import Pagination from "~/components/ui/Pagination.vue";
-import MyStoriesBlank from './MyStoriesBlank.vue';
+    import MyStoriesBlank from './MyStoriesBlank.vue';
     const myStoryList: Ref<IStoryItem[]> = ref([]);
     const isLoading = ref(true); // skeleton state
 

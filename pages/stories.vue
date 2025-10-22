@@ -149,25 +149,15 @@ const allCategoryNames = computed(() => categoriesMock.map(cat => cat.title))
     :deep(.form-label){
         position: relative;
         top: 4px;
-        font-size: 24px;
-        color: #4B4B4B;
-        font-weight: 400;
-
-        @media only screen and (max-width: 1399.98px) {
-            font-size: 20px;
-        }
-
-        @media only screen and (max-width: 1199.98px) {
-            font-size: 18px;
-        }
-
-        @media only screen and (max-width: 991.98px) {
-            font-size: 16px;
-        }
     }
     :deep(.v-select) {
         .vs__dropdown-toggle {
-            border: 1px solid transparent;
+            border: 2px solid transparent;
+
+            @media only screen and (max-width: 991.98px) {
+                border: 2px solid #CCCCCC;
+                border-radius: 8px;
+            }
         }
 
         .vs__selected{
@@ -235,6 +225,11 @@ const allCategoryNames = computed(() => categoriesMock.map(cat => cat.title))
         @media only screen and (max-width: 1399.98px) {
             grid-template-columns: 1fr 380px;
         }
+
+        @media only screen and (max-width: 991.98px) {
+            grid-template-columns: 1fr;
+            gap: 24px;
+        }
     }
     &__filter {
         display: flex;
@@ -268,6 +263,10 @@ const allCategoryNames = computed(() => categoriesMock.map(cat => cat.title))
         align-items: center;
         .form-label{
             margin: 0px;
+        }
+        @media only screen and (max-width: 991.98px) {
+            flex-direction: column;
+            align-items: flex-start;
         }
     }
     &__pagination{
