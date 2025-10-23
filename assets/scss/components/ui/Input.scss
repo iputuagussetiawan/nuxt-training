@@ -1,12 +1,12 @@
 @use '../../config/variables' as *;
-.form-group{
+.form-group {
     position: relative;
     margin-bottom: 24px;
 }
-.form-label{
+.form-label {
     display: inline-block;
     margin-bottom: 20px;
-    color: #4B4B4B;
+    color: #4b4b4b;
     font-size: 18px;
     font-weight: 400;
 
@@ -16,27 +16,33 @@
     }
 }
 
-.form-control-wrapper{
+.form-control-wrapper {
     position: relative;
 }
 
-.form-control-search{
+.form-control-search {
     position: relative;
 
-    .form-control{
+    .form-control {
         padding-right: 60px;
+        @media only screen and (max-width: 991.98px) {
+            padding-right: 40px;
+        }
     }
 
-    &__icon{
+    &__icon {
         position: absolute;
         top: 50%;
         right: 20px;
         transform: translateY(-50%);
+        @media only screen and (max-width: 991.98px) {
+            width: 24px;
+        }
     }
 }
 
-.form-control{
-    border: 2px solid #CCCCCC;
+.form-control {
+    border: 2px solid #cccccc;
     border-radius: 8px;
     padding: 24px 30px;
     font-size: 18px;
@@ -52,10 +58,10 @@
     }
 
     @media only screen and (max-width: 1199.98px) {
-        padding: 16px 28px;
+        padding: 16px 20px;
     }
 
-    &__icon{
+    &__icon {
         position: absolute;
         top: 50%;
         right: 20px;
@@ -63,44 +69,43 @@
         width: 30px;
         height: auto;
         @media only screen and (max-width: 991.98px) {
-            width: 24px;
+            width: 20px;
         }
-        path{
+        path {
             transition: 0.4s ease;
         }
 
-        &:hover{
+        &:hover {
             cursor: pointer;
             color: $color-primary;
         }
     }
-    &::placeholder{
-        color: #4B4B4B;
-        
+    &::placeholder {
+        color: #4b4b4b;
     }
 
-    &:focus{
+    &:focus {
         outline: none;
         border-color: $color-primary;
     }
 }
 
-
-.v-select{
-    min-width: 200px;
-    height: 52px;
-
-    @media only screen and (max-width: 1399.98px) {
-        min-width: 150px;
+.v-select {
+    .vs__selected {
+        font-size: 18px;
+        color: #222222;
     }
-    .vs__dropdown-toggle{
-        padding: 10px;
+    .vs__dropdown-toggle {
+        padding: 16px 20px;
+        border: 2px solid #cccccc;
+        border-radius: 8px;
     }
 
     .vs__dropdown-option {
-        padding: 8px 12px;
+        padding: 14px 12px;
+        font-size: 18px;
         background-color: #f9f9f9; // 🔵 your custom default option background
-        color: #333;              // text color (optional)
+        color: #333; // text color (optional)
 
         &:hover {
             background-color: #e6e6e6; // 🔵 hover color
@@ -108,8 +113,7 @@
 
         &.vs__dropdown-option--selected {
             background-color: $color-primary; // 🔵 selected option background
-            color: #fff;               // text color for selected
+            color: #fff; // text color for selected
         }
     }
 }
-

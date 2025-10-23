@@ -1,26 +1,42 @@
 {
-  "name": "nuxt-app",
-  "private": true,
-  "type": "module",
-  "scripts": {
-    "build": "nuxt build",
-    "dev": "nuxt dev",
-    "generate": "nuxt generate",
-    "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
-  },
-  "dependencies": {
-    "@fontsource/playfair-display": "^5.2.6",
-    "@nuxt/image": "^1.11.0",
-    "@nuxtjs/google-fonts": "^3.2.0",
-    "nuxt": "^3.18.1",
-    "swiper": "^11.2.10",
-    "vue": "^3.5.18",
-    "vue-router": "^4.5.1",
-    "vue-select": "^4.0.0-beta.6"
-  },
-  "devDependencies": {
-    "@types/vue-select": "^3.16.8",
-    "sass": "^1.90.0"
-  }
+    "name": "nuxt-app",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "build": "nuxt build",
+        "dev": "nuxt dev",
+        "generate": "nuxt generate",
+        "preview": "nuxt preview",
+        "postinstall": "nuxt prepare",
+        "format": "npx prettier . --write",
+        "format:check": "npx prettier . --check",
+        "prepare": "husky"
+    },
+    "dependencies": {
+        "@fontsource/playfair-display": "^5.2.6",
+        "@iconify-json/lucide": "^1.2.70",
+        "@nuxt/icon": "^2.1.0",
+        "@nuxt/image": "^1.11.0",
+        "@nuxtjs/google-fonts": "^3.2.0",
+        "@vee-validate/nuxt": "^4.15.1",
+        "@vee-validate/yup": "^4.15.1",
+        "nuxt": "^3.18.1",
+        "swiper": "^11.2.10",
+        "vee-validate": "^4.15.1",
+        "vue": "^3.5.18",
+        "vue-router": "^4.5.1",
+        "vue-select": "^4.0.0-beta.6",
+        "yup": "^1.7.1"
+    },
+    "lint-staged": {
+        "**/*": "prettier --write --ignore-unknown"
+    },
+    "devDependencies": {
+        "@iconify/vue": "^5.0.0",
+        "@types/vue-select": "^3.16.8",
+        "husky": "^9.1.7",
+        "lint-staged": "^16.2.6",
+        "prettier": "3.6.2",
+        "sass": "^1.90.0"
+    }
 }
