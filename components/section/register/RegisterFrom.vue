@@ -153,11 +153,11 @@ const handleSubmit = async (values: any) => {
     }
 
     &__link {
-        color: #007bff;
+        color: $color-primary;
         text-decoration: none;
         font-weight: 700;
         &:hover {
-            color: #0056b3;
+            color: $color-primary-hover;
         }
     }
 
