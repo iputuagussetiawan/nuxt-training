@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { Icon } from '@iconify/vue'
 import UiButton from '~/components/ui/Button.vue'
 import * as yup from 'yup'
 import { Form } from 'vee-validate'
 import UiFormInput from '~/components/ui/FormInput.vue'
+import { useRouter } from 'vue-router'
 
 const errorMessage = ref<string>('')
+const router = useRouter()
 
 // ✅ Yup validation schema
 const schema = yup.object({
@@ -39,6 +42,7 @@ const handleSubmit = async (values: any) => {
             }
         )
         console.log('✅ Success Register:', response)
+        router.push({ name: 'login' })
     } catch (error: any) {
         console.error('❌ Error Register:', error)
 
@@ -96,10 +100,7 @@ const handleSubmit = async (values: any) => {
 
             <div class="register-form__action">
                 <!-- ✅ Error message display -->
-                <div
-                    v-if="errorMessage"
-                    class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4"
-                >
+                <div v-if="errorMessage" class="register-form__error">
                     {{ errorMessage }}
                 </div>
                 <UiButton
@@ -107,7 +108,16 @@ const handleSubmit = async (values: any) => {
                     class="register-form__button"
                     :disabled="isLoading"
                 >
-                    {{ isLoading ? 'Creating Account...' : 'Create Account' }}
+                    <template v-if="isLoading">
+                        <Icon
+                            icon="lucide:loader-2"
+                            class="animate-custom-spin"
+                        />
+                        <span>Creating Account...</span>
+                    </template>
+                    <template v-else>
+                        <span>Create Account</span>
+                    </template>
                 </UiButton>
 
                 <div class="register-form__text">
@@ -149,6 +159,21 @@ const handleSubmit = async (values: any) => {
         &:hover {
             color: #0056b3;
         }
+    }
+
+    &__error {
+        padding: 10px 16px;
+        background-color: rgb(236, 65, 65);
+        color: #fff;
+        font-size: 20px;
+        border-radius: 5px;
+        margin-bottom: 32px;
+    }
+
+    &__button {
+        display: flex;
+        align-items: center;
+        gap: 8px;
     }
 }
 </style>

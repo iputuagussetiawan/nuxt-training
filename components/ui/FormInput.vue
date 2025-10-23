@@ -21,10 +21,18 @@ const showPassword = ref(false)
         <label class="form-input__label" :for="name">{{ label }}</label>
         <div class="form-input__wrapper">
             <Field :name="name" v-slot="{ field, meta }">
+                <!-- “If this field is a password, show it as text when showPassword is true; otherwise, keep it as password.
+If it’s not a password field, just use the original input type.” -->
                 <input
                     v-bind="field"
                     :id="name"
-                    :type="type"
+                    :type="
+                        type === 'password'
+                            ? showPassword
+                                ? 'text'
+                                : 'password'
+                            : type
+                    "
                     :placeholder="placeholder"
                     :class="[
                         'form-input__control',
@@ -107,7 +115,7 @@ const showPassword = ref(false)
 
         &:focus {
             outline: none;
-            border-color: #007aff; // use $color-primary if available
+            border-color: $color-primary;
         }
     }
 

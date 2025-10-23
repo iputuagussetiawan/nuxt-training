@@ -2,7 +2,12 @@ import { defineNuxtConfig } from 'nuxt/config'
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-    modules: ['@nuxtjs/google-fonts', '@nuxt/image', '@vee-validate/nuxt'],
+    modules: [
+        '@nuxtjs/google-fonts',
+        '@nuxt/image',
+        '@vee-validate/nuxt',
+        '@nuxt/icon'
+    ],
     veeValidate: {
         // disable or enable auto imports
         autoImports: true,

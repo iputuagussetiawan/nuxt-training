@@ -14,9 +14,12 @@
     },
     "dependencies": {
         "@fontsource/playfair-display": "^5.2.6",
+        "@iconify-json/lucide": "^1.2.70",
+        "@nuxt/icon": "^2.1.0",
         "@nuxt/image": "^1.11.0",
         "@nuxtjs/google-fonts": "^3.2.0",
         "@vee-validate/nuxt": "^4.15.1",
+        "@vee-validate/yup": "^4.15.1",
         "nuxt": "^3.18.1",
         "swiper": "^11.2.10",
         "vee-validate": "^4.15.1",
@@ -29,6 +32,7 @@
         "**/*": "prettier --write --ignore-unknown"
     },
     "devDependencies": {
+        "@iconify/vue": "^5.0.0",
         "@types/vue-select": "^3.16.8",
         "husky": "^9.1.7",
         "lint-staged": "^16.2.6",
