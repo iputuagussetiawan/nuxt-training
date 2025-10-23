@@ -61,28 +61,36 @@ const allCategoryNames = computed(() => categoriesMock.map(cat => cat.title))
                 <div class="stories__action">
                     <div class="stories__filter">
                         <div class="stories__filter-item">
-                            <label class="form-label" for="sort-by">Sort by</label>
-                            <client-only>
-                                <v-select 
-                                    v-model="selectedOption"
-                                    :options="['Newest', 'Latest']"
-                                    :searchable="false"
-                                    name="sort-by"
-                                    id="sort-by"
-                                />
-                            </client-only>
+                            <div class="stories__filter-label">
+                                <label class="form-label" for="sort-by">Sort by</label>
+                            </div>
+                            <div class="stories__filter-select">
+                                <client-only>
+                                    <v-select 
+                                        v-model="selectedOption"
+                                        :options="['Newest', 'Latest']"
+                                        :searchable="false"
+                                        name="sort-by"
+                                        id="sort-by"
+                                    />
+                                </client-only>
+                            </div>
                         </div>
                         <div class="stories__filter-item">
-                            <label class="form-label" for="category">Category</label>
-                            <client-only>
-                                <v-select 
-                                    v-model="selectedOptionCategory"
-                                    :options="allCategoryNames"
-                                    :searchable="false"
-                                    name="category"
-                                    id="category"
-                                />
-                            </client-only>
+                            <div class="stories__filter-label">
+                                <label class="form-label" for="category">Category</label>
+                            </div>
+                            <div class="stories__filter-select">    
+                                <client-only>
+                                    <v-select 
+                                        v-model="selectedOptionCategory"
+                                        :options="allCategoryNames"
+                                        :searchable="false"
+                                        name="category"
+                                        id="category"
+                                    />
+                                </client-only>
+                            </div>
                         </div>
                     </div>
                     <div class="stories__search">
@@ -233,8 +241,15 @@ const allCategoryNames = computed(() => categoriesMock.map(cat => cat.title))
     }
     &__filter {
         display: flex;
-        align-items: center;
         gap: 20px;
+    }
+
+    &__filter-select{
+        min-width: 200px;
+    }
+
+    &__filter-label{
+        align-self: center;
     }
     &__grid{
         margin-top: 60px;
@@ -260,7 +275,6 @@ const allCategoryNames = computed(() => categoriesMock.map(cat => cat.title))
     &__filter-item{
         display: flex;
         gap: 10px;
-        align-items: center;
         .form-label{
             margin: 0px;
         }
