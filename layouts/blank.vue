@@ -1,6 +1,4 @@
-
-<script setup lang="ts">
-</script>
+<script setup lang="ts"></script>
 
 <template>
     <div class="blank-layout">
@@ -9,7 +7,7 @@
 </template>
 
 <style scoped lang="scss">
-    .blank-layout{
-        min-height: 100vh;
-    }
+.blank-layout {
+    min-height: 100vh;
+}
 </style>

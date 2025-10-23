@@ -1,4 +1,4 @@
-import { defineNuxtConfig } from "nuxt/config";
+import { defineNuxtConfig } from 'nuxt/config'
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
@@ -8,16 +8,16 @@ export default defineNuxtConfig({
         autoImports: true,
         // Use different names for components
         componentNames: {
-        Form: 'VeeForm',
-        Field: 'VeeField',
-        FieldArray: 'VeeFieldArray',
-        ErrorMessage: 'VeeErrorMessage',
-        },
+            Form: 'VeeForm',
+            Field: 'VeeField',
+            FieldArray: 'VeeFieldArray',
+            ErrorMessage: 'VeeErrorMessage'
+        }
     },
     googleFonts: {
         families: {
             'DM+Sans': [400, 500, 700], // choose weights you need
-            'Playfair+Display': [400, 700] 
+            'Playfair+Display': [400, 700]
         },
         display: 'swap'
     },
@@ -35,7 +35,8 @@ export default defineNuxtConfig({
     devtools: { enabled: true },
     runtimeConfig: {
         public: {
-            apiBase: process.env.NUXT_PUBLIC_API_BASE || "http://localhost:3000/api",
-        },
-    },
+            apiBase:
+                process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:3000/api'
+        }
+    }
 })

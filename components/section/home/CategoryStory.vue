@@ -1,66 +1,66 @@
 <script setup lang="ts">
-import { ref, type Ref, onMounted, onUnmounted } from "vue";
-import SectionHeader from "~/components/section/SectionHeader.vue";
-import CardStory from "~/components/ui/CardStory.vue";
-import type { IStoryItem } from "~/types/story";
+import { ref, type Ref, onMounted, onUnmounted } from 'vue'
+import SectionHeader from '~/components/section/SectionHeader.vue'
+import CardStory from '~/components/ui/CardStory.vue'
+import type { IStoryItem } from '~/types/story'
 
 interface CategoryStory {
-    categoryId: string;
-    variant?: "column" | "grid";
-    headerTitle: string;
-    headerLinkText: string;
-    headerLinkTo: string;
+    categoryId: string
+    variant?: 'column' | 'grid'
+    headerTitle: string
+    headerLinkText: string
+    headerLinkTo: string
 }
 
-const props = defineProps<CategoryStory>();
-const storyList: Ref<IStoryItem[]> = ref([]);
-const isLoading = ref(true); // skeleton state
-const targetRef = ref<HTMLElement | null>(null); // for Intersection Observer
+const props = defineProps<CategoryStory>()
+const storyList: Ref<IStoryItem[]> = ref([])
+const isLoading = ref(true) // skeleton state
+const targetRef = ref<HTMLElement | null>(null) // for Intersection Observer
 
 const getStories = async (): Promise<void> => {
-    isLoading.value = true;
+    isLoading.value = true
     try {
         const response: { data: IStoryItem[] } = await $fetch(
-            "https://timestory.tmdsite.my.id/api/story",
+            'https://timestory.tmdsite.my.id/api/story',
             {
-                method: "GET",
+                method: 'GET',
                 params: {
                     category_id: props.categoryId,
-                    limit: 3,
-                },
+                    limit: 3
+                }
             }
-        );
-        storyList.value = response.data;
+        )
+        storyList.value = response.data
     } catch (error) {
-        console.error("Failed to fetch stories:", error);
+        console.error('Failed to fetch stories:', error)
     } finally {
-        isLoading.value = false;
+        isLoading.value = false
     }
-};
+}
 
-let observer: IntersectionObserver | null = null;
+let observer: IntersectionObserver | null = null
 onMounted(() => {
     if (targetRef.value) {
         observer = new IntersectionObserver(
             (entries) => {
                 if (entries[0].isIntersecting) {
-                    getStories();
+                    getStories()
                     if (observer && targetRef.value) {
-                        observer.unobserve(targetRef.value); // stop observing after first fetch
+                        observer.unobserve(targetRef.value) // stop observing after first fetch
                     }
                 }
             },
             { threshold: 0.2 }
-        );
-        observer.observe(targetRef.value);
+        )
+        observer.observe(targetRef.value)
     }
-});
+})
 
 onUnmounted(() => {
     if (observer && targetRef.value) {
-        observer.unobserve(targetRef.value);
+        observer.unobserve(targetRef.value)
     }
-});
+})
 </script>
 
 <template>
@@ -71,10 +71,17 @@ onUnmounted(() => {
             :linkTo="props.headerLinkTo"
         />
         <div class="container">
-            <div class="category-story__column" v-if="props.variant === 'column'">
+            <div
+                class="category-story__column"
+                v-if="props.variant === 'column'"
+            >
                 <!-- Skeletons -->
                 <template v-if="isLoading">
-                    <div class="category-story__column-item" v-for="n in 3" :key="n">
+                    <div
+                        class="category-story__column-item"
+                        v-for="n in 3"
+                        :key="n"
+                    >
                         <CardStory loading />
                     </div>
                 </template>

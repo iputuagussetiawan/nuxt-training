@@ -1,6 +1,4 @@
-<script setup lang="ts">
-
-</script>
+<script setup lang="ts"></script>
 <template>
     <ul class="pagination">
         <li class="pagination__item">
@@ -22,45 +20,45 @@
 </template>
 
 <style scoped lang="scss">
-    .pagination{
-        list-style: none;
-        padding: 0px;
-        margin: 0px;
-        display: flex;
-        gap: 20px;
+.pagination {
+    list-style: none;
+    padding: 0px;
+    margin: 0px;
+    display: flex;
+    gap: 20px;
+
+    @media only screen and (max-width: 1399.98px) {
+        gap: 16px;
+    }
+
+    &__item.active &__link {
+        background-color: #466543;
+        color: #fff;
+    }
+
+    &__link {
+        display: block;
+        padding: 16px 30px;
+        border: 1px solid #f0f5ed;
+        background-color: #f0f5ed;
+        border-radius: 8px;
+        font-size: 28px;
+        font-weight: 700;
+        line-height: 1.357;
+        color: #222222;
+        transition: 0.4s ease;
+        text-decoration: none;
+        transition: 0.4s ease;
 
         @media only screen and (max-width: 1399.98px) {
-            gap: 16px;
+            padding: 14px 20px;
+            font-size: 18px;
         }
-        
-        &__item.active  &__link{
+
+        &:hover {
             background-color: #466543;
             color: #fff;
         }
-
-        &__link{
-            display: block;
-            padding: 16px 30px;
-            border: 1px solid #F0F5ED;
-            background-color: #F0F5ED;
-            border-radius: 8px;
-            font-size: 28px;
-            font-weight: 700;
-            line-height: 1.357;
-            color: #222222;
-            transition: 0.4s ease;
-            text-decoration: none;
-            transition: 0.4s ease;
-
-            @media only screen and (max-width: 1399.98px) {
-                padding: 14px 20px;
-                font-size: 18px;
-            }
-
-            &:hover{
-                background-color: #466543;
-                color: #fff;
-            }
-        }
     }
+}
 </style>

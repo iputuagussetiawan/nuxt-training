@@ -27,20 +27,20 @@ onMounted(() => {
 
     observer = new IntersectionObserver(
         (entries) => {
-        const entry = entries[0]
-        if (entry.isIntersecting) {
-            // Simulate delay for skeleton effect (optional)
-            setTimeout(() => {
-            categoryList.value = props.categories
-            isLoading.value = false
-            }, 800)
+            const entry = entries[0]
+            if (entry.isIntersecting) {
+                // Simulate delay for skeleton effect (optional)
+                setTimeout(() => {
+                    categoryList.value = props.categories
+                    isLoading.value = false
+                }, 800)
 
-            if (observer && targetRef.value) {
-            observer.unobserve(targetRef.value)
-            observer.disconnect()
-            observer = null
+                if (observer && targetRef.value) {
+                    observer.unobserve(targetRef.value)
+                    observer.disconnect()
+                    observer = null
+                }
             }
-        }
         },
         { threshold: 0.2 }
     )
@@ -69,11 +69,7 @@ onUnmounted(() => {
             <div class="story-categories__grid">
                 <!-- Loading Skeleton -->
                 <template v-if="isLoading">
-                    <div
-                        v-for="n in 4"
-                        :key="n"
-                        class="skeleton-card"
-                    />
+                    <div v-for="n in 4" :key="n" class="skeleton-card" />
                 </template>
 
                 <!-- Actual Category Cards -->
@@ -90,49 +86,49 @@ onUnmounted(() => {
 </template>
 
 <style scoped lang="scss">
-    .story-categories {
-        position: relative;
-        padding: 60px 0;
+.story-categories {
+    position: relative;
+    padding: 60px 0;
+
+    @media (max-width: 991.98px) {
+        padding: 42px 0;
+    }
+
+    @media (max-width: 767.98px) {
+        padding: 32px 0;
+    }
+
+    &__grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 30px;
 
         @media (max-width: 991.98px) {
-            padding: 42px 0;
+            gap: 20px;
         }
 
         @media (max-width: 767.98px) {
-            padding: 32px 0;
-        }
-
-        &__grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 30px;
-
-            @media (max-width: 991.98px) {
-                gap: 20px;
-            }
-
-            @media (max-width: 767.98px) {
-                gap: 16px;
-            }
+            gap: 16px;
         }
     }
+}
 
-    /* Skeleton Card */
-    .skeleton-card {
-        width: 220px;
-        height: 140px;
-        border-radius: 12px;
-        background: linear-gradient(90deg, #eee 25%, #f5f5f5 50%, #eee 75%);
-        background-size: 200% 100%;
-        animation: shimmer 1.4s infinite;
-    }
+/* Skeleton Card */
+.skeleton-card {
+    width: 220px;
+    height: 140px;
+    border-radius: 12px;
+    background: linear-gradient(90deg, #eee 25%, #f5f5f5 50%, #eee 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.4s infinite;
+}
 
-    @keyframes shimmer {
-        0% {
-            background-position: 200% 0;
-        }
-        100% {
-            background-position: -200% 0;
-        }
+@keyframes shimmer {
+    0% {
+        background-position: 200% 0;
     }
+    100% {
+        background-position: -200% 0;
+    }
+}
 </style>
