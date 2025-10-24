@@ -5,8 +5,20 @@ import HomeCategories from '~/components/section/home/HomeCategories.vue'
 import CategoryStory from '~/components/section/home/CategoryStory.vue'
 import { ref, type Ref } from 'vue'
 import type { ICategory } from '~/types/story'
+import { useSeoMeta } from '#imports'
 const categoryList: Ref<ICategory[]> = ref([])
 const isLoading = ref(true)
+
+useSeoMeta({
+    title: 'Home | Story Time',
+    ogTitle: 'Welcome to Story Time',
+    description:
+        'Discover inspiring stories, explore creative ideas, and enjoy a world of imagination with Story Time.',
+    ogDescription:
+        'Welcome to Story Time — your home for heartwarming tales, creative inspiration, and captivating adventures.',
+    ogImage: 'https://example.com/image.png',
+    twitterCard: 'summary_large_image'
+})
 const getCategories = async (): Promise<void> => {
     isLoading.value = true
     try {

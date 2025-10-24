@@ -10,9 +10,21 @@ import 'vue-select/dist/vue-select.css' // ✅ must import the CSS
 import { computed, onMounted, ref } from 'vue'
 import CardStory from '~/components/ui/CardStory.vue'
 import Pagination from '~/components/ui/Pagination.vue'
+import { useSeoMeta } from '#imports'
 
 const selectedOption = ref('Newest') // ✅ default value
 const selectedOptionCategory = ref('Romance') // ✅ default value
+
+useSeoMeta({
+    title: 'Story Listing | Story Time',
+    ogTitle: 'Explore Stories on Story Time',
+    description:
+        'Browse our collection of inspiring, heartwarming, and imaginative stories. Discover new tales and explore the world of Story Time.',
+    ogDescription:
+        'Find your next favorite story on Story Time — from inspiring adventures to creative short stories that spark your imagination.',
+    ogImage: 'https://example.com/image.png',
+    twitterCard: 'summary_large_image'
+})
 
 interface Story {
     id: number

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Button from '~/components/ui/Button.vue'
+import UiButtonProfile from '~/components/ui/ButtonProfile.vue'
 import NavBrand from '~/components/ui/NavBrand.vue'
 </script>
 
@@ -8,21 +8,9 @@ import NavBrand from '~/components/ui/NavBrand.vue'
         <div class="container">
             <div class="navigation__inner">
                 <NavBrand />
-                <nav class="navigation__menu">
-                    <li class="navigation__item">
-                        <Button
-                            type="link"
-                            href="/register"
-                            variant="primary-outline"
-                            >Register</Button
-                        >
-                    </li>
-                    <li class="navigation__item">
-                        <Button type="link" href="/login" variant="primary"
-                            >Login</Button
-                        >
-                    </li>
-                </nav>
+                <div class="navigation__menu">
+                    <UiButtonProfile />
+                </div>
             </div>
         </div>
     </div>
