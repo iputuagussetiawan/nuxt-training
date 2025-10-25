@@ -15,11 +15,13 @@ interface ButtonProps {
     type?: ButtonType
     variant?: ButtonVariant
     href?: string // for link type
+    disabled?: boolean
 }
 
 const props = withDefaults(defineProps<ButtonProps>(), {
     type: 'button',
-    variant: 'primary'
+    variant: 'primary',
+    disabled: false
 })
 
 // Classes based on variant
@@ -29,7 +31,8 @@ const classes = computed(() => {
         'btn-primary': props.variant === 'primary',
         'btn-primary-outline': props.variant === 'primary-outline',
         'btn-secondary': props.variant === 'secondary',
-        'btn-icon': props.variant === 'icon'
+        'btn-icon': props.variant === 'icon',
+        'btn--disabled': props.disabled
     }
 })
 </script>
@@ -40,6 +43,7 @@ const classes = computed(() => {
         :to="props.type === 'link' ? props.href : undefined"
         :type="props.type !== 'link' ? props.type : undefined"
         :class="classes"
+        :disabled="props.type !== 'link' ? props.disabled : undefined"
     >
         <slot />
     </component>
@@ -104,5 +108,12 @@ const classes = computed(() => {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.btn--disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
+    filter: grayscale(0.4);
 }
 </style>

@@ -5,6 +5,7 @@
     "scripts": {
         "build": "nuxt build",
         "dev": "nuxt dev",
+        "dev2": "nuxi dev -p 3001",
         "generate": "nuxt generate",
         "preview": "nuxt preview",
         "postinstall": "nuxt prepare",
@@ -39,6 +40,7 @@
         "husky": "^9.1.7",
         "lint-staged": "^16.2.6",
         "prettier": "3.6.2",
-        "sass": "^1.90.0"
+        "sass": "^1.90.0",
+        "vue-tsc": "^3.1.1"
     }
 }

@@ -1,28 +1,39 @@
 <script setup lang="ts">
-import Button from './Button.vue'
+import { computed } from 'vue'
 import { useAuthStore } from '~/stores/auth'
+import Button from './Button.vue'
 
 const authStore = useAuthStore()
 
-function handleLogout() {
-    console.log('Login')
-}
+// ✅ Computed properties for cleaner template
+const isLoggedIn = computed(() => !!authStore.token)
+const userName = computed(() => authStore.user?.name || 'User')
+const userImage = computed(
+    () =>
+        authStore.user?.profile_image ||
+        'https://avatars.githubusercontent.com/u/583231?v=4'
+)
+
+const handleLogout = () => authStore.logout()
 </script>
 
 <template>
     <div>
-        <div v-if="authStore.token" class="button-profile">
+        <!-- ✅ Logged In State -->
+        <div v-if="isLoggedIn" class="button-profile">
             <div class="button-profile__trigger">
                 <div class="button-profile__image-container">
                     <img
-                        src="https://avatars.githubusercontent.com/u/583231?v=4"
-                        alt="Default profile image"
+                        :src="userImage"
+                        alt="Profile image"
                         class="button-profile__image"
                     />
                 </div>
+
                 <div class="button-profile__info-container">
-                    <p class="button-profile__name">Iswara</p>
+                    <p class="button-profile__name">{{ userName }}</p>
                 </div>
+
                 <svg
                     width="15"
                     height="9"
@@ -36,24 +47,33 @@ function handleLogout() {
                     />
                 </svg>
             </div>
+
             <ul class="button-profile__dropdown">
-                <li class="button-profile__dropdown-item">
-                    <NuxtLink class="button-profile__dropdown-link"
-                        >My Profile</NuxtLink
+                <li>
+                    <NuxtLink
+                        to="/profile"
+                        class="button-profile__dropdown-link"
                     >
+                        My Profile
+                    </NuxtLink>
                 </li>
-                <li class="button-profile__dropdown-item">
-                    <button class="button-profile__dropdown-link">
+                <li>
+                    <button
+                        @click="handleLogout"
+                        class="button-profile__dropdown-link"
+                    >
                         Logout
                     </button>
                 </li>
             </ul>
         </div>
-        <div v-if="!authStore.token" class="button-profile-action">
-            <Button type="link" href="/register" variant="primary-outline"
-                >Register</Button
-            >
-            <Button type="link" href="/login" variant="primary">Login</Button>
+
+        <!-- ✅ Logged Out State -->
+        <div v-else class="button-profile-action">
+            <Button type="link" href="/register" variant="primary-outline">
+                Register
+            </Button>
+            <Button type="link" href="/login" variant="primary"> Login </Button>
         </div>
     </div>
 </template>
@@ -61,27 +81,16 @@ function handleLogout() {
 <style scoped lang="scss">
 .button-profile {
     position: relative;
+    z-index: 1000;
+    display: inline-block;
 
-    &:hover {
+    &__trigger {
+        display: flex;
+        align-items: center;
+        gap: 10px;
         cursor: pointer;
     }
 
-    &:hover &__dropdown {
-        opacity: 1;
-    }
-
-    &__trigger {
-        gap: 10px;
-        display: flex;
-        align-items: center;
-    }
-
-    &__name {
-        font-weight: 700;
-        font-size: 24px;
-        line-height: 1.5;
-        color: #222222;
-    }
     &__image-container {
         width: 65px;
         height: 65px;
@@ -95,46 +104,49 @@ function handleLogout() {
         object-fit: cover;
     }
 
-    &__dropdown {
-        min-width: 185px;
-        margin: 0px;
-        padding: 0px;
-        position: absolute;
-        right: 0px;
-        top: 100%;
-        background-color: #fff;
-        list-style: none;
-        border-radius: 0px 0px 10px 10px;
-        box-shadow: 0px 6px 5px -9px rgba(0, 0, 0, 0.72);
-        overflow: hidden;
-        opacity: 0;
-        transition: 0.4s ease;
+    &__name {
+        font-weight: 700;
+        font-size: 1.25rem;
+        line-height: 1.5;
+        color: #222;
     }
 
-    &__dropdown-item {
-        button {
-            outline: none;
-            box-shadow: none;
-            background-color: transparent;
-            border: none;
-            padding: 0px;
-            cursor: pointer;
-            display: inline-block;
-            padding: 15px 20px;
-            font-size: 20px;
-            font-weight: 500;
-            color: #222222;
-            text-align: left;
-        }
+    &__dropdown {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        background: #fff;
+        border-radius: 0 0 10px 10px;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        min-width: 185px;
+        box-shadow: 0 6px 5px -9px rgba(0, 0, 0, 0.72);
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-10px);
+        transition: all 0.3s ease;
     }
+
+    &:hover .button-profile__dropdown {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+
     &__dropdown-link {
-        display: inline-block;
+        display: block;
         padding: 15px 20px;
-        font-size: 20px;
+        font-size: 1rem;
         font-weight: 500;
-        color: #222222;
+        color: #222;
+        text-align: left;
         width: 100%;
-        transition: 0.4s ease;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        text-decoration: none;
+        transition: background 0.3s ease;
 
         &:hover {
             background-color: #f0f5ed;

@@ -1,13 +1,12 @@
 <script setup lang="ts">
+import { useCategories } from '~/composables/useCategories'
 import HomeWelcome from '~/components/section/home/HomeWelcome.vue'
 import HomeLatestStory from '~/components/section/home/HomeLatestStory.vue'
 import HomeCategories from '~/components/section/home/HomeCategories.vue'
 import CategoryStory from '~/components/section/home/CategoryStory.vue'
-import { ref, type Ref } from 'vue'
-import type { ICategory } from '~/types/story'
-import { useSeoMeta } from '#imports'
-const categoryList: Ref<ICategory[]> = ref([])
-const isLoading = ref(true)
+import { onMounted, useSeoMeta } from '#imports'
+
+const { categoryList, getCategories } = useCategories()
 
 useSeoMeta({
     title: 'Home | Story Time',
@@ -19,23 +18,10 @@ useSeoMeta({
     ogImage: 'https://example.com/image.png',
     twitterCard: 'summary_large_image'
 })
-const getCategories = async (): Promise<void> => {
-    isLoading.value = true
-    try {
-        const response: { data: ICategory[] } = await $fetch(
-            'https://timestory.tmdsite.my.id/api/category',
-            {
-                method: 'GET'
-            }
-        )
-        categoryList.value = response.data
-    } catch (error) {
-        console.error('Failed to fetch categories:', error)
-    } finally {
-        isLoading.value = false
-    }
-}
-getCategories()
+
+onMounted(() => {
+    getCategories()
+})
 </script>
 
 <template>

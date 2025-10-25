@@ -1,10 +1,16 @@
 import { defineStore } from 'pinia'
 import { useCookie } from '#app'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
+import type { IUser } from '~/types/user'
+import { useProfile } from '~/composables/useProfile'
 
 export const useAuthStore = defineStore('auth', () => {
     // ✅ State
     const token = ref<string>('')
+    const router = useRouter()
+    const user = ref<IUser | null>(null)
+    const { userProfileData, getProfile } = useProfile()
 
     // ✅ Save token (to state + cookie)
     const setToken = (newToken: string) => {
@@ -21,26 +27,46 @@ export const useAuthStore = defineStore('auth', () => {
     const loadToken = () => {
         const authToken = useCookie<string | null>('auth_token')
         token.value = authToken.value || ''
-        console.log('📦 Token loaded:', token.value)
     }
 
-    // ✅ Clear token (logout)
-    const clearToken = () => {
+    // ✅  (logout)
+    const logout = () => {
         token.value = ''
         const authToken = useCookie('auth_token')
         authToken.value = null
-        console.log('🧹 Token cleared')
+        router.push('/')
     }
 
-    // ✅ Automatically load token when store is used
-    if (process.client) {
+    const setUserProfile = (newUser: IUser) => {
+        user.value = newUser
+    }
+
+    const getUserProfile = async () => {
+        if (!token.value) return
+        await getProfile(token.value)
+        user.value = userProfileData.value
+    }
+
+    // ✅ Keep `user` in sync with `userProfileData`
+    watch(userProfileData, (newVal) => {
+        if (newVal) user.value = newVal
+    })
+
+    // ✅ Initialize store on use
+    const init = async () => {
         loadToken()
+        if (token.value) {
+            await getUserProfile()
+        }
     }
 
     return {
         token,
+        user,
+        init,
         setToken,
         loadToken,
-        clearToken
+        logout,
+        setUserProfile
     }
 })

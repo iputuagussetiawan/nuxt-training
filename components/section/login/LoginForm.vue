@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { Icon } from '@iconify/vue'
 import UiButton from '~/components/ui/Button.vue'
 import * as yup from 'yup'
 import { Form } from 'vee-validate'
 import UiFormInput from '~/components/ui/FormInput.vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '~/stores/auth'
+import { Icon } from '@iconify/vue'
 
 const errorMessage = ref<string>('')
 const router = useRouter()
@@ -36,8 +36,10 @@ const handleLogin = async (values: any) => {
                 body: values
             }
         )
+        console.log('✅ Success Login:', response)
         // ✅ Save token securely using Nuxt useCookie() using pinia
         authStore.setToken(response.data.token)
+        authStore.setUserProfile(response.data.user)
         router.push({ name: 'dashboard' })
     } catch (error: any) {
         console.error('❌ Error Login:', error)
@@ -51,7 +53,7 @@ const handleLogin = async (values: any) => {
                 'An unexpected error occurred. Please try again.'
         }
     } finally {
-        isLoading.value = false
+        isLoading.value = true
     }
 }
 </script>
@@ -73,8 +75,16 @@ const handleLogin = async (values: any) => {
                 type="password"
                 placeholder="Enter your password"
             />
+            <!-- ✅ Error message display -->
+            <div v-if="errorMessage" class="login-form__error">
+                {{ errorMessage }}
+            </div>
             <div class="login-form__action">
-                <UiButton type="submit" class="login-form__button">
+                <UiButton
+                    type="submit"
+                    class="login-form__button"
+                    :disabled="isLoading"
+                >
                     <template v-if="isLoading">
                         <Icon
                             icon="lucide:loader-2"
@@ -137,6 +147,15 @@ const handleLogin = async (values: any) => {
         display: flex;
         align-items: center;
         gap: 8px;
+    }
+
+    &__error {
+        padding: 10px 16px;
+        background-color: rgb(236, 65, 65);
+        color: #fff;
+        font-size: 20px;
+        border-radius: 5px;
+        margin-bottom: 32px;
     }
 }
 </style>

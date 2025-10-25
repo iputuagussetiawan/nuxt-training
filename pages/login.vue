@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import NavBrand from '~/components/ui/NavBrand.vue'
 import LoginForm from '~/components/section/login/LoginForm.vue'
+import { definePageMeta, useSeoMeta } from '#imports'
 
 definePageMeta({
     layout: 'blank'

@@ -10,8 +10,17 @@ import { useRouter } from 'vue-router'
 const errorMessage = ref<string>('')
 const router = useRouter()
 
-// ✅ Yup validation schema
-const schema = yup.object({
+// ✅ Type for form values (matching the Yup schema)
+interface RegisterForm {
+    name: string
+    username: string
+    email: string
+    password: string
+    password_confirmation: string
+}
+
+// ✅ Yup validation schema for register form
+const registerFormSchema = yup.object({
     name: yup.string().required('Name is required'),
     username: yup.string().required('Username is required'),
     email: yup
@@ -45,7 +54,6 @@ const handleSubmit = async (values: any) => {
         router.push({ name: 'login' })
     } catch (error: any) {
         console.error('❌ Error Register:', error)
-
         // ✅ Handle different error types safely
         if (error?.data?.message) {
             errorMessage.value = error.data.message
@@ -65,7 +73,7 @@ const handleSubmit = async (values: any) => {
     <div class="register-form">
         <h2 class="register-form__title">Create Account</h2>
         <Form
-            :validation-schema="schema"
+            :validation-schema="registerFormSchema"
             @submit="handleSubmit"
             class="register-form__form"
         >

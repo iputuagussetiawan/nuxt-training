@@ -28,21 +28,5 @@ import NavBrand from '~/components/ui/NavBrand.vue'
         justify-content: space-between;
         align-items: center;
     }
-
-    &__menu {
-        display: flex;
-        gap: 30px;
-
-        @media only screen and (max-width: 1399.98px) {
-            gap: 20px;
-        }
-
-        @media only screen and (max-width: 1199.98px) {
-            gap: 16px;
-        }
-    }
-    &__item {
-        list-style: none;
-    }
 }
 </style>

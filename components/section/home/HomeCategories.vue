@@ -2,7 +2,7 @@
 // 1. Imports
 import { onMounted, onUnmounted, ref, type Ref } from 'vue'
 import CardCategory from '~/components/ui/CardCategory.vue'
-import type { ICategory } from '~/types/story'
+import type { ICategory } from '~/types/category'
 
 // 2. Interface
 interface SectionStoryCategories {
