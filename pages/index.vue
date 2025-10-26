@@ -9,7 +9,7 @@ import { onMounted, useSeoMeta } from '#imports'
 const { categoryList, getCategories } = useCategories()
 
 useSeoMeta({
-    title: 'Home | Story Time',
+    title: 'Story Time',
     ogTitle: 'Welcome to Story Time',
     description:
         'Discover inspiring stories, explore creative ideas, and enjoy a world of imagination with Story Time.',

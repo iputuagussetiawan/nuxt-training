@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useAuthStore } from '~/stores/auth'
 import Button from './Button.vue'
+import UiProfileForm from '../section/ProfileForm.vue'
 
 const authStore = useAuthStore()
+const isOpenDialog = ref(false)
 
 // ✅ Computed properties for cleaner template
 const isLoggedIn = computed(() => !!authStore.token)
@@ -15,6 +17,9 @@ const userImage = computed(
 )
 
 const handleLogout = () => authStore.logout()
+const getProfile = () => {
+    isOpenDialog.value = true
+}
 </script>
 
 <template>
@@ -50,12 +55,12 @@ const handleLogout = () => authStore.logout()
 
             <ul class="button-profile__dropdown">
                 <li>
-                    <NuxtLink
-                        to="/profile"
+                    <button
+                        @click="getProfile"
                         class="button-profile__dropdown-link"
                     >
                         My Profile
-                    </NuxtLink>
+                    </button>
                 </li>
                 <li>
                     <button
@@ -75,6 +80,10 @@ const handleLogout = () => authStore.logout()
             </Button>
             <Button type="link" href="/login" variant="primary"> Login </Button>
         </div>
+
+        <UiDialog v-model="isOpenDialog">
+            <UiProfileForm />
+        </UiDialog>
     </div>
 </template>
 
