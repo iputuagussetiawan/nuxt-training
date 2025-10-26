@@ -3,9 +3,12 @@ import { computed, ref } from 'vue'
 import { useAuthStore } from '~/stores/auth'
 import Button from './Button.vue'
 import UiProfileForm from '../section/ProfileForm.vue'
+import DialogConfirmation from './DialogConfirmation.vue'
 
 const authStore = useAuthStore()
 const isOpenDialog = ref(false)
+const isOpenDialogLogout = ref(false)
+const isLoadingLogout = ref(false)
 
 // ✅ Computed properties for cleaner template
 const isLoggedIn = computed(() => !!authStore.token)
@@ -16,7 +19,17 @@ const userImage = computed(
         'https://avatars.githubusercontent.com/u/583231?v=4'
 )
 
-const handleLogout = () => authStore.logout()
+const handleLogout = () => {
+    try {
+        isLoadingLogout.value = true
+        authStore.logout()
+    } catch (error) {
+        console.error('Error logging out:', error)
+    } finally {
+        isLoadingLogout.value = false
+        isOpenDialogLogout.value = false
+    }
+}
 const getProfile = () => {
     isOpenDialog.value = true
 }
@@ -64,7 +77,7 @@ const getProfile = () => {
                 </li>
                 <li>
                     <button
-                        @click="handleLogout"
+                        @click="isOpenDialogLogout = true"
                         class="button-profile__dropdown-link"
                     >
                         Logout
@@ -84,6 +97,15 @@ const getProfile = () => {
         <UiDialog v-model="isOpenDialog">
             <UiProfileForm />
         </UiDialog>
+
+        <DialogConfirmation
+            v-model="isOpenDialogLogout"
+            title="Logout"
+            message="Are you sure want to logout?"
+            buttonText="Logout"
+            :isLoading="isLoadingLogout"
+            @confirm="handleLogout"
+        />
     </div>
 </template>
 

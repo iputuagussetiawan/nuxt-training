@@ -7,14 +7,32 @@ import {
     DialogPortal,
     DialogRoot
 } from 'reka-ui'
+import { computed } from 'vue'
 
 interface IProps {
     modelValue: boolean
+    size?: 'full' | 'lg' | 'md' | 'sm' | 'xs' // ✅ Add size options
 }
 
-defineProps<IProps>()
-const emit = defineEmits(['update:modelValue'])
+const props = withDefaults(defineProps<IProps>(), {
+    size: 'lg' // ✅ default size
+})
 
+// ✅ Compute dialog class dynamically
+const dialogClass = computed(() => {
+    return [
+        'dialog__content',
+        {
+            'dialog__content--full': props.size === 'full',
+            'dialog__content--lg': props.size === 'lg',
+            'dialog__content--md': props.size === 'md',
+            'dialog__content--sm': props.size === 'sm',
+            'dialog__content--xs': props.size === 'xs'
+        }
+    ]
+})
+
+const emit = defineEmits(['update:modelValue'])
 const onUpdate = (value: boolean) => {
     emit('update:modelValue', value)
 }
@@ -24,7 +42,7 @@ const onUpdate = (value: boolean) => {
     <DialogRoot class="dialog" :open="modelValue" @update:open="onUpdate">
         <DialogPortal>
             <DialogOverlay class="dialog__overlay" />
-            <DialogContent class="dialog__content">
+            <DialogContent :class="dialogClass">
                 <DialogClose class="dialog__close-button" aria-label="Close">
                     <svg
                         width="30"
@@ -69,8 +87,7 @@ const onUpdate = (value: boolean) => {
 
     &__content {
         padding: 40px;
-        border-radius: 24px;
-        max-width: 1700px;
+        border-radius: 8px;
         z-index: 1200;
         background-color: #fff;
         box-shadow:
@@ -80,23 +97,40 @@ const onUpdate = (value: boolean) => {
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        width: 90vw;
-        height: 85vh;
         animation: contentShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
 
-        @media only screen and (max-width: 1399.98px) {
-            width: 90vw;
-            height: 70vh;
-        }
+    /* ✅ Size Variants */
+    &__content--full {
+        width: 100vw;
+        height: 100vh;
+        max-width: none;
+        max-height: none;
+        border-radius: 0;
+    }
 
-        @media only screen and (max-width: 991.98px) {
-            width: 95vw;
-            height: 80vh;
-        }
+    &__content--lg {
+        width: 90vw;
+        height: 80vh;
+        max-width: 1400px;
+    }
 
-        @media only screen and (max-width: 991.98px) {
-            height: 90vh;
-        }
+    &__content--md {
+        width: 80vw;
+        height: 70vh;
+        max-width: 1000px;
+    }
+
+    &__content--sm {
+        width: 60vw;
+        height: 60vh;
+        max-width: 700px;
+    }
+
+    &__content--xs {
+        width: 40vw;
+        height: 50vh;
+        max-width: 500px;
     }
 
     &__close-button {
