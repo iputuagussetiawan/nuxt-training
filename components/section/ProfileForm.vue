@@ -105,7 +105,7 @@ const handleSubmit = async (values: any) => {
 
 <template>
     <div class="profile-form">
-        <h2 class="profile-form__title">Create Account</h2>
+        <h2 class="profile-form__title">Edit Profile</h2>
         <Form
             :initial-values="initialValues"
             :validation-schema="profileFormSchema"

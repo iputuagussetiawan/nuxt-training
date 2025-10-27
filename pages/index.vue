@@ -1,12 +1,10 @@
 <script setup lang="ts">
-import { useCategories } from '~/composables/useCategories'
 import HomeWelcome from '~/components/section/home/HomeWelcome.vue'
 import HomeLatestStory from '~/components/section/home/HomeLatestStory.vue'
 import HomeCategories from '~/components/section/home/HomeCategories.vue'
 import CategoryStory from '~/components/section/home/CategoryStory.vue'
-import { onMounted, useSeoMeta } from '#imports'
-
-const { categoryList, getCategories } = useCategories()
+import { onMounted, ref, useNuxtApp, useSeoMeta } from '#imports'
+import type { ICategory } from '~/types/category'
 
 useSeoMeta({
     title: 'Story Time',
@@ -19,8 +17,25 @@ useSeoMeta({
     twitterCard: 'summary_large_image'
 })
 
+const { $api } = useNuxtApp()
+const categoryData = ref<ICategory | null>(null)
+
+const getAllCategories = async () => {
+    try {
+        const response = await $api.category.list({
+            query: {
+                sort: 'asc',
+                limit: 10
+            }
+        })
+        categoryData.value = response.data
+    } catch (error) {
+        console.error('Failed to fetch products:', error)
+    }
+}
+
 onMounted(() => {
-    getCategories()
+    getAllCategories()
 })
 </script>
 
@@ -52,7 +67,8 @@ onMounted(() => {
             headerLinkTo="/stories"
         />
         <HomeCategories
-            :categories="categoryList"
+            v-if="Array.isArray(categoryData)"
+            :categories="categoryData"
             headerTitle="More Categories"
             headerLinkText="Explore More"
         />

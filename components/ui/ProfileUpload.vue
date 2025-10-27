@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useAuthStore, useCookie } from '#imports'
 import { ref } from 'vue'
 
 // Props (optional default image)
@@ -7,6 +8,7 @@ interface Props {
 }
 
 const props = defineProps<Props>()
+const authStore = useAuthStore()
 
 const fileInput = ref<HTMLInputElement | null>(null)
 const previewUrl = ref<string | null>(null)
@@ -15,7 +17,7 @@ const openFilePicker = () => {
     fileInput.value?.click()
 }
 
-const handleFileChange = (event: Event) => {
+const handleFileChange = async (event: Event) => {
     const target = event.target as HTMLInputElement
     const file = target.files?.[0]
 
@@ -25,6 +27,30 @@ const handleFileChange = (event: Event) => {
             previewUrl.value = e.target?.result as string
         }
         reader.readAsDataURL(file)
+
+        try {
+            const formData = new FormData()
+            formData.append('profile_image', file)
+            const response = await $fetch(
+                'https://timestory.tmdsite.my.id/api/user/upload-profile-image',
+                {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        Authorization: `Bearer ${useCookie('auth_token').value}`
+                    }
+                }
+            )
+
+            await authStore.getUserProfile()
+
+            console.log('✅ Success Register:', response)
+        } catch (error: any) {
+            console.error('❌ Error Register:', error)
+        } finally {
+            // isLoading.value = false
+            console.log('finish')
+        }
     }
 }
 </script>

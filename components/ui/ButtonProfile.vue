@@ -6,7 +6,7 @@ import UiProfileForm from '../section/ProfileForm.vue'
 import DialogConfirmation from './DialogConfirmation.vue'
 
 const authStore = useAuthStore()
-const isOpenDialog = ref(false)
+const isOpenDialogProfile = ref(false)
 const isOpenDialogLogout = ref(false)
 const isLoadingLogout = ref(false)
 
@@ -31,7 +31,7 @@ const handleLogout = () => {
     }
 }
 const getProfile = () => {
-    isOpenDialog.value = true
+    isOpenDialogProfile.value = true
 }
 </script>
 
@@ -94,7 +94,7 @@ const getProfile = () => {
             <Button type="link" href="/login" variant="primary"> Login </Button>
         </div>
 
-        <UiDialog v-model="isOpenDialog">
+        <UiDialog v-model="isOpenDialogProfile">
             <UiProfileForm />
         </UiDialog>
 
