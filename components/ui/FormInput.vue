@@ -7,11 +7,13 @@ interface Props {
     name: string
     type?: string
     placeholder?: string
+    readonly?: boolean
 }
 
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
     type: 'text',
-    placeholder: ''
+    placeholder: '',
+    readonly: false
 })
 const showPassword = ref(false)
 </script>
@@ -21,11 +23,27 @@ const showPassword = ref(false)
         <label class="form-input__label" :for="name">{{ label }}</label>
         <div class="form-input__wrapper">
             <Field :name="name" v-slot="{ field, meta }">
+                <!-- ✅ Render textarea if type is 'textarea' -->
+                <template v-if="type === 'textarea'">
+                    <textarea
+                        v-bind="field"
+                        :id="name"
+                        :placeholder="placeholder"
+                        :readonly="readonly"
+                        :class="[
+                            'form-input__control',
+                            meta.touched && !meta.valid ? 'error-input' : ''
+                        ]"
+                        rows="4"
+                    ></textarea>
+                </template>
                 <!-- “If this field is a password, show it as text when showPassword is true; otherwise, keep it as password.
 If it’s not a password field, just use the original input type.” -->
                 <input
+                    v-else
                     v-bind="field"
                     :id="name"
+                    :readonly="readonly"
                     :type="
                         type === 'password'
                             ? showPassword
@@ -116,6 +134,11 @@ If it’s not a password field, just use the original input type.” -->
         &:focus {
             outline: none;
             border-color: $color-primary;
+        }
+        &:read-only {
+            background-color: #f8f9fa;
+            color: #666;
+            cursor: not-allowed;
         }
     }
 

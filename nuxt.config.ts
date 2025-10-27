@@ -6,18 +6,12 @@ export default defineNuxtConfig({
         '@nuxtjs/google-fonts',
         '@nuxt/image',
         '@vee-validate/nuxt',
-        '@nuxt/icon'
+        '@nuxt/icon',
+        '@pinia/nuxt',
+        '@pinia/nuxt'
     ],
     veeValidate: {
-        // disable or enable auto imports
-        autoImports: true,
-        // Use different names for components
-        componentNames: {
-            Form: 'VeeForm',
-            Field: 'VeeField',
-            FieldArray: 'VeeFieldArray',
-            ErrorMessage: 'VeeErrorMessage'
-        }
+        autoImports: true
     },
     googleFonts: {
         families: {
@@ -40,8 +34,10 @@ export default defineNuxtConfig({
     devtools: { enabled: true },
     runtimeConfig: {
         public: {
-            apiBase:
-                process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:3000/api'
+            appBaseUrl: process.env.APP_BASE_URL || '',
+            apiBaseUrl:
+                process.env.API_BASE_URL ||
+                'https://timestory.tmdsite.my.id/api'
         }
     }
 })
