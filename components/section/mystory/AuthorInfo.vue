@@ -1,5 +1,16 @@
 <script setup lang="ts">
+import { computed } from 'vue'
+import { useAuthStore } from '~/stores/auth'
 import Button from '~/components/ui/Button.vue'
+const authStore = useAuthStore()
+// ✅ Computed properties for cleaner template
+const userName = computed(() => authStore.user?.name || 'User')
+const userEmail = computed(() => authStore.user?.email || 'yourmail@gmail.com')
+const userImage = computed(
+    () =>
+        authStore.user?.profile_image ||
+        'https://avatars.githubusercontent.com/u/583231?v=4'
+)
 </script>
 
 <template>
@@ -7,16 +18,12 @@ import Button from '~/components/ui/Button.vue'
         <div class="container">
             <div class="author-info__inner">
                 <div class="author-info__image-container">
-                    <img
-                        src="https://picsum.photos/200/200?random=1"
-                        alt=""
-                        class="author-info__image"
-                    />
+                    <img :src="userImage" alt="" class="author-info__image" />
                 </div>
                 <div class="author-info__info-container">
-                    <p class="author-info__name">Iswara</p>
+                    <p class="author-info__name">{{ userName }}</p>
                     <p class="author-info__email">
-                        dewiratnaiswara99@gmail.com
+                        {{ userEmail }}
                     </p>
                     <div class="author-info__description">
                         Avid reader and aspiring writer. Lover of mysteries,

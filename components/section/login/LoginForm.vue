@@ -1,51 +1,48 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { ref } from 'vue'
-import { Icon } from '@iconify/vue'
 import UiButton from '~/components/ui/Button.vue'
 import * as yup from 'yup'
 import { Form } from 'vee-validate'
 import UiFormInput from '~/components/ui/FormInput.vue'
 import { useRouter } from 'vue-router'
+import { useAuthStore } from '~/stores/auth'
+import { Icon } from '@iconify/vue'
 
 const errorMessage = ref<string>('')
 const router = useRouter()
-
 // ✅ Yup validation schema
-const schema = yup.object({
-    name: yup.string().required('Name is required'),
-    username: yup.string().required('Username is required'),
-    email: yup
+const LoginValidationSchema = yup.object({
+    username_or_email: yup
         .string()
         .email('Please enter a valid email')
         .required('Email is required'),
     password: yup
         .string()
         .min(6, 'Password must be at least 6 characters')
-        .required('Password is required'),
-    password_confirmation: yup
-        .string()
-        .oneOf([yup.ref('password')], 'Passwords must match')
-        .required('Please confirm your password')
+        .required('Password is required')
 })
 
 const isLoading = ref(false)
+const authStore = useAuthStore()
 
-const handleSubmit = async (values: any) => {
+const handleLogin = async (values: any) => {
     errorMessage.value = ''
     isLoading.value = true
     try {
-        const response = await $fetch(
-            'https://timestory.tmdsite.my.id/api/register',
+        const response: any = await $fetch(
+            'https://timestory.tmdsite.my.id/api/login',
             {
                 method: 'POST',
                 body: values
             }
         )
-        console.log('✅ Success Register:', response)
-        router.push({ name: 'login' })
+        console.log('✅ Success Login:', response)
+        // ✅ Save token securely using Nuxt useCookie() using pinia
+        authStore.setToken(response.data.token)
+        authStore.setUserProfile(response.data.user)
+        router.push({ name: 'dashboard' })
     } catch (error: any) {
-        console.error('❌ Error Register:', error)
-
+        console.error('❌ Error Login:', error)
         // ✅ Handle different error types safely
         if (error?.data?.message) {
             errorMessage.value = error.data.message
@@ -56,33 +53,20 @@ const handleSubmit = async (values: any) => {
                 'An unexpected error occurred. Please try again.'
         }
     } finally {
-        isLoading.value = false
+        isLoading.value = true
     }
 }
 </script>
-
 <template>
-    <div class="register-form">
-        <h2 class="register-form__title">Create Account</h2>
+    <div class="login-form">
         <Form
-            :validation-schema="schema"
-            @submit="handleSubmit"
-            class="register-form__form"
+            :validation-schema="LoginValidationSchema"
+            @submit="handleLogin"
+            class="login-form__form"
         >
             <UiFormInput
-                name="name"
-                label="Full Name"
-                placeholder="Enter your name"
-            />
-            <UiFormInput
-                name="username"
-                label="User Name"
-                placeholder="User Name"
-            />
-            <UiFormInput
-                name="email"
-                label="Email"
-                type="email"
+                name="username_or_email"
+                label="Username / Email"
                 placeholder="Enter your email"
             />
             <UiFormInput
@@ -91,21 +75,14 @@ const handleSubmit = async (values: any) => {
                 type="password"
                 placeholder="Enter your password"
             />
-            <UiFormInput
-                name="password_confirmation"
-                label="Confirm Password"
-                type="password"
-                placeholder="Re-enter your chosen password"
-            />
-
-            <div class="register-form__action">
-                <!-- ✅ Error message display -->
-                <div v-if="errorMessage" class="register-form__error">
-                    {{ errorMessage }}
-                </div>
+            <!-- ✅ Error message display -->
+            <div v-if="errorMessage" class="login-form__error">
+                {{ errorMessage }}
+            </div>
+            <div class="login-form__action">
                 <UiButton
                     type="submit"
-                    class="register-form__button"
+                    class="login-form__button"
                     :disabled="isLoading"
                 >
                     <template v-if="isLoading">
@@ -113,52 +90,63 @@ const handleSubmit = async (values: any) => {
                             icon="lucide:loader-2"
                             class="animate-custom-spin"
                         />
-                        <span>Creating Account...</span>
+                        <span>Login...</span>
                     </template>
                     <template v-else>
-                        <span>Create Account</span>
+                        <span>Login</span>
                     </template>
                 </UiButton>
-
-                <div class="register-form__text">
-                    Already have an account?
-                    <NuxtLink to="/login" class="register-form__link">
-                        Login
+                <div class="login-form__text">
+                    Don’t have an account?
+                    <NuxtLink to="/register" class="login-form__link">
+                        register
                     </NuxtLink>
                 </div>
             </div>
         </Form>
     </div>
 </template>
-
 <style lang="scss" scoped>
-.register-form {
-    &__title {
-        margin-bottom: 50px;
-        color: #222222;
-        font-weight: 700;
-        font-size: 44px;
-        line-height: 1.318;
-    }
-
+.login-form {
     &__action {
-        margin-top: 80px;
+        margin-top: 23px;
+        @media only screen and (max-width: 767.98px) {
+            display: grid;
+        }
     }
 
     &__text {
-        margin-top: 24px;
+        margin-top: 42px;
         color: #222222;
-        font-size: 16px;
+        font-size: 18px;
         font-weight: 400;
+        @media only screen and (max-width: 1199.98px) {
+            margin-top: 32px;
+        }
+
+        @media only screen and (max-width: 991.98px) {
+            margin-top: 24px;
+            font-size: 16px;
+        }
+        @media only screen and (max-width: 767.98px) {
+            margin-top: 18px;
+        }
     }
 
     &__link {
         color: $color-primary;
         text-decoration: none;
         font-weight: 700;
+        transition: 0.4s ease;
         &:hover {
             color: $color-primary-hover;
         }
+    }
+
+    &__button {
+        display: flex;
+        align-items: center;
+        gap: 8px;
     }
 
     &__error {
@@ -168,12 +156,6 @@ const handleSubmit = async (values: any) => {
         font-size: 20px;
         border-radius: 5px;
         margin-bottom: 32px;
-    }
-
-    &__button {
-        display: flex;
-        align-items: center;
-        gap: 8px;
     }
 }
 </style>

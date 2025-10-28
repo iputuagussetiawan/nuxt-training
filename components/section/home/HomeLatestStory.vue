@@ -1,4 +1,5 @@
 <script setup lang="ts">
+// 1. Imports
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import 'swiper/css'
 import SectionHeader from '~/components/section/SectionHeader.vue'
@@ -6,62 +7,25 @@ import CardStory from '~/components/ui/CardStory.vue'
 import { ref, type Ref, onMounted, onUnmounted, onBeforeUnmount } from 'vue'
 import type { IStoryItem } from '~/types/story'
 
+// 2. Interface
 interface SectionLatestStoryProps {
     headerTitle: string
     headerLinkText: string
     headerLinkTo: string
+    lastStories: IStoryItem[]
 }
 
+// 3. Props
 const props = defineProps<SectionLatestStoryProps>()
+
+// 4. States and Variable Declarations
 const latestStoryList: Ref<IStoryItem[]> = ref([])
 const offset = ref(0)
 const isLoading = ref(true) // skeleton state
 const targetRef = ref<HTMLElement | null>(null) // for Intersection Observer
-
-const getStories = async (): Promise<void> => {
-    isLoading.value = true
-    try {
-        const response: { data: IStoryItem[] } = await $fetch(
-            'https://timestory.tmdsite.my.id/api/story',
-            {
-                method: 'GET',
-                params: {
-                    limit: 10
-                }
-            }
-        )
-        latestStoryList.value = response.data
-    } catch (error) {
-        console.error('Failed to fetch latest stories:', error)
-    } finally {
-        isLoading.value = false
-    }
-}
-
 let observer: IntersectionObserver | null = null
-onMounted(() => {
-    if (targetRef.value) {
-        observer = new IntersectionObserver(
-            (entries) => {
-                if (entries[0].isIntersecting) {
-                    getStories()
-                    if (observer && targetRef.value) {
-                        observer.unobserve(targetRef.value) // stop observing after first fetch
-                    }
-                }
-            },
-            { threshold: 0.2 }
-        )
-        observer.observe(targetRef.value)
-    }
-})
 
-onUnmounted(() => {
-    if (observer && targetRef.value) {
-        observer.unobserve(targetRef.value)
-    }
-})
-
+// 5. Methods
 function calculateOffset() {
     const container = document.querySelector('.container')
     if (container) {
@@ -71,9 +35,38 @@ function calculateOffset() {
     }
 }
 
+// 6. Lifecycle
 onMounted(() => {
+    if (!targetRef.value) return
+    observer = new IntersectionObserver(
+        (entries) => {
+            const entry = entries[0]
+            if (entry.isIntersecting) {
+                // Simulate delay for skeleton effect (optional)
+                setTimeout(() => {
+                    latestStoryList.value = props.lastStories
+                    isLoading.value = false
+                }, 800)
+
+                if (observer && targetRef.value) {
+                    observer.unobserve(targetRef.value)
+                    observer.disconnect()
+                    observer = null
+                }
+            }
+        },
+        { threshold: 0.2 }
+    )
+    observer.observe(targetRef.value)
     calculateOffset()
     window.addEventListener('resize', calculateOffset)
+})
+
+onUnmounted(() => {
+    if (observer) {
+        observer.disconnect()
+        observer = null
+    }
 })
 
 onBeforeUnmount(() => {

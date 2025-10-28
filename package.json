@@ -5,6 +5,7 @@
     "scripts": {
         "build": "nuxt build",
         "dev": "nuxt dev",
+        "dev2": "nuxi dev -p 3001",
         "generate": "nuxt generate",
         "preview": "nuxt preview",
         "postinstall": "nuxt prepare",
@@ -18,9 +19,12 @@
         "@nuxt/icon": "^2.1.0",
         "@nuxt/image": "^1.11.0",
         "@nuxtjs/google-fonts": "^3.2.0",
+        "@pinia/nuxt": "^0.11.2",
         "@vee-validate/nuxt": "^4.15.1",
         "@vee-validate/yup": "^4.15.1",
         "nuxt": "^3.18.1",
+        "pinia": "^3.0.3",
+        "reka-ui": "^2.6.0",
         "swiper": "^11.2.10",
         "vee-validate": "^4.15.1",
         "vue": "^3.5.18",
@@ -33,10 +37,13 @@
     },
     "devDependencies": {
         "@iconify/vue": "^5.0.0",
+        "@types/node": "^24.9.1",
         "@types/vue-select": "^3.16.8",
         "husky": "^9.1.7",
         "lint-staged": "^16.2.6",
         "prettier": "3.6.2",
-        "sass": "^1.90.0"
+        "sass": "^1.90.0",
+        "typescript": "^5.9.3",
+        "vue-tsc": "^3.1.2"
     }
 }

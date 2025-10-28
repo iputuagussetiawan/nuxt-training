@@ -3,10 +3,12 @@ definePageMeta({
     layout: 'simple'
 })
 useSeoMeta({
-    title: 'My Amazing Site',
-    ogTitle: 'My Amazing Site',
-    description: 'This is my amazing site, let me tell you all about it.',
-    ogDescription: 'This is my amazing site, let me tell you all about it.',
+    title: 'About | Story Time',
+    ogTitle: 'About Story Time',
+    description:
+        'Learn more about Story Time — our mission, our journey, and the people behind the stories that inspire and connect us.',
+    ogDescription:
+        'Discover the story behind Story Time. Find out who we are, what we do, and how we bring stories to life for our readers.',
     ogImage: 'https://example.com/image.png',
     twitterCard: 'summary_large_image'
 })

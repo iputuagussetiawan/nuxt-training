@@ -1,18 +1,18 @@
 <script setup>
 import NavBrand from '~/components/ui/NavBrand.vue'
-import '~/assets/scss/components/ui/Input.scss'
-import '~/assets/scss/components/ui/Label.scss'
-import RegisterFrom from '~/components/section/register/RegisterFrom.vue'
+import RegisterFrom from '~/components/section/register/RegisterForm.vue'
 
 definePageMeta({
     layout: 'blank'
 })
 useSeoMeta({
-    title: 'Register',
-    ogTitle: 'Register',
-    description: 'This is my amazing site, let me tell you all about it.',
-    ogDescription: 'This is my amazing site, let me tell you all about it.',
-    ogImage: 'https://example.com/image.png',
+    title: 'Create an Account | MyApp',
+    ogTitle: 'Join MyApp Today!',
+    description:
+        'Register an account to access exclusive features, manage your profile, and stay connected with our community.',
+    ogDescription:
+        'Create your MyApp account to unlock premium tools and stay updated.',
+    ogImage: 'https://myapp.com/assets/og-register.png',
     twitterCard: 'summary_large_image'
 })
 </script>
