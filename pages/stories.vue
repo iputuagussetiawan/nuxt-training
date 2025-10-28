@@ -1,17 +1,19 @@
 <script setup lang="ts">
 // 1. Imports
-import Breadcrumb from '~/components/ui/Breadcrumb.vue'
 import '~/assets/scss/components/ui/Input.scss'
 import '~/assets/scss/components/ui/Label.scss'
-
-import vSelect from 'vue-select'
 import 'vue-select/dist/vue-select.css' // ✅ must import the CSS
-import { computed, onMounted, ref, type Ref } from 'vue'
+
+import Breadcrumb from '~/components/ui/Breadcrumb.vue'
+import vSelect from 'vue-select'
 import CardStory from '~/components/ui/CardStory.vue'
 import Pagination from '~/components/ui/Pagination.vue'
+import { computed, onMounted, ref, type Ref } from 'vue'
 import { useNuxtApp, useSeoMeta } from '#imports'
 import type { ICategory } from '~/types/category'
 import type { IStoryItem } from '~/types/story'
+
+import { watchDebounced } from '@vueuse/core'
 
 useSeoMeta({
     title: 'Story Listing | Story Time',
@@ -101,17 +103,41 @@ onMounted(() => {
     getAllCategories()
     getAllStory()
 })
+
+const input = ref('')
+const updated = ref(0)
+
+watchDebounced(
+    input,
+    () => {
+        updated.value += 1
+    },
+    { debounce: 1000, maxWait: 5000 }
+)
 </script>
 
 <template>
     <div>
         <section class="stories">
             <div class="container">
-                {{ selectedOption.value }}
-                {{ selectedOption.value }}
                 <h1 class="stories__title">All Story</h1>
             </div>
             <Breadcrumb :items="breadcrumbItems" />
+
+            <div>
+                <input
+                    v-model="input"
+                    placeholder="Try to type anything..."
+                    type="text"
+                />
+                <note
+                    >Delay is set to 1000ms and maxWait is set to 5000ms for
+                    this demo.</note
+                >
+
+                <p>Input: {{ input }}</p>
+                <p>Times Updated: {{ updated }}</p>
+            </div>
             <div class="container">
                 <div class="stories__action">
                     <div class="stories__filter">
