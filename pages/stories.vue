@@ -1,19 +1,17 @@
 <script setup lang="ts">
+// 1. Imports
 import Breadcrumb from '~/components/ui/Breadcrumb.vue'
 import '~/assets/scss/components/ui/Input.scss'
 import '~/assets/scss/components/ui/Label.scss'
-import { stories as storiesMock } from '~/data/stories' // ✅ renamed import
-import { categories as categoriesMock } from '~/data/categories'
 
 import vSelect from 'vue-select'
 import 'vue-select/dist/vue-select.css' // ✅ must import the CSS
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, type Ref } from 'vue'
 import CardStory from '~/components/ui/CardStory.vue'
 import Pagination from '~/components/ui/Pagination.vue'
-import { useSeoMeta } from '#imports'
-
-const selectedOption = ref('Newest') // ✅ default value
-const selectedOptionCategory = ref('Romance') // ✅ default value
+import { useNuxtApp, useSeoMeta } from '#imports'
+import type { ICategory } from '~/types/category'
+import type { IStoryItem } from '~/types/story'
 
 useSeoMeta({
     title: 'Story Listing | Story Time',
@@ -26,45 +24,91 @@ useSeoMeta({
     twitterCard: 'summary_large_image'
 })
 
-interface Story {
-    id: number
-    slug: string
-    image: string
-    title: string
-    shortContent: string
-    authorAvatar: string
-    authorName: string
-    createdDate: string
-    category: string
-}
-
+// 2. Interface
 interface BreadcrumbItem {
     label: string
     href?: string
 }
+
+// 3. Props
+// 4. States and Variable Declarations
+const { $api } = useNuxtApp()
+const categoryData: Ref<ICategory[] | null> = ref(null)
+const selectedOption = ref('newest') // ✅ default value
+const selectedOptionCategory = ref() // ✅ default value
+const loading = ref(true)
+const storiesData: Ref<IStoryItem[]> = ref([])
 
 const breadcrumbItems: BreadcrumbItem[] = [
     { label: 'Home', href: '/' },
     { label: 'All Story' } // last item has no href
 ]
 
-const loading = ref(true)
-const storiesData = ref<Story[]>([])
-
-onMounted(() => {
-    setTimeout(() => {
-        storiesData.value = storiesMock
-        loading.value = false
-    }, 2000)
+const allCategoryOptions = computed(() => {
+    if (categoryData.value) {
+        return categoryData.value.map((cat) => ({
+            label: cat.name,
+            value: cat.id
+        }))
+    }
+    return [] // always return an array for safety
 })
 
-const allCategoryNames = computed(() => categoriesMock.map((cat) => cat.title))
+const SortOptions = [
+    { label: 'Newest', value: 'newest' },
+    { label: 'Popular', value: 'popular' },
+    { label: 'A - Z', value: 'a-z' },
+    { label: 'Z - A', value: 'z-a' }
+]
+
+// 5. Methods
+const getAllCategories = async () => {
+    try {
+        const response = await $api.category.list({
+            query: {
+                sort: 'asc',
+                limit: 10
+            }
+        })
+        categoryData.value = response.data
+        selectedOptionCategory.value = response.data.find(
+            (item: ICategory) => item.name.toLowerCase() === 'romance'
+        )?.id
+    } catch (error) {
+        console.error('Failed to fetch all categories:', error)
+    }
+}
+
+const getAllStory = async () => {
+    try {
+        loading.value = true
+        const response = await $api.story.list({
+            query: {
+                sort_by: selectedOption.value,
+                category_id: selectedOptionCategory.value,
+                limit: 10
+            }
+        })
+        storiesData.value = response.data
+    } catch (error) {
+        console.error('Failed to fetch all stories:', error)
+    } finally {
+        loading.value = false
+    }
+}
+
+onMounted(() => {
+    getAllCategories()
+    getAllStory()
+})
 </script>
 
 <template>
     <div>
         <section class="stories">
             <div class="container">
+                {{ selectedOption.value }}
+                {{ selectedOption.value }}
                 <h1 class="stories__title">All Story</h1>
             </div>
             <Breadcrumb :items="breadcrumbItems" />
@@ -81,10 +125,16 @@ const allCategoryNames = computed(() => categoriesMock.map((cat) => cat.title))
                                 <client-only>
                                     <v-select
                                         v-model="selectedOption"
-                                        :options="['Newest', 'Latest']"
+                                        :options="SortOptions"
                                         :searchable="false"
+                                        :reduce="
+                                            (
+                                                option: (typeof SortOptions)[number]
+                                            ) => option.value
+                                        "
                                         name="sort-by"
                                         id="sort-by"
+                                        @update:modelValue="getAllStory"
                                     />
                                 </client-only>
                             </div>
@@ -99,10 +149,16 @@ const allCategoryNames = computed(() => categoriesMock.map((cat) => cat.title))
                                 <client-only>
                                     <v-select
                                         v-model="selectedOptionCategory"
-                                        :options="allCategoryNames"
+                                        :options="allCategoryOptions"
+                                        :reduce="
+                                            (
+                                                option: (typeof allCategoryOptions)[number]
+                                            ) => option.value
+                                        "
                                         :searchable="false"
                                         name="category"
                                         id="category"
+                                        @update:modelValue="getAllStory"
                                     />
                                 </client-only>
                             </div>
@@ -146,14 +202,14 @@ const allCategoryNames = computed(() => categoriesMock.map((cat) => cat.title))
                         <card-story
                             v-for="story in storiesData"
                             :key="story.id"
-                            :imageUrl="story.image"
+                            :imageUrl="story.content_image"
                             :title="story.title"
-                            :description="story.shortContent"
-                            :authorPhoto="story.authorAvatar"
-                            :author="story.authorName"
-                            :dateCreated="story.createdDate"
-                            :category="story.category"
-                            :linkTo="`/story/${story.slug}`"
+                            :description="story.content"
+                            :authorPhoto="story.author.profile_image ?? ''"
+                            :author="story.author.name"
+                            :dateCreated="story.created_at"
+                            :category="story.category.name"
+                            :linkTo="`/story/${story.id}`"
                         />
                     </template>
                 </div>
