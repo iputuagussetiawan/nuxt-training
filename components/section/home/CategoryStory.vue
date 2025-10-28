@@ -20,41 +20,8 @@ const props = defineProps<CategoryStory>()
 const categoryStoryList: Ref<IStoryItem[]> = ref([])
 const isLoading = ref(true) // skeleton state
 const targetRef = ref<HTMLElement | null>(null) // for Intersection Observer
-let observer: IntersectionObserver | null = null
 
-// 5. Methods
-
-// 6. Lifecycle
-onMounted(() => {
-    if (!targetRef.value) return
-    observer = new IntersectionObserver(
-        (entries) => {
-            const entry = entries[0]
-            if (entry.isIntersecting) {
-                // Simulate delay for skeleton effect (optional)
-                setTimeout(() => {
-                    categoryStoryList.value = props.categoryStories
-                    isLoading.value = false
-                }, 800)
-
-                if (observer && targetRef.value) {
-                    observer.unobserve(targetRef.value)
-                    observer.disconnect()
-                    observer = null
-                }
-            }
-        },
-        { threshold: 0.2 }
-    )
-    observer.observe(targetRef.value)
-})
-
-onUnmounted(() => {
-    if (observer) {
-        observer.disconnect()
-        observer = null
-    }
-})
+categoryStoryList.value = props.categoryStories
 </script>
 
 <template>

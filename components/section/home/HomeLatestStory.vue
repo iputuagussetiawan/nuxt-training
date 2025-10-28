@@ -13,6 +13,7 @@ interface SectionLatestStoryProps {
     headerLinkText: string
     headerLinkTo: string
     lastStories: IStoryItem[]
+    isLoading: boolean
 }
 
 // 3. Props
@@ -21,10 +22,7 @@ const props = defineProps<SectionLatestStoryProps>()
 // 4. States and Variable Declarations
 const latestStoryList: Ref<IStoryItem[]> = ref([])
 const offset = ref(0)
-const isLoading = ref(true) // skeleton state
-const targetRef = ref<HTMLElement | null>(null) // for Intersection Observer
-let observer: IntersectionObserver | null = null
-
+const isLoading = props.isLoading
 // 5. Methods
 function calculateOffset() {
     const container = document.querySelector('.container')
@@ -37,36 +35,8 @@ function calculateOffset() {
 
 // 6. Lifecycle
 onMounted(() => {
-    if (!targetRef.value) return
-    observer = new IntersectionObserver(
-        (entries) => {
-            const entry = entries[0]
-            if (entry.isIntersecting) {
-                // Simulate delay for skeleton effect (optional)
-                setTimeout(() => {
-                    latestStoryList.value = props.lastStories
-                    isLoading.value = false
-                }, 800)
-
-                if (observer && targetRef.value) {
-                    observer.unobserve(targetRef.value)
-                    observer.disconnect()
-                    observer = null
-                }
-            }
-        },
-        { threshold: 0.2 }
-    )
-    observer.observe(targetRef.value)
+    latestStoryList.value = props.lastStories
     calculateOffset()
-    window.addEventListener('resize', calculateOffset)
-})
-
-onUnmounted(() => {
-    if (observer) {
-        observer.disconnect()
-        observer = null
-    }
 })
 
 onBeforeUnmount(() => {
@@ -75,7 +45,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-    <section class="latest-story" ref="targetRef">
+    <section class="latest-story">
         <SectionHeader
             :title="props.headerTitle"
             :linkText="props.headerLinkText"
