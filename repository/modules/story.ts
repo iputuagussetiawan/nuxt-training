@@ -11,24 +11,26 @@ interface IList {
 }
 interface IDetail {
     params: {
-        productId: number | string
+        storyId: number | string
     }
 }
 interface IStore {
     body: {
         title: string
-        price: number
-        description: string
-        image: string
-        category: string
+        content: number
+        content_images: string
+        category_id: string
+        user_id: string
+        updated_at: string
+        created_at: string
     }
 }
 
 // Create the ProductModule class
-class ProductModule extends FetchFactory<any> {
+class StoryModule extends FetchFactory<any> {
     list(payload: IList) {
         // Use the base call() method from FetchFactory
-        return super.call('/products', {
+        return super.call('api/story', {
             method: 'GET',
             query: payload.query
         })
@@ -36,14 +38,14 @@ class ProductModule extends FetchFactory<any> {
 
     detail(payload: IDetail) {
         const { params } = payload
-        return super.call(`/products/${params.productId}`, {
+        return super.call(`api/story/${params.storyId}`, {
             method: 'GET'
         })
     }
 
     store(payload: IStore) {
         const { body } = payload
-        return super.call('/products', {
+        return super.call('api/story', {
             method: 'POST',
             body
         })
@@ -51,7 +53,7 @@ class ProductModule extends FetchFactory<any> {
 
     update(payload: IStore & IDetail) {
         const { body, params } = payload
-        return super.call(`/products/${params.productId}`, {
+        return super.call(`api/story/${params.storyId}`, {
             method: 'PATCH',
             body
         })
@@ -59,10 +61,10 @@ class ProductModule extends FetchFactory<any> {
 
     delete(payload: IDetail) {
         const { params } = payload
-        return super.call(`/products/${params.productId}`, {
+        return super.call(`api/products/${params.storyId}`, {
             method: 'DELETE'
         })
     }
 }
 
-export default ProductModule
+export default StoryModule
