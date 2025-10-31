@@ -32,7 +32,7 @@ interface BreadcrumbItem {
     href?: string
 }
 
-// 2. Variable Declarations
+// 3. Variable Declarations
 const { $api } = useNuxtApp()
 const categoryData: Ref<ICategory[] | null> = ref(null)
 const selectedOption = ref('newest') // ✅ default value
@@ -65,7 +65,7 @@ const SortOptions = [
     { label: 'Z - A', value: 'z-a' }
 ]
 
-// 5. Methods
+// 4. Methods
 const getAllCategories = async () => {
     try {
         const response = await $api.category.list({
@@ -104,6 +104,7 @@ const getAllStory = async () => {
     }
 }
 
+// 5. Events
 onMounted(() => {
     getAllCategories()
     getAllStory()
