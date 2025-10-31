@@ -1,18 +1,20 @@
 <script setup lang="ts">
+// 1. Imports
+import UiButton from '~/components/ui/Button.vue'
+import UiFormInput from '~/components/ui/FormInput.vue'
 import { ref } from 'vue'
 import { Icon } from '@iconify/vue'
-import UiButton from '~/components/ui/Button.vue'
-import * as yup from 'yup'
 import { Form } from 'vee-validate'
-import UiFormInput from '~/components/ui/FormInput.vue'
 import { useRouter } from 'vue-router'
 import type { IRegister } from '~/types/auth'
 import { useNuxtApp } from '#imports'
+import * as yup from 'yup'
 
-const errorMessage = ref<string>('')
+// 2. Variable Declarations
+const { $api } = useNuxtApp()
 const router = useRouter()
-
-// ✅ Yup validation schema for register form
+const isLoading = ref(false)
+const errorMessage = ref<string>('')
 const registerFormSchema = yup.object({
     name: yup.string().required('Name is required'),
     username: yup.string().required('Username is required'),
@@ -30,9 +32,7 @@ const registerFormSchema = yup.object({
         .required('Please confirm your password')
 })
 
-const { $api } = useNuxtApp()
-const isLoading = ref(false)
-
+// 3. Methods/Functions
 const handleSubmit = async (values: IRegister) => {
     errorMessage.value = ''
     isLoading.value = true

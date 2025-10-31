@@ -1,20 +1,99 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { computed } from 'vue'
+
+interface Props {
+    totalPages: number
+    maxVisible?: number
+}
+
+// ✅ Props
+const props = withDefaults(defineProps<Props>(), {
+    maxVisible: 5
+})
+
+// ✅ Define model for v-model binding
+const currentPage = defineModel<number>('currentPage', { default: 1 })
+
+// ✅ Compute visible pages (with ...)
+const pages = computed(() => {
+    const { totalPages, maxVisible } = props
+    const current = currentPage.value
+    const result: (number | string)[] = []
+
+    if (totalPages <= maxVisible) {
+        for (let i = 1; i <= totalPages; i++) result.push(i)
+    } else {
+        const start = Math.max(1, current - Math.floor(maxVisible / 2))
+        const end = Math.min(totalPages, start + maxVisible - 1)
+
+        if (start > 1) {
+            result.push(1)
+            if (start > 2) result.push('...')
+        }
+
+        for (let i = start; i <= end; i++) result.push(i)
+
+        if (end < totalPages) {
+            if (end < totalPages - 1) result.push('...')
+            result.push(totalPages)
+        }
+    }
+
+    return result
+})
+
+// ✅ Navigation
+const goToPage = (page: number | string) => {
+    if (typeof page === 'number' && page !== currentPage.value) {
+        currentPage.value = page
+    }
+}
+
+const prevPage = () => {
+    if (currentPage.value > 1) currentPage.value--
+}
+
+const nextPage = () => {
+    if (currentPage.value < props.totalPages) currentPage.value++
+}
+</script>
+
 <template>
     <ul class="pagination">
         <li class="pagination__item">
-            <a href="#" class="pagination__link">Prev</a>
+            <button
+                class="pagination__link"
+                :disabled="currentPage === 1"
+                @click="prevPage"
+            >
+                Prev
+            </button>
         </li>
+
+        <li
+            v-for="(page, index) in pages"
+            :key="index"
+            class="pagination__item"
+            :class="{ active: page === currentPage }"
+        >
+            <button
+                v-if="page !== '...'"
+                class="pagination__link"
+                @click="goToPage(page)"
+            >
+                {{ page }}
+            </button>
+            <span v-else class="pagination__ellipsis">...</span>
+        </li>
+
         <li class="pagination__item">
-            <a class="pagination__link" href="#">1</a>
-        </li>
-        <li class="pagination__item active">
-            <a class="pagination__link" href="#" aria-current="page">2</a>
-        </li>
-        <li class="pagination__item">
-            <a class="pagination__link" href="#">3</a>
-        </li>
-        <li class="pagination__item">
-            <a class="pagination__link" href="#">Next</a>
+            <button
+                class="pagination__link"
+                :disabled="currentPage === props.totalPages"
+                @click="nextPage"
+            >
+                Next
+            </button>
         </li>
     </ul>
 </template>
@@ -22,43 +101,47 @@
 <style scoped lang="scss">
 .pagination {
     list-style: none;
-    padding: 0px;
-    margin: 0px;
     display: flex;
-    gap: 20px;
+    align-items: center;
+    gap: 12px;
+    padding: 0;
+    margin: 0;
 
-    @media only screen and (max-width: 1399.98px) {
-        gap: 16px;
-    }
+    &__item {
+        display: flex;
+        align-items: center;
 
-    &__item.active &__link {
-        background-color: #466543;
-        color: #fff;
-    }
-
-    &__link {
-        display: block;
-        padding: 16px 30px;
-        border: 1px solid #f0f5ed;
-        background-color: #f0f5ed;
-        border-radius: 8px;
-        font-size: 28px;
-        font-weight: 700;
-        line-height: 1.357;
-        color: #222222;
-        transition: 0.4s ease;
-        text-decoration: none;
-        transition: 0.4s ease;
-
-        @media only screen and (max-width: 1399.98px) {
-            padding: 14px 20px;
-            font-size: 18px;
-        }
-
-        &:hover {
+        &.active .pagination__link {
             background-color: #466543;
             color: #fff;
         }
+    }
+
+    &__link {
+        padding: 10px 18px;
+        border: 1px solid #f0f5ed;
+        background-color: #f0f5ed;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        color: #222;
+        transition: all 0.3s ease;
+
+        &:hover:not(:disabled) {
+            background-color: #466543;
+            color: #fff;
+        }
+
+        &:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    }
+
+    &__ellipsis {
+        padding: 10px 18px;
+        font-size: 18px;
+        color: #666;
     }
 }
 </style>

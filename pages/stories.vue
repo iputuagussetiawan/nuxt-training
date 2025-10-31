@@ -8,7 +8,7 @@ import Breadcrumb from '~/components/ui/Breadcrumb.vue'
 import vSelect from 'vue-select'
 import CardStory from '~/components/ui/CardStory.vue'
 import Pagination from '~/components/ui/Pagination.vue'
-import { computed, onMounted, ref, type Ref } from 'vue'
+import { computed, onMounted, ref, watch, type Ref } from 'vue'
 import { useNuxtApp, useSeoMeta } from '#imports'
 import type { ICategory } from '~/types/category'
 import type { IStoryItem } from '~/types/story'
@@ -39,7 +39,9 @@ const selectedOption = ref('newest') // ✅ default value
 const selectedOptionCategory = ref() // ✅ default value
 const loading = ref(true)
 const storiesData: Ref<IStoryItem[]> = ref([])
+const storiesMeta = ref({ last_page: 0 })
 const searchStory = ref('')
+const currentPage = ref(1)
 
 const breadcrumbItems: BreadcrumbItem[] = [
     { label: 'Home', href: '/' },
@@ -89,10 +91,12 @@ const getAllStory = async () => {
                 sort_by: selectedOption.value,
                 category_id: selectedOptionCategory.value,
                 search: searchStory.value,
-                limit: 10
+                limit: 10,
+                page: currentPage.value
             }
         })
         storiesData.value = response.data
+        storiesMeta.value = response.meta
     } catch (error) {
         console.error('Failed to fetch all stories:', error)
     } finally {
@@ -112,13 +116,17 @@ watchDebounced(
     },
     { debounce: 1000, maxWait: 5000 }
 )
+
+watch(currentPage, () => {
+    getAllStory()
+})
 </script>
 
 <template>
     <div>
         <section class="stories">
             <div class="container">
-                <h1 class="stories__title">All Story</h1>
+                <h1 class="stories__title">All Story {{ currentPage }}</h1>
             </div>
             <Breadcrumb :items="breadcrumbItems" />
             <div class="container">
@@ -224,7 +232,10 @@ watchDebounced(
                     </template>
                 </div>
                 <div class="stories__pagination">
-                    <Pagination />
+                    <Pagination
+                        v-model:current-page="currentPage"
+                        :total-pages="storiesMeta.last_page"
+                    />
                 </div>
             </div>
         </section>

@@ -17,7 +17,6 @@ const router = useRouter()
 const isLoading = ref(false)
 const authStore = useAuthStore()
 const errorMessage = ref<string>('')
-// ✅ Yup validation schema
 const LoginValidationSchema = yup.object({
     username_or_email: yup
         .string()

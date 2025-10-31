@@ -1,7 +1,6 @@
 // File: repository/modules/product.ts
 
 import FetchFactory from '../factory'
-
 import type { ILogin } from '../../types/auth'
 import type { IRegister } from '../../types/auth'
 
@@ -28,6 +27,12 @@ class AuthModule extends FetchFactory<any> {
         return super.call('api/login', {
             method: 'POST',
             body
+        })
+    }
+
+    logout() {
+        return super.call('api/logout', {
+            method: 'DELETE'
         })
     }
 }
