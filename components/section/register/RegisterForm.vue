@@ -1,25 +1,20 @@
 <script setup lang="ts">
+// 1. Imports
+import UiButton from '~/components/ui/Button.vue'
+import UiFormInput from '~/components/ui/FormInput.vue'
 import { ref } from 'vue'
 import { Icon } from '@iconify/vue'
-import UiButton from '~/components/ui/Button.vue'
-import * as yup from 'yup'
 import { Form } from 'vee-validate'
-import UiFormInput from '~/components/ui/FormInput.vue'
 import { useRouter } from 'vue-router'
+import type { IRegister } from '~/types/auth'
+import { useNuxtApp } from '#imports'
+import * as yup from 'yup'
 
-const errorMessage = ref<string>('')
+// 2. Variable Declarations
+const { $api } = useNuxtApp()
 const router = useRouter()
-
-// ✅ Type for form values (matching the Yup schema)
-interface RegisterForm {
-    name: string
-    username: string
-    email: string
-    password: string
-    password_confirmation: string
-}
-
-// ✅ Yup validation schema for register form
+const isLoading = ref(false)
+const errorMessage = ref<string>('')
 const registerFormSchema = yup.object({
     name: yup.string().required('Name is required'),
     username: yup.string().required('Username is required'),
@@ -37,20 +32,14 @@ const registerFormSchema = yup.object({
         .required('Please confirm your password')
 })
 
-const isLoading = ref(false)
-
-const handleSubmit = async (values: any) => {
+// 3. Methods/Functions
+const handleSubmit = async (values: IRegister) => {
     errorMessage.value = ''
     isLoading.value = true
     try {
-        const response = await $fetch(
-            'https://timestory.tmdsite.my.id/api/register',
-            {
-                method: 'POST',
-                body: values
-            }
-        )
-        console.log('✅ Success Register:', response)
+        const response = await $api.auth.register({
+            body: values
+        })
         router.push({ name: 'login' })
     } catch (error: any) {
         console.error('❌ Error Register:', error)
@@ -74,7 +63,7 @@ const handleSubmit = async (values: any) => {
         <h2 class="register-form__title">Create Account</h2>
         <Form
             :validation-schema="registerFormSchema"
-            @submit="handleSubmit"
+            @submit="handleSubmit as (values: IRegister) => void"
             class="register-form__form"
         >
             <UiFormInput

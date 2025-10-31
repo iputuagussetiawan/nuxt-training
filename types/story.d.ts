@@ -5,7 +5,7 @@ export interface IStoryItem {
     content_image: string
     author: {
         name: string
-        profile_image: string | null
+        profile_image: string | null | undefined
     }
     category: {
         id: number

@@ -1,16 +1,18 @@
 <script setup lang="ts">
+// 1. Imports
 import { computed, ref } from 'vue'
 import { useAuthStore } from '~/stores/auth'
 import Button from './Button.vue'
 import UiProfileForm from '../section/ProfileForm.vue'
 import DialogConfirmation from './DialogConfirmation.vue'
+import { useCookie, useNuxtApp } from '#imports'
 
+// 2. Variable Declarations
+const { $api } = useNuxtApp()
 const authStore = useAuthStore()
 const isOpenDialogProfile = ref(false)
 const isOpenDialogLogout = ref(false)
 const isLoadingLogout = ref(false)
-
-// ✅ Computed properties for cleaner template
 const isLoggedIn = computed(() => !!authStore.token)
 const userName = computed(() => authStore.user?.name || 'User')
 const userImage = computed(
@@ -19,8 +21,11 @@ const userImage = computed(
         'https://avatars.githubusercontent.com/u/583231?v=4'
 )
 
-const handleLogout = () => {
+// 3. Methods/Functions
+const handleLogout = async () => {
     try {
+        const response = await $api.auth.logout()
+        console.log('✅ Success Logout:', response)
         isLoadingLogout.value = true
         authStore.logout()
     } catch (error) {
@@ -37,7 +42,6 @@ const getProfile = () => {
 
 <template>
     <div>
-        <!-- ✅ Logged In State -->
         <div v-if="isLoggedIn" class="button-profile">
             <div class="button-profile__trigger">
                 <div class="button-profile__image-container">

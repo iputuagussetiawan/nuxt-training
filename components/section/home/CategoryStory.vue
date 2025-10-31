@@ -20,6 +20,7 @@ const props = defineProps<CategoryStory>()
 const categoryStoryList: Ref<IStoryItem[]> = ref([])
 const isLoading = ref(true) // skeleton state
 const targetRef = ref<HTMLElement | null>(null) // for Intersection Observer
+
 let observer: IntersectionObserver | null = null
 
 // 5. Methods

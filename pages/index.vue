@@ -24,6 +24,7 @@ useSeoMeta({
 // 4. States and Variable Declarations
 const { $api } = useNuxtApp()
 const latestStoriesData: Ref<IStoryItem[] | null> = ref(null)
+const isLoadingLatestStories = ref(false)
 const categoryData: Ref<ICategory[] | null> = ref(null)
 const comedyStoriesData: Ref<IStoryItem[] | null> = ref(null)
 const romanceStoriesData: Ref<IStoryItem[] | null> = ref(null)
@@ -32,6 +33,7 @@ const horrorStoriesData: Ref<IStoryItem[] | null> = ref(null)
 // 5. Methods
 const getLatestStory = async () => {
     try {
+        isLoadingLatestStories.value = true
         const response = await $api.story.list({
             query: {
                 sort_by: 'popular',
@@ -41,6 +43,8 @@ const getLatestStory = async () => {
         latestStoriesData.value = response.data
     } catch (error) {
         console.error('Failed to fetch latest stories:', error)
+    } finally {
+        isLoadingLatestStories.value = false
     }
 }
 
@@ -91,6 +95,7 @@ onMounted(async () => {
             headerLinkText="Explore More"
             headerLinkTo="/stories"
             :lastStories="latestStoriesData"
+            :isLoading="isLoadingLatestStories"
         />
         <CategoryStory
             v-if="comedyStoriesData"
