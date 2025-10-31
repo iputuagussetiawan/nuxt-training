@@ -1,15 +1,22 @@
 <script lang="ts" setup>
+// 1. Imports
 import { ref } from 'vue'
-import UiButton from '~/components/ui/Button.vue'
-import * as yup from 'yup'
 import { Form } from 'vee-validate'
-import UiFormInput from '~/components/ui/FormInput.vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '~/stores/auth'
 import { Icon } from '@iconify/vue'
+import { useNuxtApp } from '#imports'
+import * as yup from 'yup'
+import type { ILogin } from '~/types/auth'
+import UiButton from '~/components/ui/Button.vue'
+import UiFormInput from '~/components/ui/FormInput.vue'
 
-const errorMessage = ref<string>('')
+// 2. Variable Declarations
+const { $api } = useNuxtApp()
 const router = useRouter()
+const isLoading = ref(false)
+const authStore = useAuthStore()
+const errorMessage = ref<string>('')
 // ✅ Yup validation schema
 const LoginValidationSchema = yup.object({
     username_or_email: yup
@@ -22,21 +29,14 @@ const LoginValidationSchema = yup.object({
         .required('Password is required')
 })
 
-const isLoading = ref(false)
-const authStore = useAuthStore()
-
-const handleLogin = async (values: any) => {
+// 3. Methods/Functions
+const handleLogin = async (values: ILogin) => {
     errorMessage.value = ''
     isLoading.value = true
     try {
-        const response: any = await $fetch(
-            'https://timestory.tmdsite.my.id/api/login',
-            {
-                method: 'POST',
-                body: values
-            }
-        )
-        console.log('✅ Success Login:', response)
+        const response = await $api.auth.login({
+            body: values
+        })
         // ✅ Save token securely using Nuxt useCookie() using pinia
         authStore.setToken(response.data.token)
         authStore.setUserProfile(response.data.user)
@@ -61,7 +61,7 @@ const handleLogin = async (values: any) => {
     <div class="login-form">
         <Form
             :validation-schema="LoginValidationSchema"
-            @submit="handleLogin"
+            @submit="handleLogin as (values: ILogin) => void"
             class="login-form__form"
         >
             <UiFormInput

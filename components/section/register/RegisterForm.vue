@@ -40,7 +40,6 @@ const handleSubmit = async (values: IRegister) => {
         const response = await $api.auth.register({
             body: values
         })
-        console.log('✅ Success Register:', response)
         router.push({ name: 'login' })
     } catch (error: any) {
         console.error('❌ Error Register:', error)

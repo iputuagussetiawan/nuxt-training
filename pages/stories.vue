@@ -32,8 +32,7 @@ interface BreadcrumbItem {
     href?: string
 }
 
-// 3. Props
-// 4. States and Variable Declarations
+// 2. Variable Declarations
 const { $api } = useNuxtApp()
 const categoryData: Ref<ICategory[] | null> = ref(null)
 const selectedOption = ref('newest') // ✅ default value
