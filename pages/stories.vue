@@ -8,7 +8,7 @@ import Breadcrumb from '~/components/ui/Breadcrumb.vue'
 import vSelect from 'vue-select'
 import CardStory from '~/components/ui/CardStory.vue'
 import Pagination from '~/components/ui/Pagination.vue'
-import { computed, onMounted, ref, type Ref } from 'vue'
+import { computed, onMounted, ref, watch, type Ref } from 'vue'
 import { useNuxtApp, useSeoMeta } from '#imports'
 import type { ICategory } from '~/types/category'
 import type { IStoryItem } from '~/types/story'
@@ -32,14 +32,16 @@ interface BreadcrumbItem {
     href?: string
 }
 
-// 3. Props
-// 4. States and Variable Declarations
+// 3. Variable Declarations
 const { $api } = useNuxtApp()
 const categoryData: Ref<ICategory[] | null> = ref(null)
 const selectedOption = ref('newest') // ✅ default value
 const selectedOptionCategory = ref() // ✅ default value
 const loading = ref(true)
 const storiesData: Ref<IStoryItem[]> = ref([])
+const storiesMeta = ref({ last_page: 0 })
+const searchStory = ref('')
+const currentPage = ref(1)
 
 const breadcrumbItems: BreadcrumbItem[] = [
     { label: 'Home', href: '/' },
@@ -63,7 +65,7 @@ const SortOptions = [
     { label: 'Z - A', value: 'z-a' }
 ]
 
-// 5. Methods
+// 4. Methods
 const getAllCategories = async () => {
     try {
         const response = await $api.category.list({
@@ -88,10 +90,13 @@ const getAllStory = async () => {
             query: {
                 sort_by: selectedOption.value,
                 category_id: selectedOptionCategory.value,
-                limit: 10
+                search: searchStory.value,
+                limit: 10,
+                page: currentPage.value
             }
         })
         storiesData.value = response.data
+        storiesMeta.value = response.meta
     } catch (error) {
         console.error('Failed to fetch all stories:', error)
     } finally {
@@ -99,45 +104,32 @@ const getAllStory = async () => {
     }
 }
 
+// 5. Events
 onMounted(() => {
     getAllCategories()
     getAllStory()
 })
 
-const input = ref('')
-const updated = ref(0)
-
 watchDebounced(
-    input,
+    searchStory,
     () => {
-        updated.value += 1
+        getAllStory()
     },
     { debounce: 1000, maxWait: 5000 }
 )
+
+watch(currentPage, () => {
+    getAllStory()
+})
 </script>
 
 <template>
     <div>
         <section class="stories">
             <div class="container">
-                <h1 class="stories__title">All Story</h1>
+                <h1 class="stories__title">All Story {{ currentPage }}</h1>
             </div>
             <Breadcrumb :items="breadcrumbItems" />
-
-            <div>
-                <input
-                    v-model="input"
-                    placeholder="Try to type anything..."
-                    type="text"
-                />
-                <note
-                    >Delay is set to 1000ms and maxWait is set to 5000ms for
-                    this demo.</note
-                >
-
-                <p>Input: {{ input }}</p>
-                <p>Times Updated: {{ updated }}</p>
-            </div>
             <div class="container">
                 <div class="stories__action">
                     <div class="stories__filter">
@@ -193,6 +185,7 @@ watchDebounced(
                     <div class="stories__search">
                         <div class="form-control-search">
                             <input
+                                v-model="searchStory"
                                 class="form-control"
                                 type="search"
                                 placeholder="Search story"
@@ -240,7 +233,10 @@ watchDebounced(
                     </template>
                 </div>
                 <div class="stories__pagination">
-                    <Pagination />
+                    <Pagination
+                        v-model:current-page="currentPage"
+                        :total-pages="storiesMeta.last_page"
+                    />
                 </div>
             </div>
         </section>

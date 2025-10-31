@@ -38,7 +38,7 @@ class StoryModule extends FetchFactory<any> {
 
     detail(payload: IDetail) {
         const { params } = payload
-        return super.call(`api/story/${params.storyId}`, {
+        return super.call(`/api/story/${params.storyId}`, {
             method: 'GET'
         })
     }

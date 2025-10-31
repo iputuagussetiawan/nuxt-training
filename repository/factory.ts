@@ -25,7 +25,7 @@ class FetchFactory<T> {
             ...clientCookies
         }
 
-        const ACCESS_TOKEN = useCookie('ACCESS-TOKEN')
+        const ACCESS_TOKEN = useCookie('auth_token')
 
         if (ACCESS_TOKEN.value) {
             headers['Authorization'] = `Bearer ${ACCESS_TOKEN.value}`
