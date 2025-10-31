@@ -6,18 +6,11 @@ import * as yup from 'yup'
 import { Form } from 'vee-validate'
 import UiFormInput from '~/components/ui/FormInput.vue'
 import { useRouter } from 'vue-router'
+import type { IRegister } from '~/types/auth'
+import { useNuxtApp } from '#imports'
 
 const errorMessage = ref<string>('')
 const router = useRouter()
-
-// ✅ Type for form values (matching the Yup schema)
-interface RegisterForm {
-    name: string
-    username: string
-    email: string
-    password: string
-    password_confirmation: string
-}
 
 // ✅ Yup validation schema for register form
 const registerFormSchema = yup.object({
@@ -37,19 +30,16 @@ const registerFormSchema = yup.object({
         .required('Please confirm your password')
 })
 
+const { $api } = useNuxtApp()
 const isLoading = ref(false)
 
-const handleSubmit = async (values: any) => {
+const handleSubmit = async (values: IRegister) => {
     errorMessage.value = ''
     isLoading.value = true
     try {
-        const response = await $fetch(
-            'https://timestory.tmdsite.my.id/api/register',
-            {
-                method: 'POST',
-                body: values
-            }
-        )
+        const response = await $api.auth.register({
+            body: values
+        })
         console.log('✅ Success Register:', response)
         router.push({ name: 'login' })
     } catch (error: any) {
@@ -74,7 +64,7 @@ const handleSubmit = async (values: any) => {
         <h2 class="register-form__title">Create Account</h2>
         <Form
             :validation-schema="registerFormSchema"
-            @submit="handleSubmit"
+            @submit="handleSubmit as (values: IRegister) => void"
             class="register-form__form"
         >
             <UiFormInput

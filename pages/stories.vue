@@ -40,6 +40,7 @@ const selectedOption = ref('newest') // ✅ default value
 const selectedOptionCategory = ref() // ✅ default value
 const loading = ref(true)
 const storiesData: Ref<IStoryItem[]> = ref([])
+const searchStory = ref('')
 
 const breadcrumbItems: BreadcrumbItem[] = [
     { label: 'Home', href: '/' },
@@ -88,6 +89,7 @@ const getAllStory = async () => {
             query: {
                 sort_by: selectedOption.value,
                 category_id: selectedOptionCategory.value,
+                search: searchStory.value,
                 limit: 10
             }
         })
@@ -104,13 +106,10 @@ onMounted(() => {
     getAllStory()
 })
 
-const input = ref('')
-const updated = ref(0)
-
 watchDebounced(
-    input,
+    searchStory,
     () => {
-        updated.value += 1
+        getAllStory()
     },
     { debounce: 1000, maxWait: 5000 }
 )
@@ -123,21 +122,6 @@ watchDebounced(
                 <h1 class="stories__title">All Story</h1>
             </div>
             <Breadcrumb :items="breadcrumbItems" />
-
-            <div>
-                <input
-                    v-model="input"
-                    placeholder="Try to type anything..."
-                    type="text"
-                />
-                <note
-                    >Delay is set to 1000ms and maxWait is set to 5000ms for
-                    this demo.</note
-                >
-
-                <p>Input: {{ input }}</p>
-                <p>Times Updated: {{ updated }}</p>
-            </div>
             <div class="container">
                 <div class="stories__action">
                     <div class="stories__filter">
@@ -193,6 +177,7 @@ watchDebounced(
                     <div class="stories__search">
                         <div class="form-control-search">
                             <input
+                                v-model="searchStory"
                                 class="form-control"
                                 type="search"
                                 placeholder="Search story"
