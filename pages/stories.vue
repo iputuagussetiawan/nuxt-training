@@ -1,93 +1,191 @@
 <script setup lang="ts">
-import Breadcrumb from "~/components/ui/Breadcrumb.vue";
-import "~/assets/scss/components/ui/Input.scss";
-import "~/assets/scss/components/ui/Label.scss";
-import { stories as storiesMock } from "~/data/stories"; // ✅ renamed import
-import { categories as categoriesMock } from '~/data/categories'; 
-
-import vSelect from 'vue-select'
+// 1. Imports
+import '~/assets/scss/components/ui/Input.scss'
+import '~/assets/scss/components/ui/Label.scss'
 import 'vue-select/dist/vue-select.css' // ✅ must import the CSS
-import { computed, onMounted, ref } from "vue";
-import CardStory from "~/components/ui/CardStory.vue";
-import Pagination from "~/components/ui/Pagination.vue";
 
+import Breadcrumb from '~/components/ui/Breadcrumb.vue'
+import vSelect from 'vue-select'
+import CardStory from '~/components/ui/CardStory.vue'
+import Pagination from '~/components/ui/Pagination.vue'
+import { computed, onMounted, ref, watch, type Ref } from 'vue'
+import { useNuxtApp, useSeoMeta } from '#imports'
+import type { ICategory } from '~/types/category'
+import type { IStoryItem } from '~/types/story'
 
-const selectedOption = ref("Newest") // ✅ default value
-const selectedOptionCategory = ref("Romance") // ✅ default value
+import { watchDebounced } from '@vueuse/core'
 
-interface Story {
-    id: number;
-    slug: string;
-    image: string;
-    title: string;
-    shortContent: string;
-    authorAvatar: string;
-    authorName: string;
-    createdDate: string;
-    category: string;
-}
+useSeoMeta({
+    title: 'Story Listing | Story Time',
+    ogTitle: 'Explore Stories on Story Time',
+    description:
+        'Browse our collection of inspiring, heartwarming, and imaginative stories. Discover new tales and explore the world of Story Time.',
+    ogDescription:
+        'Find your next favorite story on Story Time — from inspiring adventures to creative short stories that spark your imagination.',
+    ogImage: 'https://example.com/image.png',
+    twitterCard: 'summary_large_image'
+})
 
+// 2. Interface
 interface BreadcrumbItem {
-    label: string;
-    href?: string;
+    label: string
+    href?: string
 }
+
+// 3. Variable Declarations
+const { $api } = useNuxtApp()
+const categoryData: Ref<ICategory[] | null> = ref(null)
+const selectedOption = ref('newest') // ✅ default value
+const selectedOptionCategory = ref() // ✅ default value
+const loading = ref(true)
+const storiesData: Ref<IStoryItem[]> = ref([])
+const storiesMeta = ref({ last_page: 0 })
+const searchStory = ref('')
+const currentPage = ref(1)
 
 const breadcrumbItems: BreadcrumbItem[] = [
-    { label: "Home", href: "/" },
-    { label: "All Story" }, // last item has no href
-];
+    { label: 'Home', href: '/' },
+    { label: 'All Story' } // last item has no href
+]
 
-const loading = ref(true); 
-const storiesData = ref<Story[]>([]); 
+const allCategoryOptions = computed(() => {
+    if (categoryData.value) {
+        return categoryData.value.map((cat) => ({
+            label: cat.name,
+            value: cat.id
+        }))
+    }
+    return [] // always return an array for safety
+})
 
+const SortOptions = [
+    { label: 'Newest', value: 'newest' },
+    { label: 'Popular', value: 'popular' },
+    { label: 'A - Z', value: 'a-z' },
+    { label: 'Z - A', value: 'z-a' }
+]
+
+// 4. Methods
+const getAllCategories = async () => {
+    try {
+        const response = await $api.category.list({
+            query: {
+                sort: 'asc',
+                limit: 10
+            }
+        })
+        categoryData.value = response.data
+        selectedOptionCategory.value = response.data.find(
+            (item: ICategory) => item.name.toLowerCase() === 'romance'
+        )?.id
+    } catch (error) {
+        console.error('Failed to fetch all categories:', error)
+    }
+}
+
+const getAllStory = async () => {
+    try {
+        loading.value = true
+        const response = await $api.story.list({
+            query: {
+                sort_by: selectedOption.value,
+                category_id: selectedOptionCategory.value,
+                search: searchStory.value,
+                limit: 10,
+                page: currentPage.value
+            }
+        })
+        storiesData.value = response.data
+        storiesMeta.value = response.meta
+    } catch (error) {
+        console.error('Failed to fetch all stories:', error)
+    } finally {
+        loading.value = false
+    }
+}
+
+// 5. Events
 onMounted(() => {
-    setTimeout(() => {
-        storiesData.value = storiesMock; 
-        loading.value = false;
-    }, 2000);
-});
+    getAllCategories()
+    getAllStory()
+})
 
-const allCategoryNames = computed(() => categoriesMock.map(cat => cat.title))
+watchDebounced(
+    searchStory,
+    () => {
+        getAllStory()
+    },
+    { debounce: 1000, maxWait: 5000 }
+)
+
+watch(currentPage, () => {
+    getAllStory()
+})
 </script>
 
 <template>
     <div>
         <section class="stories">
             <div class="container">
-                <h1 class="stories__title">All Story</h1>
+                <h1 class="stories__title">All Story {{ currentPage }}</h1>
             </div>
             <Breadcrumb :items="breadcrumbItems" />
             <div class="container">
                 <div class="stories__action">
                     <div class="stories__filter">
                         <div class="stories__filter-item">
-                            <label class="form-label" for="sort-by">Sort by</label>
-                            <client-only>
-                                <v-select 
-                                    v-model="selectedOption"
-                                    :options="['Newest', 'Latest']"
-                                    :searchable="false"
-                                    name="sort-by"
-                                    id="sort-by"
-                                />
-                            </client-only>
+                            <div class="stories__filter-label">
+                                <label class="form-label" for="sort-by"
+                                    >Sort by</label
+                                >
+                            </div>
+                            <div class="stories__filter-select">
+                                <client-only>
+                                    <v-select
+                                        v-model="selectedOption"
+                                        :options="SortOptions"
+                                        :searchable="false"
+                                        :reduce="
+                                            (
+                                                option: (typeof SortOptions)[number]
+                                            ) => option.value
+                                        "
+                                        name="sort-by"
+                                        id="sort-by"
+                                        @update:modelValue="getAllStory"
+                                    />
+                                </client-only>
+                            </div>
                         </div>
                         <div class="stories__filter-item">
-                            <label class="form-label" for="category">Category</label>
-                            <client-only>
-                                <v-select 
-                                    v-model="selectedOptionCategory"
-                                    :options="allCategoryNames"
-                                    :searchable="false"
-                                    name="category"
-                                    id="category"
-                                />
-                            </client-only>
+                            <div class="stories__filter-label">
+                                <label class="form-label" for="category"
+                                    >Category</label
+                                >
+                            </div>
+                            <div class="stories__filter-select">
+                                <client-only>
+                                    <v-select
+                                        v-model="selectedOptionCategory"
+                                        :options="allCategoryOptions"
+                                        :reduce="
+                                            (
+                                                option: (typeof allCategoryOptions)[number]
+                                            ) => option.value
+                                        "
+                                        :searchable="false"
+                                        name="category"
+                                        id="category"
+                                        @update:modelValue="getAllStory"
+                                    />
+                                </client-only>
+                            </div>
                         </div>
                     </div>
                     <div class="stories__search">
                         <div class="form-control-search">
                             <input
+                                v-model="searchStory"
                                 class="form-control"
                                 type="search"
                                 placeholder="Search story"
@@ -103,11 +201,11 @@ const allCategoryNames = computed(() => categoriesMock.map(cat => cat.title))
                                 xmlns="http://www.w3.org/2000/svg"
                             >
                                 <path
-                                d="M21.25 21.25L26.25 26.25M3.75 13.75C3.75 16.4022 4.80357 18.9457 6.67893 20.8211C8.5543 22.6964 11.0978 23.75 13.75 23.75C16.4022 23.75 18.9457 22.6964 20.8211 20.8211C22.6964 18.9457 23.75 16.4022 23.75 13.75C23.75 11.0978 22.6964 8.5543 20.8211 6.67893C18.9457 4.80357 16.4022 3.75 13.75 3.75C11.0978 3.75 8.5543 4.80357 6.67893 6.67893C4.80357 8.5543 3.75 11.0978 3.75 13.75Z"
-                                stroke="#4B4B4B"
-                                stroke-width="1.5"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
+                                    d="M21.25 21.25L26.25 26.25M3.75 13.75C3.75 16.4022 4.80357 18.9457 6.67893 20.8211C8.5543 22.6964 11.0978 23.75 13.75 23.75C16.4022 23.75 18.9457 22.6964 20.8211 20.8211C22.6964 18.9457 23.75 16.4022 23.75 13.75C23.75 11.0978 22.6964 8.5543 20.8211 6.67893C18.9457 4.80357 16.4022 3.75 13.75 3.75C11.0978 3.75 8.5543 4.80357 6.67893 6.67893C4.80357 8.5543 3.75 11.0978 3.75 13.75Z"
+                                    stroke="#4B4B4B"
+                                    stroke-width="1.5"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
                                 />
                             </svg>
                         </div>
@@ -116,29 +214,29 @@ const allCategoryNames = computed(() => categoriesMock.map(cat => cat.title))
                 <div class="stories__grid">
                     <!-- Show skeletons when loading -->
                     <template v-if="loading">
-                        <CardStory 
-                            v-for="n in 9" :key="n"
-                            loading 
-                        />
+                        <CardStory v-for="n in 9" :key="n" loading />
                     </template>
                     <!-- Show real data -->
                     <template v-else>
                         <card-story
                             v-for="story in storiesData"
-                                :key="story.id"
-                                :imageUrl="story.image"
-                                :title="story.title"
-                                :description="story.shortContent"
-                                :authorPhoto="story.authorAvatar"
-                                :author="story.authorName"
-                                :dateCreated="story.createdDate"
-                                :category="story.category"
-                                :linkTo="`/story/${story.slug}`"
-                            />
+                            :key="story.id"
+                            :imageUrl="story.content_image"
+                            :title="story.title"
+                            :description="story.content"
+                            :authorPhoto="story.author.profile_image ?? ''"
+                            :author="story.author.name"
+                            :dateCreated="story.created_at"
+                            :category="story.category.name"
+                            :linkTo="`/story/${story.id}`"
+                        />
                     </template>
                 </div>
                 <div class="stories__pagination">
-                    <Pagination />
+                    <Pagination
+                        v-model:current-page="currentPage"
+                        :total-pages="storiesMeta.last_page"
+                    />
                 </div>
             </div>
         </section>
@@ -146,31 +244,21 @@ const allCategoryNames = computed(() => categoriesMock.map(cat => cat.title))
 </template>
 <style scoped lang="scss">
 .stories {
-    :deep(.form-label){
+    :deep(.form-label) {
         position: relative;
         top: 4px;
-        font-size: 24px;
-        color: #4B4B4B;
-        font-weight: 400;
-
-        @media only screen and (max-width: 1399.98px) {
-            font-size: 20px;
-        }
-
-        @media only screen and (max-width: 1199.98px) {
-            font-size: 18px;
-        }
-
-        @media only screen and (max-width: 991.98px) {
-            font-size: 16px;
-        }
     }
     :deep(.v-select) {
         .vs__dropdown-toggle {
-            border: 1px solid transparent;
+            border: 2px solid transparent;
+
+            @media only screen and (max-width: 991.98px) {
+                border: 2px solid #cccccc;
+                border-radius: 8px;
+            }
         }
 
-        .vs__selected{
+        .vs__selected {
             font-size: 24px;
             color: #222222;
             font-weight: 500;
@@ -186,7 +274,7 @@ const allCategoryNames = computed(() => categoriesMock.map(cat => cat.title))
                 font-size: 16px;
             }
         }
-        .vs__clear{
+        .vs__clear {
             display: none;
         }
 
@@ -205,7 +293,7 @@ const allCategoryNames = computed(() => categoriesMock.map(cat => cat.title))
             }
         }
 
-        .vs__open-indicator{
+        .vs__open-indicator {
             fill: #222222;
         }
     }
@@ -215,6 +303,16 @@ const allCategoryNames = computed(() => categoriesMock.map(cat => cat.title))
         font-weight: 600;
         line-height: 1.318;
         font-family: $font-secondary;
+
+        @media only screen and (max-width: 1399.98px) {
+            margin: 50px 0 40px 0;
+            font-size: 32px;
+        }
+
+        @media only screen and (max-width: 1199.98px) {
+            margin: 40px 0 30px 0;
+            font-size: 28px;
+        }
     }
     &__action {
         margin-top: 40px;
@@ -225,32 +323,64 @@ const allCategoryNames = computed(() => categoriesMock.map(cat => cat.title))
         @media only screen and (max-width: 1399.98px) {
             grid-template-columns: 1fr 380px;
         }
+
+        @media only screen and (max-width: 991.98px) {
+            grid-template-columns: 1fr;
+            gap: 24px;
+        }
     }
     &__filter {
         display: flex;
-        align-items: center;
         gap: 20px;
     }
-    &__grid{
+
+    &__filter-select {
+        min-width: 200px;
+    }
+
+    &__filter-label {
+        align-self: center;
+    }
+    &__grid {
         margin-top: 60px;
         display: grid;
         grid-template-columns: repeat(3, 1fr);
         gap: 60px 29px;
-    }
 
-    &__filter-item{
-        display: flex;
-        gap: 10px;
-        align-items: center;
-        .form-label{
-            margin: 0px;
+        @media only screen and (max-width: 1399.98px) {
+            gap: 50px 24px;
+        }
+
+        @media only screen and (max-width: 991.98px) {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 42px 20px;
+        }
+
+        @media only screen and (max-width: 767.98px) {
+            grid-template-columns: repeat(1, 1fr);
+            gap: 24px;
         }
     }
-    &__pagination{
+
+    &__filter-item {
+        display: flex;
+        gap: 10px;
+        .form-label {
+            margin: 0px;
+        }
+        @media only screen and (max-width: 991.98px) {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    }
+    &__pagination {
         display: flex;
         justify-content: center;
-        margin: 200px 0px;
+        margin: 200px 0px 60px 0px;
 
+        @media only screen and (max-width: 991.98px) {
+            margin: 100px 0px 60px 0px;
+        }
     }
 }
 </style>

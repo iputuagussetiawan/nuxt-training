@@ -1,18 +1,24 @@
-
 * {
     box-sizing: border-box;
 }
-body{
+body {
     margin: 0px;
     font-family: $font-primary;
 }
-.container{
+.container {
     max-width: 88.541%;
     margin: 0 auto;
 }
 
+@keyframes custom-spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
 
-
-
-
-
+.animate-custom-spin {
+    animation: custom-spin 1s linear infinite; /* change 2s for speed */
+}

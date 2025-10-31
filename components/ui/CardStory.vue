@@ -1,25 +1,25 @@
 <script setup lang="ts">
-    import { formatDate } from '~/utils/FormatDate'
+import { formatDate } from '~/utils/FormatDate'
 
-    interface CardStoryProps {
-        imageUrl?: string
-        title?: string
-        description?: string
-        authorPhoto?: string
-        author?: string
-        dateCreated?: string
-        category?: string
-        linkTo?: string
-        loading?: boolean
-        variant?: 'default' | 'big' // you can extend with more types
-        className?: string // optional for extra custom classes
-    }
+interface CardStoryProps {
+    imageUrl?: string
+    title?: string
+    description?: string
+    authorPhoto?: string
+    author?: string
+    dateCreated?: string
+    category?: string
+    linkTo?: string
+    loading?: boolean
+    variant?: 'default' | 'big' // you can extend with more types
+    className?: string // optional for extra custom classes
+}
 
-    const props = defineProps<CardStoryProps>()
+const props = defineProps<CardStoryProps>()
 </script>
 
 <template>
-    <div 
+    <div
         :class="[
             'card-story',
             props.variant === 'big' ? 'card-story--big' : '',
@@ -27,18 +27,17 @@
         ]"
     >
         <!-- Image -->
-        <NuxtLink class="card-story__image-container"  :to="props.linkTo">
+        <NuxtLink class="card-story__image-container" :to="props.linkTo">
             <template v-if="props.loading">
                 <div class="skeleton__image"></div>
             </template>
             <NuxtImg
                 v-else
                 :src="props.imageUrl"
-                :width="props.variant === 'big' ? '1080' : '1920'"
-                :height="props.variant === 'big' ? '1920' : '1080'"
+                width="200"
+                height="200"
                 class="card-story__image"
                 alt="Story image"
-                :aspect-ratio="props.variant === 'big' ? '1123:1066' : '16:9'"
             />
         </NuxtLink>
 
@@ -49,8 +48,15 @@
                     <div class="skeleton__title"></div>
                 </template>
                 <template v-else>
-                    <NuxtLink class="card-story__title-text" v-if="props.linkTo" :to="props.linkTo">{{ props.title }}</NuxtLink>
-                    <span class="card-story__title-text" v-else>{{ props.title }}</span>
+                    <NuxtLink
+                        class="card-story__title-text"
+                        v-if="props.linkTo"
+                        :to="props.linkTo"
+                        >{{ props.title }}</NuxtLink
+                    >
+                    <span class="card-story__title-text" v-else>{{
+                        props.title
+                    }}</span>
                 </template>
             </h3>
         </div>
@@ -93,64 +99,194 @@
                 </div>
             </div>
 
-        <div class="card-story__date-category">
-            <template v-if="props.loading">
-                <div class="skeleton__text short"></div>
-            </template>
-            <template v-else>
-                <div v-if="props.dateCreated" class="card-story__date">
-                    {{ formatDate(props.dateCreated) }}
-                </div>
-                <div v-if="props.category" class="card-story__category">
-                    {{ props.category }}
-                </div>
-            </template>
-        </div>
+            <div class="card-story__date-category">
+                <template v-if="props.loading">
+                    <div class="skeleton__text short"></div>
+                </template>
+                <template v-else>
+                    <div v-if="props.dateCreated" class="card-story__date">
+                        {{ formatDate(props.dateCreated) }}
+                    </div>
+                    <div v-if="props.category" class="card-story__category">
+                        {{ props.category }}
+                    </div>
+                </template>
+            </div>
         </div>
     </div>
 </template>
 
 <style scoped lang="scss">
-    .skeleton-bg{
-        background: linear-gradient(90deg, #e0e0e0 25%, #f4f4f4 50%, #e0e0e0 75%);
-        background-size: 200% 100%;
-        animation: skeleton-loading 1.5s infinite;
-        border-radius: 4px;
+.skeleton-bg {
+    background: linear-gradient(90deg, #e0e0e0 25%, #f4f4f4 50%, #e0e0e0 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+    border-radius: 4px;
+}
+.skeleton {
+    &__image {
+        @extend .skeleton-bg;
+        width: 100%;
+        border-radius: 8px;
+        aspect-ratio: 547/500;
     }
-    .skeleton {
-        &__image{
-            @extend .skeleton-bg;
-            width: 100%;
-            height: 500px;
-            border-radius: 8px;
-        }
 
-        &__title{
-            @extend .skeleton-bg;
-            height: 28px;
-            width: 80%;
-        }
-        &__text{
-            @extend .skeleton-bg;
-            height: 16px;
-            margin: 6px 0;
-            width: 100%;
+    &__title {
+        @extend .skeleton-bg;
+        height: 28px;
+        width: 80%;
+    }
+    &__text {
+        @extend .skeleton-bg;
+        height: 16px;
+        margin: 6px 0;
+        width: 100%;
 
-            &.short {
-                width: 60%;
-            }
-        }
-
-        &__avatar{
-            @extend .skeleton-bg;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
+        &.short {
+            width: 60%;
         }
     }
 
-    .card-story {
-        display: grid;
+    &__avatar {
+        @extend .skeleton-bg;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+    }
+}
+
+.card-story {
+    display: grid;
+    gap: 20px;
+    @media only screen and (max-width: 1399.98px) {
+        gap: 18px;
+    }
+    @media only screen and (max-width: 991.98px) {
+        gap: 16px;
+    }
+
+    &__image-container {
+        position: relative;
+        width: 100%;
+        border-radius: 8px;
+        overflow: hidden;
+        width: auto;
+
+        &::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: #fff;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+    }
+
+    &__image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        aspect-ratio: 547/500;
+    }
+
+    &__title {
+        margin: 0;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    &__title-text {
+        font-weight: 700;
+        font-size: 36px;
+        line-height: 1.27;
+        color: #222;
+        text-decoration: none;
+        transition: 0.4s ease;
+        @media only screen and (max-width: 1399.98px) {
+            font-size: 24px;
+        }
+        @media only screen and (max-width: 1199.98px) {
+            font-size: 22px;
+        }
+        @media only screen and (max-width: 991.98px) {
+            font-size: 20px;
+        }
+    }
+
+    &__content {
+        font-size: 18px;
+        font-weight: 400;
+        line-height: 1.5;
+        color: #4b4b4b;
+
+        display: -webkit-box;
+        -webkit-line-clamp: 3; /* Limit to 3 lines */
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+
+        @media only screen and (max-width: 1399.98px) {
+            font-size: 16px;
+        }
+        @media only screen and (max-width: 991.98px) {
+            font-size: 14px;
+        }
+    }
+
+    &__footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    &__author {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    &__author-photo-container {
+        width: 50px;
+        height: 50px;
+        border-radius: 100%;
+        overflow: hidden;
+
+        @media only screen and (max-width: 1399.98px) {
+            width: 42px;
+            height: 42px;
+        }
+        @media only screen and (max-width: 991.98px) {
+            width: 32px;
+            height: 32px;
+        }
+    }
+
+    &__author-photo {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    &__author-name {
+        color: #222;
+        font-weight: 500;
+        font-size: 20px;
+        line-height: 1.3;
+        @media only screen and (max-width: 1399.98px) {
+            font-size: 18px;
+        }
+        @media only screen and (max-width: 991.98px) {
+            font-size: 16px;
+        }
+    }
+
+    &__date-category {
+        display: flex;
+        align-items: center;
         gap: 20px;
         @media only screen and (max-width: 1399.98px) {
             gap: 18px;
@@ -158,177 +294,48 @@
         @media only screen and (max-width: 991.98px) {
             gap: 16px;
         }
+    }
 
-        &__image-container {
-            position: relative;
-            width: 100%;
-            border-radius: 8px;
-            overflow: hidden;
-            width: auto;
+    &__date,
+    &__category {
+        font-weight: 400;
+        font-size: 18px;
+        line-height: 1.27;
 
-            &::after {
-                content: '';
-                position: absolute;
-                inset: 0;
-                background: #fff;
-                opacity: 0;
-                transition: opacity 0.4s ease;
-            }
+        @media only screen and (max-width: 1399.98px) {
+            font-size: 16px;
         }
-
-        &__image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
-
-        &__title {
-            margin: 0;
-            display: -webkit-box;
-            -webkit-line-clamp: 2; 
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        &__title-text{
-            font-weight: 700;
-            font-size: 36px;
-            line-height: 1.27;
-            color: #222;
-            text-decoration: none;
-            transition: 0.4s ease;
-            @media only screen and (max-width:1399.98px) {
-                font-size: 32px;
-            }
-            @media only screen and (max-width: 1199.98px) {
-                font-size: 28px;
-            }
-            @media only screen and (max-width: 991.98px) {
-                font-size: 22px;
-            }
-        }
-
-        &__content {
-            font-size: 18px;
-            font-weight: 400;
-            line-height: 1.5;
-            color: #4b4b4b;
-
-            display: -webkit-box;
-            -webkit-line-clamp: 3; /* Limit to 3 lines */
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            text-overflow: ellipsis;
-
-            @media only screen and (max-width:1399.98px) {
-                font-size: 16px;
-            }
-            @media only screen and (max-width: 991.98px) {
-                font-size: 14px;
-            }
-        }
-
-        &__footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        &__author {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        &__author-photo-container {
-            width: 50px;
-            height: 50px;
-            border-radius: 100%;
-            overflow: hidden;
-
-            @media only screen and (max-width: 1399.98px) {
-                width: 42px;
-                height: 42px;
-            }
-            @media only screen and (max-width: 991.98px) {
-                width: 32px;
-                height: 32px;
-            }
-        }
-
-        &__author-photo {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        &__author-name {
-            color: #222;
-            font-weight: 500;
-            font-size: 20px;
-            line-height: 1.3;
-            @media only screen and (max-width: 1399.98px) {
-                font-size: 18px;
-            }
-            @media only screen and (max-width: 991.98px) {
-                font-size: 16px;
-            }
-        }
-
-        &__date-category {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            @media only screen and (max-width: 1399.98px) {
-                gap: 18px;
-            }
-            @media only screen and (max-width: 991.98px) {
-                gap: 16px;
-            }
-        }
-
-        &__date,
-        &__category {
-            font-weight: 400;
-            font-size: 18px;
-            line-height: 1.27;
-
-            @media only screen and (max-width: 1399.98px) {
-                font-size: 16px;
-            }
-            @media only screen and (max-width: 991.98px) {
-                font-size: 14px;
-            }
-        }
-
-        &__date {
-            color: #222;
-        }
-
-        &__category {
-            padding: 8px 12px;
-            color: #466543;
-            background-color: #f0f5ed;
-            border-radius: 8px;
-        }
-
-        &:hover &__image-container::after {
-            opacity: 0.3;
-        }
-
-        &:hover &__title-text {
-            color: $color-primary;
+        @media only screen and (max-width: 991.98px) {
+            font-size: 14px;
         }
     }
 
-    @keyframes skeleton-loading {
-        0% {
-            background-position: 200% 0;
-        }
-        100% {
-            background-position: -200% 0;
-        }
+    &__date {
+        color: #222;
     }
+
+    &__category {
+        padding: 8px 12px;
+        color: #466543;
+        background-color: #f0f5ed;
+        border-radius: 8px;
+    }
+
+    &:hover &__image-container::after {
+        opacity: 0.3;
+    }
+
+    &:hover &__title-text {
+        color: $color-primary;
+    }
+}
+
+@keyframes skeleton-loading {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
 </style>

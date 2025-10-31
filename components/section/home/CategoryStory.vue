@@ -1,66 +1,61 @@
 <script setup lang="ts">
-import { ref, type Ref, onMounted, onUnmounted } from "vue";
-import SectionHeader from "~/components/section/SectionHeader.vue";
-import CardStory from "~/components/ui/CardStory.vue";
-import type { IStoryItem } from "~/types/story";
+// 1. Imports
+import { ref, type Ref, onMounted, onUnmounted } from 'vue'
+import SectionHeader from '~/components/section/SectionHeader.vue'
+import CardStory from '~/components/ui/CardStory.vue'
+import type { IStoryItem } from '~/types/story'
 
+// 2. Interface
 interface CategoryStory {
-    categoryId: string;
-    variant?: "column" | "grid";
-    headerTitle: string;
-    headerLinkText: string;
-    headerLinkTo: string;
+    headerTitle: string
+    headerLinkText: string
+    headerLinkTo: string
+    variant?: 'column' | 'grid'
+    categoryStories: IStoryItem[]
 }
+// 3. Props
+const props = defineProps<CategoryStory>()
 
-const props = defineProps<CategoryStory>();
-const storyList: Ref<IStoryItem[]> = ref([]);
-const isLoading = ref(true); // skeleton state
-const targetRef = ref<HTMLElement | null>(null); // for Intersection Observer
+// 4. States and Variable Declarations
+const categoryStoryList: Ref<IStoryItem[]> = ref([])
+const isLoading = ref(true) // skeleton state
+const targetRef = ref<HTMLElement | null>(null) // for Intersection Observer
 
-const getStories = async (): Promise<void> => {
-    isLoading.value = true;
-    try {
-        const response: { data: IStoryItem[] } = await $fetch(
-            "https://timestory.tmdsite.my.id/api/story",
-            {
-                method: "GET",
-                params: {
-                    category_id: props.categoryId,
-                    limit: 3,
-                },
-            }
-        );
-        storyList.value = response.data;
-    } catch (error) {
-        console.error("Failed to fetch stories:", error);
-    } finally {
-        isLoading.value = false;
-    }
-};
+let observer: IntersectionObserver | null = null
 
-let observer: IntersectionObserver | null = null;
+// 5. Methods
+
+// 6. Lifecycle
 onMounted(() => {
-    if (targetRef.value) {
-        observer = new IntersectionObserver(
-            (entries) => {
-                if (entries[0].isIntersecting) {
-                    getStories();
-                    if (observer && targetRef.value) {
-                        observer.unobserve(targetRef.value); // stop observing after first fetch
-                    }
+    if (!targetRef.value) return
+    observer = new IntersectionObserver(
+        (entries) => {
+            const entry = entries[0]
+            if (entry.isIntersecting) {
+                // Simulate delay for skeleton effect (optional)
+                setTimeout(() => {
+                    categoryStoryList.value = props.categoryStories
+                    isLoading.value = false
+                }, 800)
+
+                if (observer && targetRef.value) {
+                    observer.unobserve(targetRef.value)
+                    observer.disconnect()
+                    observer = null
                 }
-            },
-            { threshold: 0.2 }
-        );
-        observer.observe(targetRef.value);
-    }
-});
+            }
+        },
+        { threshold: 0.2 }
+    )
+    observer.observe(targetRef.value)
+})
 
 onUnmounted(() => {
-    if (observer && targetRef.value) {
-        observer.unobserve(targetRef.value);
+    if (observer) {
+        observer.disconnect()
+        observer = null
     }
-});
+})
 </script>
 
 <template>
@@ -71,10 +66,17 @@ onUnmounted(() => {
             :linkTo="props.headerLinkTo"
         />
         <div class="container">
-            <div class="category-story__column" v-if="props.variant === 'column'">
+            <div
+                class="category-story__column"
+                v-if="props.variant === 'column'"
+            >
                 <!-- Skeletons -->
                 <template v-if="isLoading">
-                    <div class="category-story__column-item" v-for="n in 3" :key="n">
+                    <div
+                        class="category-story__column-item"
+                        v-for="n in 3"
+                        :key="n"
+                    >
                         <CardStory loading />
                     </div>
                 </template>
@@ -83,7 +85,7 @@ onUnmounted(() => {
                 <template v-else>
                     <div
                         class="category-story__column-item"
-                        v-for="(story, index) in storyList"
+                        v-for="(story, index) in categoryStoryList"
                         :key="story.id"
                     >
                         <CardStory
@@ -115,7 +117,7 @@ onUnmounted(() => {
                 <template v-else>
                     <div
                         class="category-story__item"
-                        v-for="(story, index) in storyList"
+                        v-for="(story, index) in categoryStoryList"
                         :key="story.id"
                     >
                         <CardStory
@@ -189,11 +191,17 @@ onUnmounted(() => {
             }
         }
     }
-
     &__column {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
         gap: 30px;
+        @media only screen and (max-width: 991.98px) {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px 20px;
+        }
+        @media only screen and (max-width: 767.98px) {
+            grid-template-columns: repeat(1, 1fr);
+        }
     }
 }
 </style>
