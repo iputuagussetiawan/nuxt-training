@@ -38,6 +38,10 @@ const handleLogout = async () => {
 const getProfile = () => {
     isOpenDialogProfile.value = true
 }
+
+const handleCloseDialog = () => {
+    isOpenDialogProfile.value = false
+}
 </script>
 
 <template>
@@ -99,7 +103,7 @@ const getProfile = () => {
         </div>
 
         <UiDialog v-model="isOpenDialogProfile">
-            <UiProfileForm />
+            <UiProfileForm @close-dialog="handleCloseDialog" />
         </UiDialog>
 
         <DialogConfirmation

@@ -15,6 +15,7 @@ import UiProfileUpload from '../ui/ProfileUpload.vue'
 const { $api } = useNuxtApp()
 const router = useRouter()
 const authStore = useAuthStore()
+const emit = defineEmits(['close-dialog'])
 
 const isLoading = ref(false)
 const errorMessage = ref<string>('')
@@ -87,6 +88,10 @@ const handleSubmit = async (values: IUserUpdateProfile) => {
     }
 }
 
+const cancelEdit = () => {
+    emit('close-dialog')
+}
+
 // 4. Events
 watch(
     () => authStore.user,
@@ -156,6 +161,7 @@ watch(
                             type="button"
                             class="profile-form__button"
                             variant="primary-outline"
+                            @click="cancelEdit"
                         >
                             <span>Cancel</span>
                         </UiButton>
@@ -209,6 +215,7 @@ watch(
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 30px;
+        padding-bottom: 8px;
     }
 
     &__title {
