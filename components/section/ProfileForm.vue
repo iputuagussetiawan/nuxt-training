@@ -1,17 +1,23 @@
 <script setup lang="ts">
+// 1. Imports
 import { computed, ref, watch } from 'vue'
 import { Icon } from '@iconify/vue'
+import { Form } from 'vee-validate'
+import { useRouter } from 'vue-router'
+import { useAuthStore, useNuxtApp } from '#imports'
+import type { IUserUpdateProfile } from '~/types/user'
 import UiButton from '~/components/ui/Button.vue'
 import * as yup from 'yup'
-import { Form } from 'vee-validate'
 import UiFormInput from '~/components/ui/FormInput.vue'
-import { useRouter } from 'vue-router'
 import UiProfileUpload from '../ui/ProfileUpload.vue'
-import { useAuthStore } from '#imports'
 
-const authStore = useAuthStore()
-const errorMessage = ref<string>('')
+// 2. Variable Declarations
+const { $api } = useNuxtApp()
 const router = useRouter()
+const authStore = useAuthStore()
+
+const isLoading = ref(false)
+const errorMessage = ref<string>('')
 
 const userName = computed(() => authStore.user?.name || 'User')
 const userUsername = computed(() => authStore.user?.username || 'username')
@@ -23,7 +29,6 @@ const userImage = computed(
         'https://avatars.githubusercontent.com/u/583231?v=4'
 )
 
-// ✅ Initial form values (for vee-validate)
 const initialValues = ref({
     name: userName.value,
     username: userUsername.value,
@@ -34,7 +39,55 @@ const initialValues = ref({
     confirm_password: ''
 })
 
-// ✅ Optional — watch store updates (reactive updates to form)
+// ✅ Yup validation schema for register form
+const profileFormSchema = yup.object({
+    name: yup.string().required('Name is required'),
+    username: yup.string().required('Username is required'),
+    email: yup
+        .string()
+        .email('Please enter a valid email')
+        .required('Email is required'),
+    old_password: yup
+        .string()
+        .min(6, 'Password must be at least 6 characters')
+        .required('Password is required'),
+    new_password: yup
+        .string()
+        .oneOf([yup.ref('confirm_password')], 'Passwords must match')
+        .required('Please confirm your password'),
+    confirm_password: yup
+        .string()
+        .oneOf([yup.ref('new_password')], 'Passwords must match')
+        .required('Please confirm your password')
+})
+
+// 3. Methods/Functions
+const handleSubmit = async (values: IUserUpdateProfile) => {
+    errorMessage.value = ''
+    try {
+        isLoading.value = true
+        const response = await $api.user.updateProfile({
+            body: values
+        })
+        console.log('✅ Success Update Profile:', response)
+        router.push({ name: 'login' })
+    } catch (error: any) {
+        console.error('❌ Error Update Profile:', error)
+        // ✅ Handle different error types safely
+        if (error?.data?.message) {
+            errorMessage.value = error.data.message
+        } else if (error?.message) {
+            errorMessage.value = error.message
+        } else {
+            errorMessage.value =
+                'An unexpected error occurred. Please try again.'
+        }
+    } finally {
+        isLoading.value = false
+    }
+}
+
+// 4. Events
 watch(
     () => authStore.user,
     (user) => {
@@ -52,55 +105,6 @@ watch(
     },
     { immediate: true, deep: true }
 )
-
-// ✅ Yup validation schema for register form
-const profileFormSchema = yup.object({
-    name: yup.string().required('Name is required'),
-    username: yup.string().required('Username is required'),
-    email: yup
-        .string()
-        .email('Please enter a valid email')
-        .required('Email is required'),
-    password: yup
-        .string()
-        .min(6, 'Password must be at least 6 characters')
-        .required('Password is required'),
-    password_confirmation: yup
-        .string()
-        .oneOf([yup.ref('password')], 'Passwords must match')
-        .required('Please confirm your password')
-})
-
-const isLoading = ref(false)
-
-const handleSubmit = async (values: any) => {
-    errorMessage.value = ''
-    isLoading.value = true
-    try {
-        const response = await $fetch(
-            'https://timestory.tmdsite.my.id/api/register',
-            {
-                method: 'POST',
-                body: values
-            }
-        )
-        console.log('✅ Success Register:', response)
-        router.push({ name: 'login' })
-    } catch (error: any) {
-        console.error('❌ Error Register:', error)
-        // ✅ Handle different error types safely
-        if (error?.data?.message) {
-            errorMessage.value = error.data.message
-        } else if (error?.message) {
-            errorMessage.value = error.message
-        } else {
-            errorMessage.value =
-                'An unexpected error occurred. Please try again.'
-        }
-    } finally {
-        isLoading.value = false
-    }
-}
 </script>
 
 <template>
@@ -109,7 +113,8 @@ const handleSubmit = async (values: any) => {
         <Form
             :initial-values="initialValues"
             :validation-schema="profileFormSchema"
-            @submit="handleSubmit"
+            :enable-reinitialize="true"
+            @submit="handleSubmit as (values: IUserUpdateProfile) => void"
             class="profile-form__form"
         >
             <div class="profile-form__inner">
