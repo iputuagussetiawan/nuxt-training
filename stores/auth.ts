@@ -3,14 +3,14 @@ import { useCookie } from '#app'
 import { ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import type { IUser } from '~/types/user'
-import { useProfile } from '~/composables/useProfile'
+import { useUser } from '~/composables/useUser'
 
 export const useAuthStore = defineStore('auth', () => {
     // ✅ State
     const token = ref<string>('')
     const router = useRouter()
     const user = ref<IUser | null>(null)
-    const { userProfileData, getProfile } = useProfile()
+    const { userProfileData, getProfile } = useUser()
 
     // ✅ Save token (to state + cookie)
     const setToken = (newToken: string) => {
@@ -43,7 +43,7 @@ export const useAuthStore = defineStore('auth', () => {
 
     const getUserProfile = async () => {
         if (!token.value) return
-        await getProfile(token.value)
+        await getProfile()
         user.value = userProfileData.value
     }
 

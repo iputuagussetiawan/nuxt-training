@@ -5,7 +5,7 @@ import { useAuthStore } from '~/stores/auth'
 import Button from './Button.vue'
 import UiProfileForm from '../section/ProfileForm.vue'
 import DialogConfirmation from './DialogConfirmation.vue'
-import { useCookie, useNuxtApp } from '#imports'
+import { useNuxtApp } from '#imports'
 
 // 2. Variable Declarations
 const { $api } = useNuxtApp()

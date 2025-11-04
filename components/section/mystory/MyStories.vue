@@ -1,30 +1,38 @@
 <script setup lang="ts">
 import Button from '~/components/ui/Button.vue'
-import { ref, type Ref } from 'vue'
+import { computed, ref, type Ref } from 'vue'
 import type { IStoryItem } from '~/types/story'
 import CardStory from '~/components/ui/CardStory.vue'
 import Pagination from '~/components/ui/Pagination.vue'
 import MyStoriesBlank from './MyStoriesBlank.vue'
+import { useNuxtApp } from '#imports'
+import { useAuthStore } from '~/stores/auth'
+
+const authStore = useAuthStore()
 const myStoryList: Ref<IStoryItem[]> = ref([])
-const isLoading = ref(true) // skeleton state
+const myStoriesMeta = ref({ last_page: 0 })
+const loading = ref(true) // skeleton state
+const currentPage = ref(1)
+const { $api } = useNuxtApp()
+
+const userId = computed(() => authStore.user?.id || '0')
 
 const getMyStories = async (): Promise<void> => {
-    isLoading.value = true
     try {
-        const response: { data: IStoryItem[] } = await $fetch(
-            'https://timestory.tmdsite.my.id/api/story',
-            {
-                method: 'GET',
-                params: {
-                    limit: 10
-                }
+        loading.value = true
+        const response = await $api.userStory.list({
+            query: {
+                limit: 10,
+                page: currentPage.value
             }
-        )
+        })
         myStoryList.value = response.data
+        myStoriesMeta.value = response.meta
+        console.log(myStoryList.value)
     } catch (error) {
-        console.error('Failed to fetch your stories:', error)
+        console.error('Failed to fetch all stories:', error)
     } finally {
-        isLoading.value = false
+        loading.value = false
     }
 }
 
@@ -34,7 +42,7 @@ getMyStories()
     <section class="my-story">
         <div class="container">
             <div class="my-story__header">
-                <h2 class="my-story__title">My Story</h2>
+                <h2 class="my-story__title">My Story: {{ userId }}</h2>
             </div>
             <div class="my-story__inner">
                 <div class="my-story__action-wrapper">
@@ -59,7 +67,7 @@ getMyStories()
                     </div>
                 </div>
                 <div class="my-story__listing-wrapper">
-                    <div class="my-story__listing" v-if="isLoading">
+                    <div class="my-story__listing" v-if="loading">
                         <CardStory v-for="n in 6" :key="n" loading />
                     </div>
                     <div
@@ -72,16 +80,14 @@ getMyStories()
                             :imageUrl="story.content_image"
                             :title="story.title"
                             :description="story.content"
-                            :authorPhoto="
-                                story.author.profile_image ??
-                                'https://picsum.photos/50/50?random=' + story.id
-                            "
-                            :author="story.author.name"
                             :dateCreated="story.created_at"
                             :linkTo="`/story/${story.id}`"
                         />
                         <div class="my-story__pagination-wrapper">
-                            <Pagination />
+                            <Pagination
+                                v-model:current-page="currentPage"
+                                :total-pages="myStoriesMeta.last_page"
+                            />
                         </div>
                     </div>
 

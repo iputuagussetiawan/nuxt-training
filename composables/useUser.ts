@@ -1,24 +1,18 @@
+import { useNuxtApp } from '#imports'
 import { ref } from 'vue'
 import type { IUser } from '~/types/user'
 
-export function useProfile() {
+export function useUser() {
+    const { $api } = useNuxtApp()
     const userProfileData = ref<IUser | null>(null)
     const isLoading = ref(false)
     const error = ref<string | null>(null)
 
-    const getProfile = async (token: string) => {
+    const getProfile = async () => {
         isLoading.value = true
         error.value = null
         try {
-            const response: { data: IUser } = await $fetch(
-                'https://timestory.tmdsite.my.id/api/user/profile',
-                {
-                    method: 'GET',
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            )
+            const response = await $api.user.getProfile()
             userProfileData.value = response.data
         } catch (err: any) {
             console.error('❌ Failed to fetch user profile:', err)
