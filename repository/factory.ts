@@ -1,7 +1,13 @@
 // File: repository/factory.ts
 
 import { defu } from 'defu'
-import type { UseFetchOptions } from 'nuxt/app'
+import {
+    useCookie,
+    useRequestHeaders,
+    useRuntimeConfig,
+    type UseFetchOptions
+} from 'nuxt/app'
+import { toValue, type MaybeRefOrGetter } from 'vue'
 
 class FetchFactory<T> {
     async call(
