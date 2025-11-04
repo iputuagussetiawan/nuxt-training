@@ -44,7 +44,8 @@ const classes = computed(() => {
 
 <style scoped lang="scss">
 .btn {
-    display: inline-block;
+    display: flex;
+    align-items: center;
     border: 2px solid $color-primary;
     padding: 12px 30px;
     font-size: 24px;

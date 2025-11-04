@@ -5,7 +5,7 @@ import { useAuthStore } from '~/stores/auth'
 import Button from './Button.vue'
 import UiProfileForm from '../section/ProfileForm.vue'
 import DialogConfirmation from './DialogConfirmation.vue'
-import { useCookie, useNuxtApp } from '#imports'
+import { useNuxtApp } from '#imports'
 
 // 2. Variable Declarations
 const { $api } = useNuxtApp()
@@ -37,6 +37,10 @@ const handleLogout = async () => {
 }
 const getProfile = () => {
     isOpenDialogProfile.value = true
+}
+
+const handleCloseDialog = () => {
+    isOpenDialogProfile.value = false
 }
 </script>
 
@@ -99,7 +103,7 @@ const getProfile = () => {
         </div>
 
         <UiDialog v-model="isOpenDialogProfile">
-            <UiProfileForm />
+            <UiProfileForm @close-dialog="handleCloseDialog" />
         </UiDialog>
 
         <DialogConfirmation

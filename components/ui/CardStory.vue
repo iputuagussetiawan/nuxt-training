@@ -76,7 +76,10 @@ const props = defineProps<CardStoryProps>()
         <!-- Footer -->
         <div class="card-story__footer">
             <div class="card-story__author">
-                <div class="card-story__author-photo-container">
+                <div
+                    v-if="props.authorPhoto"
+                    class="card-story__author-photo-container"
+                >
                     <template v-if="props.loading">
                         <div class="skeleton__avatar"></div>
                     </template>
@@ -89,7 +92,7 @@ const props = defineProps<CardStoryProps>()
                         alt="Author photo"
                     />
                 </div>
-                <div class="card-story__author-name">
+                <div v-if="props.author" class="card-story__author-name">
                     <template v-if="props.loading">
                         <div class="skeleton__text short"></div>
                     </template>

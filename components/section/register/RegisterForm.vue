@@ -1,14 +1,14 @@
 <script setup lang="ts">
 // 1. Imports
-import UiButton from '~/components/ui/Button.vue'
-import UiFormInput from '~/components/ui/FormInput.vue'
 import { ref } from 'vue'
 import { Icon } from '@iconify/vue'
 import { Form } from 'vee-validate'
 import { useRouter } from 'vue-router'
-import type { IRegister } from '~/types/auth'
 import { useNuxtApp } from '#imports'
+import type { IRegister } from '~/types/auth'
 import * as yup from 'yup'
+import UiButton from '~/components/ui/Button.vue'
+import UiFormInput from '~/components/ui/FormInput.vue'
 
 // 2. Variable Declarations
 const { $api } = useNuxtApp()
