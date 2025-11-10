@@ -135,11 +135,12 @@ onMounted(() => {
             </UiButton>
             <UiButton type="submit" variant="primary" :disabled="isLoading">
                 <template v-if="isLoading">
-                    <span>Post Story...</span>
+                    <span>Post Story</span>
                     <Icon icon="lucide:loader-2" class="animate-custom-spin" />
                 </template>
                 <template v-else>
                     <span>Post Story</span>
+                    <Icon icon="lucide:plus" class="animate-custom-spin" />
                 </template>
             </UiButton>
         </div>
