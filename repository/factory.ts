@@ -21,7 +21,6 @@ class FetchFactory<T> {
         const headers: any = {
             Accept: 'application/json',
             Origin: appBaseUrl,
-            'Content-Type': 'application/json',
             ...clientCookies
         }
 

@@ -16,9 +16,9 @@ export interface IStoryItem {
 
 export interface IStoryForm {
     title: string
-    category: string
+    category_id: string
     content: string
-    coverImage: string
+    content_image: string
 }
 
 export interface IStoryReturn {

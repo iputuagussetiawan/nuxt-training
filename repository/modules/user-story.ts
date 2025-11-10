@@ -20,9 +20,6 @@ interface IStore {
         content: number
         content_images: string
         category_id: string
-        user_id: string
-        updated_at: string
-        created_at: string
     }
 }
 
