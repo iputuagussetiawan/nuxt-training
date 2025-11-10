@@ -10,16 +10,7 @@ export default defineNuxtConfig({
         '@pinia/nuxt',
         '@pinia/nuxt'
     ],
-    veeValidate: {
-        autoImports: true
-    },
-    googleFonts: {
-        families: {
-            'DM+Sans': [400, 500, 700], // choose weights you need
-            'Playfair+Display': [400, 700]
-        },
-        display: 'swap'
-    },
+
     css: ['@/assets/scss/main.scss'],
     vite: {
         css: {
@@ -39,5 +30,15 @@ export default defineNuxtConfig({
                 process.env.API_BASE_URL ||
                 'https://timestory.tmdsite.my.id/api'
         }
+    },
+    veeValidate: {
+        autoImports: true
+    },
+    googleFonts: {
+        families: {
+            'DM+Sans': [400, 500, 700], // choose weights you need
+            'Playfair+Display': [400, 700]
+        },
+        display: 'swap'
     }
 })
