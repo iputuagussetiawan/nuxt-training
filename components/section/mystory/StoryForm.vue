@@ -140,7 +140,6 @@ onMounted(() => {
                 </template>
                 <template v-else>
                     <span>Post Story</span>
-                    <Icon icon="lucide:plus" class="animate-custom-spin" />
                 </template>
             </UiButton>
         </div>
