@@ -10,15 +10,15 @@ export interface IUser {
     updated_at?: string
 }
 
-export interface IUserUpdateProfileImage {
-    id: number
-    profile_image: string
-}
-
 export interface IUserUpdateProfile {
     name: string
     about: string
     old_password: string
     new_password: string
     new_password_confirmation: string
+}
+
+export interface IUserUpdateProfileImage {
+    id: number
+    profile_image: string
 }

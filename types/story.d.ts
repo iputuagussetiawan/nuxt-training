@@ -14,6 +14,13 @@ export interface IStoryItem {
     created_at: string
 }
 
+export interface IStoryForm {
+    title: string
+    category: string
+    content: string
+    coverImage: string
+}
+
 export interface IStoryReturn {
     id: number | string
     image: string

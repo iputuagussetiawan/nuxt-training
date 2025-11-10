@@ -1,20 +1,14 @@
 <script setup>
-import Button from '~/components/ui/Button.vue'
-import vSelect from 'vue-select'
-import { categories as categoriesMock } from '~/data/categories'
-import 'vue-select/dist/vue-select.css'
-import '~/assets/scss/components/ui/Input.scss'
-import '~/assets/scss/components/ui/Label.scss'
+import UiButton from '~/components/ui/Button.vue'
 import ImageUpload from '~/components/ui/ImageUpload.vue'
-
-const allCategoryNames = computed(() => categoriesMock.map((cat) => cat.title))
+import StoryForm from '~/components/section/mystory/StoryForm.vue'
 </script>
 
 <template>
     <section class="create-story">
         <div class="container">
             <div class="create-story__header">
-                <Button type="link" href="/dashboard/" variant="icon">
+                <UiButton type="link" href="/dashboard/" variant="icon">
                     <svg
                         class="create-story__header-icon"
                         width="60"
@@ -32,49 +26,11 @@ const allCategoryNames = computed(() => categoriesMock.map((cat) => cat.title))
                             fill="#222222"
                         />
                     </svg>
-                </Button>
+                </UiButton>
                 <h1 class="create-story__header-title">Write Story</h1>
             </div>
             <div class="create-story__body">
-                <form action="" class="create-story__form">
-                    <div class="form-group">
-                        <label class="form-label" for="">Title</label>
-                        <input
-                            type="text"
-                            class="form-control"
-                            placeholder="Enter a story title"
-                            id="title"
-                            name="title"
-                        />
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="">Category</label>
-                        <client-only>
-                            <v-select
-                                v-model="selectedOptionCategory"
-                                :options="allCategoryNames"
-                                :searchable="true"
-                                placeholder="Select a category"
-                                name="category"
-                                id="category"
-                            />
-                        </client-only>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="">Content</label>
-                        <textarea
-                            class="form-control"
-                            placeholder="Enter a content here"
-                            id="content"
-                            name="content"
-                            rows="10"
-                        />
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="">Cover Image</label>
-                        <ImageUpload />
-                    </div>
-                </form>
+                <StoryForm />
             </div>
         </div>
     </section>
@@ -102,6 +58,11 @@ const allCategoryNames = computed(() => categoriesMock.map((cat) => cat.title))
         font-size: 44px;
         line-height: 1.3;
         color: #222222;
+    }
+    &__action {
+        margin-top: 60px;
+        display: inline-flex;
+        gap: 41px;
     }
 }
 </style>

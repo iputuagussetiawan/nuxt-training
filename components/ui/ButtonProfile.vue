@@ -2,9 +2,9 @@
 // 1. Imports
 import { computed, ref } from 'vue'
 import { useAuthStore } from '~/stores/auth'
-import Button from './Button.vue'
+import UiButton from './Button.vue'
 import UiProfileForm from '../section/ProfileForm.vue'
-import DialogConfirmation from './DialogConfirmation.vue'
+import UiDialogConfirmation from './DialogConfirmation.vue'
 import { useNuxtApp } from '#imports'
 
 // 2. Variable Declarations
@@ -96,17 +96,19 @@ const handleCloseDialog = () => {
 
         <!-- ✅ Logged Out State -->
         <div v-else class="button-profile-action">
-            <Button type="link" href="/register" variant="primary-outline">
+            <UiButton type="link" href="/register" variant="primary-outline">
                 Register
-            </Button>
-            <Button type="link" href="/login" variant="primary"> Login </Button>
+            </UiButton>
+            <UiButton type="link" href="/login" variant="primary">
+                Login
+            </UiButton>
         </div>
 
         <UiDialog v-model="isOpenDialogProfile">
             <UiProfileForm @close-dialog="handleCloseDialog" />
         </UiDialog>
 
-        <DialogConfirmation
+        <UiDialogConfirmation
             v-model="isOpenDialogLogout"
             title="Logout"
             message="Are you sure want to logout?"
