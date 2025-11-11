@@ -1,9 +1,12 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useAuthStore } from '~/stores/auth'
 import Button from '~/components/ui/Button.vue'
+import UiDialog from '~/components/ui/Dialog.vue'
+import UiProfileForm from '../ProfileForm.vue'
 const authStore = useAuthStore()
 // ✅ Computed properties for cleaner template
+const isOpenDialogProfile = ref(false)
 const userName = computed(() => authStore.user?.name || 'User')
 const userEmail = computed(() => authStore.user?.email || 'yourmail@gmail.com')
 const userImage = computed(
@@ -11,6 +14,13 @@ const userImage = computed(
         authStore.user?.profile_image ||
         'https://avatars.githubusercontent.com/u/583231?v=4'
 )
+
+const handleOpenDialogProfile = () => {
+    isOpenDialogProfile.value = true
+}
+const handleCloseDialogProfile = () => {
+    isOpenDialogProfile.value = false
+}
 </script>
 
 <template>
@@ -33,12 +43,19 @@ const userImage = computed(
                     </div>
                 </div>
                 <div class="author-info__action">
-                    <Button type="link" href="/login" variant="primary"
+                    <Button
+                        @click="handleOpenDialogProfile"
+                        type="button"
+                        variant="primary"
                         >Edit Profile</Button
                     >
                 </div>
             </div>
         </div>
+
+        <UiDialog v-model="isOpenDialogProfile">
+            <UiProfileForm @close-dialog="handleCloseDialogProfile" />
+        </UiDialog>
     </section>
 </template>
 

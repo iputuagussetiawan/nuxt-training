@@ -6,6 +6,7 @@ import UiButton from './Button.vue'
 import UiProfileForm from '../section/ProfileForm.vue'
 import UiDialogConfirmation from './DialogConfirmation.vue'
 import { useNuxtApp } from '#imports'
+import UiDialog from './Dialog.vue'
 
 // 2. Variable Declarations
 const { $api } = useNuxtApp()
@@ -82,6 +83,14 @@ const handleCloseDialog = () => {
                     >
                         My Profile
                     </button>
+                </li>
+                <li>
+                    <NuxtLink
+                        :to="`/dashboard/story/`"
+                        class="button-profile__dropdown-link"
+                    >
+                        My Stories
+                    </NuxtLink>
                 </li>
                 <li>
                     <button

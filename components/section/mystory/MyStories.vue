@@ -6,23 +6,28 @@ import CardStory from '~/components/ui/CardStory.vue'
 import Pagination from '~/components/ui/Pagination.vue'
 import MyStoriesBlank from './MyStoriesBlank.vue'
 import { useNuxtApp } from '#imports'
-import { useAuthStore } from '~/stores/auth'
+import UiDialogConfirmation from '~/components/ui/DialogConfirmation.vue'
+import { useRouter } from 'vue-router'
 
-const authStore = useAuthStore()
 const myStoryList: Ref<IStoryItem[]> = ref([])
+const storyId: Ref<string> = ref('')
 const myStoriesMeta = ref({ last_page: 0 })
 const loading = ref(true) // skeleton state
 const currentPage = ref(1)
-const { $api } = useNuxtApp()
+const isLoadingDelete = ref(false)
+const isOpenDialogDelete = ref(false)
+const router = useRouter()
 
-const userId = computed(() => authStore.user?.id || '0')
+const isLoadingEdit = ref(false)
+const isOpenDialogEdit = ref(false)
+const { $api } = useNuxtApp()
 
 const getMyStories = async (): Promise<void> => {
     try {
         loading.value = true
         const response = await $api.userStory.list({
             query: {
-                limit: 10,
+                limit: 1000,
                 page: currentPage.value
             }
         })
@@ -37,12 +42,64 @@ const getMyStories = async (): Promise<void> => {
 }
 
 getMyStories()
+
+const onEditStory = (id?: string | number) => {
+    console.log('Edit story with id:', id)
+    isOpenDialogEdit.value = true
+    storyId.value = id as string
+    // navigate or open modal, etc.
+}
+
+const onDeleteStory = async (id?: string | number) => {
+    console.log(id)
+    storyId.value = id as string
+    isOpenDialogDelete.value = true
+}
+
+const handleConfirmDelete = async () => {
+    try {
+        //TO-DO: Call the API to delete the story
+        let currentStoryId = storyId.value
+        isLoadingDelete.value = true
+
+        const response = await $api.userStory.delete({
+            params: {
+                storyId: currentStoryId
+            }
+        })
+        await getMyStories()
+        console.log(response)
+    } catch (error) {
+        console.error('Error Delete Story:', error)
+    } finally {
+        isLoadingDelete.value = false
+        isOpenDialogDelete.value = false
+    }
+}
+
+const handleConfirmEdit = () => {
+    try {
+        //TO-DO: Call the API to delete the story
+        let currentStoryId = storyId.value
+
+        router.push({
+            name: 'dashboard-story-id-edit',
+            params: { id: currentStoryId }
+        })
+        isLoadingEdit.value = true
+    } catch (error) {
+        console.error('Error Delete Story:', error)
+    } finally {
+        isLoadingEdit.value = false
+        isOpenDialogDelete.value = false
+    }
+}
 </script>
 <template>
     <section class="my-story">
         <div class="container">
             <div class="my-story__header">
-                <h2 class="my-story__title">My Story: {{ userId }}</h2>
+                <h2 class="my-story__title">My Story</h2>
             </div>
             <div class="my-story__inner">
                 <div class="my-story__action-wrapper">
@@ -51,6 +108,7 @@ getMyStories()
                             <h3 class="my-story__action-title">
                                 Write your story
                             </h3>
+                            <p>Current Story Id: {{ storyId }}</p>
                             <div class="my-story__action-description">
                                 Share your unique voice with the world – start
                                 writing your story today!
@@ -77,11 +135,15 @@ getMyStories()
                         <CardStory
                             v-for="story in myStoryList"
                             :key="story.id"
+                            :id="story.id"
                             :imageUrl="story.content_image"
                             :title="story.title"
                             :description="story.content"
                             :dateCreated="story.created_at"
                             :linkTo="`/story/${story.id}`"
+                            :for-author="true"
+                            @edit="onEditStory"
+                            @delete="onDeleteStory"
                         />
                         <div class="my-story__pagination-wrapper">
                             <Pagination
@@ -97,6 +159,22 @@ getMyStories()
                 </div>
             </div>
         </div>
+        <UiDialogConfirmation
+            v-model="isOpenDialogDelete"
+            title="Delete Story"
+            message="Are you sure want delete this story?"
+            buttonText="Delete Story"
+            :isLoading="isLoadingDelete"
+            @confirm="handleConfirmDelete"
+        />
+        <UiDialogConfirmation
+            v-model="isOpenDialogEdit"
+            title="Edit Story"
+            message="Are you sure want edit this story?"
+            buttonText="Edit Story"
+            :isLoading="isLoadingEdit"
+            @confirm="handleConfirmEdit"
+        />
     </section>
 </template>
 
