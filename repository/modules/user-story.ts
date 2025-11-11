@@ -50,8 +50,8 @@ class UserStoryModule extends FetchFactory<any> {
 
     update(payload: IStore & IDetail) {
         const { body, params } = payload
-        return super.call(`/api/user/story/1`, {
-            method: 'PUT',
+        return super.call(`/api/user/story/${params.storyId}`, {
+            method: 'PATCH',
             body
         })
     }

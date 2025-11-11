@@ -8,7 +8,8 @@ export default defineNuxtConfig({
         '@vee-validate/nuxt',
         '@nuxt/icon',
         '@pinia/nuxt',
-        '@pinia/nuxt'
+        '@pinia/nuxt',
+        'nuxt-tiptap-editor'
     ],
 
     css: ['@/assets/scss/main.scss'],

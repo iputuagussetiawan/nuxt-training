@@ -8,9 +8,15 @@ import UiButton from '~/components/ui/Button.vue'
 import UiFormInput from '~/components/ui/FormInput.vue'
 import UiImageUpload from '~/components/ui/ImageUpload.vue'
 import FormSelect from '~/components/ui/FormSelect.vue'
-import type { IStoryForm } from '~/types/story'
+import type { IStoryForm, IStoryItem } from '~/types/story'
 import type { ICategory } from '~/types/category'
 import { Icon } from '@iconify/vue'
+import TiptapEditor from '~/components/ui/TiptapEditor.vue'
+
+const props = defineProps<{
+    initialValues?: IStoryItem | null
+    storyId?: string | number
+}>()
 
 // 2. Variable Declarations
 const { $api } = useNuxtApp()
@@ -22,10 +28,10 @@ const isLoading = ref(false)
 const errorMessage = ref<string>('')
 
 const initialValues = ref({
-    title: '',
-    category_id: '',
-    content: '',
-    content_image: ''
+    title: props.initialValues?.title || '',
+    category_id: props.initialValues?.category.id || '',
+    content: props.initialValues?.content || '',
+    content_image: props.initialValues?.content_image || ''
 })
 
 const allCategoryOptions = computed(() => {
@@ -60,13 +66,28 @@ const handleSubmit = async (values: IStoryForm) => {
         console.log('value', values)
         console.log('form data', data)
 
-        const response = await $api.userStory.store({
-            body: data
-        })
-        console.log('✅ Success Insert Story:', response)
+        let response
+        if (props.storyId) {
+            // ✅ UPDATE mode
+            response = await $api.userStory.update({
+                params: { storyId: props.storyId },
+                body: data
+            })
+
+            console.log('data', data)
+            console.log('✅ Success Update Story:', response)
+        } else {
+            // ✅ INSERT mode
+            response = await $api.userStory.store({ body: data })
+            console.log('✅ Success Insert Story:', response)
+        }
         router.push({ name: 'dashboard-story' })
     } catch (error: any) {
-        console.error('❌ Error Insert Story:', error)
+        if (props.storyId) {
+            console.error('❌ Error Update Story:', error)
+        } else {
+            console.error('❌ Error Insert Story:', error)
+        }
         // ✅ Handle different error types safely
         if (error?.data?.message) {
             errorMessage.value = error.data.message
@@ -122,15 +143,22 @@ onMounted(() => {
             placeholder="Select a category"
             :searchable="false"
         />
-        <UiFormInput
+        <!-- <UiFormInput
             name="content"
             label="Content"
             type="textarea"
             placeholder="Enter a content here"
-        />
+        /> -->
+
+        <TiptapEditor name="content" label="Story Content" />
+
         <UiImageUpload name="content_image" label="Cover Image" />
         <div class="story-form__action">
-            <UiButton type="link" href="/dashboard" variant="primary-outline">
+            <UiButton
+                type="link"
+                href="/dashboard/story"
+                variant="primary-outline"
+            >
                 Cancel
             </UiButton>
             <UiButton type="submit" variant="primary" :disabled="isLoading">

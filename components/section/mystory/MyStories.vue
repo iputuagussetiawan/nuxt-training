@@ -297,10 +297,6 @@ const handleConfirmEdit = () => {
     }
 
     &__action {
-        .btn {
-            width: 100%;
-            text-align: center;
-        }
     }
 
     &__listing {
