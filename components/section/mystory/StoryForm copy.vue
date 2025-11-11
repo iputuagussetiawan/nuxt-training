@@ -11,7 +11,6 @@ import FormSelect from '~/components/ui/FormSelect.vue'
 import type { IStoryForm, IStoryItem } from '~/types/story'
 import type { ICategory } from '~/types/category'
 import { Icon } from '@iconify/vue'
-import TiptapEditor from '~/components/ui/TiptapEditor.vue'
 
 const props = defineProps<{
     initialValues?: IStoryItem | null
@@ -143,22 +142,16 @@ onMounted(() => {
             placeholder="Select a category"
             :searchable="false"
         />
-        <!-- <UiFormInput
+        <UiFormInput
             name="content"
             label="Content"
             type="textarea"
             placeholder="Enter a content here"
-        /> -->
-
-        <TiptapEditor name="content" label="Story Content" />
+        />
 
         <UiImageUpload name="content_image" label="Cover Image" />
         <div class="story-form__action">
-            <UiButton
-                type="link"
-                href="/dashboard/story"
-                variant="primary-outline"
-            >
+            <UiButton type="link" href="/dashboard" variant="primary-outline">
                 Cancel
             </UiButton>
             <UiButton type="submit" variant="primary" :disabled="isLoading">

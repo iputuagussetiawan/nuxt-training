@@ -1,6 +1,5 @@
 <script setup>
 import UiButton from '~/components/ui/Button.vue'
-import ImageUpload from '~/components/ui/ImageUpload.vue'
 import StoryForm from '~/components/section/mystory/StoryForm.vue'
 </script>
 
