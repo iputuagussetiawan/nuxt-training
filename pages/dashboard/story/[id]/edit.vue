@@ -1,8 +1,42 @@
-<script setup>
+<script setup lang="ts">
+import { ref, onMounted, type Ref } from 'vue'
+import { useRoute, useNuxtApp } from '#imports'
 import UiButton from '~/components/ui/Button.vue'
 import StoryForm from '~/components/section/mystory/StoryForm.vue'
+import type { IStoryItem } from '~/types/story'
+
 const route = useRoute()
-const id = route.params.id
+const { $api } = useNuxtApp()
+
+// ✅ Route param
+const id = route.params.id as string
+
+// ✅ Reactive states
+const myStoryDetail: Ref<IStoryItem | null> = ref(null)
+const loading = ref(true)
+
+// ✅ Fetch story detail
+const getMyStoryDetail = async () => {
+    try {
+        loading.value = true
+        const response = await $api.userStory.detail({
+            params: {
+                storyId: id
+            }
+        })
+        myStoryDetail.value = response.data
+        console.log('Story detail:', myStoryDetail.value)
+    } catch (error) {
+        console.error('Failed to fetch detail story:', error)
+    } finally {
+        loading.value = false
+    }
+}
+
+// ✅ Run on mount
+onMounted(() => {
+    getMyStoryDetail()
+})
 </script>
 
 <template>
@@ -28,10 +62,20 @@ const id = route.params.id
                         />
                     </svg>
                 </UiButton>
+
                 <h1 class="edit-story__header-title">Edit Story : {{ id }}</h1>
             </div>
+
             <div class="edit-story__body">
-                <StoryForm />
+                <!-- ✅ Loading state -->
+                <div v-if="loading">Loading story details...</div>
+
+                <!-- ✅ Pass story data to form once loaded -->
+                <StoryForm
+                    v-else
+                    :initial-values="myStoryDetail"
+                    :story-Id="id"
+                />
             </div>
         </div>
     </section>
@@ -39,7 +83,8 @@ const id = route.params.id
 
 <style scoped lang="scss">
 .edit-story {
-    padding: 124px 0px 218px 0px;
+    padding: 124px 0 218px 0;
+
     &__header {
         margin-bottom: 60px;
         display: flex;
@@ -53,17 +98,16 @@ const id = route.params.id
     }
 
     &__header-title {
-        margin: 0px;
+        margin: 0;
         font-family: $font-secondary;
         font-weight: 600;
         font-size: 44px;
         line-height: 1.3;
         color: #222222;
     }
-    &__action {
-        margin-top: 60px;
-        display: inline-flex;
-        gap: 41px;
+
+    &__body {
+        margin-top: 40px;
     }
 }
 </style>

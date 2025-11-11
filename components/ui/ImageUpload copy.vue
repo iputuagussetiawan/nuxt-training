@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { useField } from 'vee-validate'
 
 // Props: similar to your UiFormInput
 const props = defineProps<{
     name: string
     label?: string
+    initialImage?: string
 }>()
 
 // Integrate with VeeValidate form state
@@ -36,10 +37,10 @@ const removeImage = () => {
     selectedImage.value = null
     setValue(null)
 
-    const input = document.getElementById(
-        `file-upload-${props.name}`
-    ) as HTMLInputElement
-    if (input) input.value = ''
+    // const input = document.getElementById(
+    //     `file-upload-${props.name}`
+    // ) as HTMLInputElement
+    // if (input) input.value = ''
 }
 
 // Sync with form if value changes externally
@@ -51,6 +52,28 @@ watch(
         }
     }
 )
+
+// 🔁 If form value changes externally, update preview
+watch(
+    () => value.value,
+    (newVal) => {
+        if (newVal instanceof File) {
+            selectedImage.value = URL.createObjectURL(newVal)
+        } else if (typeof newVal === 'string') {
+            selectedImage.value = newVal
+        } else if (!newVal) {
+            selectedImage.value = props.initialImage || null
+        }
+    }
+)
+
+onMounted(() => {
+    if (props.initialImage) {
+        selectedImage.value = props.initialImage
+
+        console.log('selectedImage.value', selectedImage.value)
+    }
+})
 </script>
 
 <template>
