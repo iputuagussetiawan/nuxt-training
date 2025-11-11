@@ -361,6 +361,10 @@ onBeforeUnmount(() => {
         font-size: 18px;
         transition: all 0.2s ease;
 
+        svg {
+            vertical-align: middle;
+        }
+
         &:hover {
             background-color: #e5e7eb;
         }
