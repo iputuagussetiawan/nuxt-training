@@ -26,7 +26,7 @@ class UserModule extends FetchFactory<any> {
     updateProfile(payload: UpdateProfileRequest) {
         const { body } = payload
         return super.call('/api/me', {
-            method: 'PUT',
+            method: 'PATCH',
             body
         })
     }

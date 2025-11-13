@@ -28,25 +28,19 @@ const openFilePicker = () => {
 const handleFileChange = async (event: Event) => {
     const target = event.target as HTMLInputElement
     const file = target.files?.[0]
-
     if (file) {
         const reader = new FileReader()
         reader.onload = (e) => {
             previewUrl.value = e.target?.result as string
         }
         reader.readAsDataURL(file)
-
         try {
             const formData = new FormData()
             formData.append('profile_image', file)
             const response = await $api.user.uploadUserProfileImage({
                 body: formData
             })
-            console.log('✅ Success Insert Story:', response)
-
             await authStore.getUserProfile()
-
-            console.log('✅ Success Upload Image:', response)
         } catch (error: any) {
             console.error('❌ Error Upload Image:', error)
             profileUploadError.value = error.message

@@ -21,45 +21,22 @@ const isLoading = ref(false)
 const errorMessage = ref<string>('')
 
 const userName = computed(() => authStore.user?.name || 'User')
-const userUsername = computed(() => authStore.user?.username || 'username')
 const userEmail = computed(() => authStore.user?.email || 'yourmail@gmail.com')
 const userAbout = computed(() => authStore.user?.about || '')
-const userImage = computed(
-    () =>
-        authStore.user?.profile_image ||
-        'https://avatars.githubusercontent.com/u/583231?v=4'
-)
 
 const initialValues = ref({
     name: userName.value,
-    username: userUsername.value,
     email: userEmail.value,
-    about: userAbout.value,
-    old_password: '',
-    new_password: '',
-    confirm_password: ''
+    about: userAbout.value
 })
 
 // ✅ Yup validation schema for register form
 const profileFormSchema = yup.object({
-    name: yup.string().required('Name is required'),
-    username: yup.string().required('Username is required'),
-    email: yup
+    name: yup
         .string()
-        .email('Please enter a valid email')
-        .required('Email is required'),
-    old_password: yup
-        .string()
-        .min(6, 'Password must be at least 6 characters')
-        .required('Password is required'),
-    new_password: yup
-        .string()
-        .oneOf([yup.ref('confirm_password')], 'Passwords must match')
-        .required('Please confirm your password'),
-    confirm_password: yup
-        .string()
-        .oneOf([yup.ref('new_password')], 'Passwords must match')
-        .required('Please confirm your password')
+        .required('Name is required')
+        .max(50, 'Maximum 50 characters allowed'),
+    about: yup.string().max(300, 'Maximum 300 characters allowed')
 })
 
 // 3. Methods/Functions
@@ -70,8 +47,9 @@ const handleSubmit = async (values: IUserUpdateProfile) => {
         const response = await $api.user.updateProfile({
             body: values
         })
+        authStore.getUserProfile()
         console.log('✅ Success Update Profile:', response)
-        router.push({ name: 'login' })
+        // router.push({ name: '/' })
     } catch (error: any) {
         console.error('❌ Error Update Profile:', error)
         // ✅ Handle different error types safely
@@ -99,12 +77,8 @@ watch(
         if (user) {
             initialValues.value = {
                 name: user.name || '',
-                username: user.username || '',
                 email: user.email || '',
-                about: user.about || '',
-                old_password: '',
-                new_password: '',
-                confirm_password: ''
+                about: user.about || ''
             }
         }
     },
@@ -115,15 +89,18 @@ watch(
 <template>
     <div class="profile-form">
         <h2 class="profile-form__title">Edit Profile</h2>
-        <Form
-            :initial-values="initialValues"
-            :validation-schema="profileFormSchema"
-            :enable-reinitialize="true"
-            @submit="handleSubmit as (values: IUserUpdateProfile) => void"
-            class="profile-form__form"
-        >
-            <div class="profile-form__inner">
-                <div class="profile-form__left">
+
+        <div class="profile-form__inner">
+            <div class="profile-form__left">
+                <Form
+                    :initial-values="initialValues"
+                    :validation-schema="profileFormSchema"
+                    :enable-reinitialize="true"
+                    @submit="
+                        handleSubmit as (values: IUserUpdateProfile) => void
+                    "
+                    class="profile-form__form"
+                >
                     <UiProfileUpload
                         defaultImage="https://avatars.githubusercontent.com/u/583231?v=4"
                     />
@@ -131,12 +108,6 @@ watch(
                         name="name"
                         label="Full Name"
                         placeholder="Enter your name"
-                    />
-                    <UiFormInput
-                        name="username"
-                        label="User Name"
-                        placeholder="User Name"
-                        :readonly="true"
                     />
                     <UiFormInput
                         name="email"
@@ -151,8 +122,6 @@ watch(
                         type="textarea"
                         placeholder="Enter your profile description"
                     />
-
-                    <!-- ✅ Error message display -->
                     <div v-if="errorMessage" class="profile-form__error">
                         {{ errorMessage }}
                     </div>
@@ -182,26 +151,26 @@ watch(
                             </template>
                         </UiButton>
                     </div>
-                </div>
-                <div class="profile-form__right">
-                    <UiFormInput
-                        name="old_password"
-                        label="Old Password"
-                        placeholder="Enter your old password"
-                    />
-                    <UiFormInput
-                        name="new_password"
-                        label="New Password"
-                        placeholder="Enter your new password"
-                    />
-                    <UiFormInput
-                        name="confirm_password"
-                        label="Confirm New Password"
-                        placeholder="Re-enter your new password"
-                    />
-                </div>
+                </Form>
             </div>
-        </Form>
+            <div class="profile-form__right">
+                <UiFormInput
+                    name="old_password"
+                    label="Old Password"
+                    placeholder="Enter your old password"
+                />
+                <UiFormInput
+                    name="new_password"
+                    label="New Password"
+                    placeholder="Enter your new password"
+                />
+                <UiFormInput
+                    name="confirm_password"
+                    label="Confirm New Password"
+                    placeholder="Re-enter your new password"
+                />
+            </div>
+        </div>
     </div>
 </template>
 
