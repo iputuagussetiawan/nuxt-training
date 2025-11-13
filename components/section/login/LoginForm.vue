@@ -52,7 +52,7 @@ const handleLogin = async (values: ILogin) => {
                 'An unexpected error occurred. Please try again.'
         }
     } finally {
-        isLoading.value = true
+        isLoading.value = false
     }
 }
 </script>
