@@ -10,9 +10,11 @@ import UiButton from '~/components/ui/Button.vue'
 import * as yup from 'yup'
 import UiFormInput from '~/components/ui/FormInput.vue'
 import UiProfileUpload from '../ui/ProfileUpload.vue'
+import { useCustomToast } from '~/composables/useCustomToast'
 
 // 2. Variable Declarations
 const { $api } = useNuxtApp()
+const toast = useCustomToast()
 const router = useRouter()
 const authStore = useAuthStore()
 const emit = defineEmits(['close-dialog'])
@@ -48,6 +50,7 @@ const handleSubmit = async (values: IUserUpdateProfile) => {
             body: values
         })
         authStore.getUserProfile()
+        toast.success('Success Update Profile')
         console.log('✅ Success Update Profile:', response)
         // router.push({ name: '/' })
     } catch (error: any) {

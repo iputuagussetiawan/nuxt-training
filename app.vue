@@ -4,6 +4,7 @@ import { useAuthStore } from './stores/auth'
 const authStore = useAuthStore()
 authStore.init()
 </script>
+
 <template>
     <div>
         <NuxtLayout>
@@ -11,3 +12,5 @@ authStore.init()
         </NuxtLayout>
     </div>
 </template>
+
+<style scoped></style>
