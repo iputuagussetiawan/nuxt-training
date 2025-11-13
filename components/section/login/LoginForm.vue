@@ -39,7 +39,7 @@ const handleLogin = async (values: ILogin) => {
         // ✅ Save token securely using Nuxt useCookie() using pinia
         authStore.setToken(response.data.token)
         authStore.setUserProfile(response.data.user)
-        router.push({ name: 'dashboard' })
+        router.push({ name: 'dashboard/story' })
     } catch (error: any) {
         console.error('❌ Error Login:', error)
         // ✅ Handle different error types safely
