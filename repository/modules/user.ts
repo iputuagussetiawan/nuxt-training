@@ -18,14 +18,14 @@ interface UpdateProfileRequest {
 // Create the ProductModule class
 class UserModule extends FetchFactory<any> {
     getProfile() {
-        return super.call('/api/user/profile', {
+        return super.call('/api/me', {
             method: 'GET'
         })
     }
 
     updateProfile(payload: UpdateProfileRequest) {
         const { body } = payload
-        return super.call('/api/user/profile', {
+        return super.call('/api/me', {
             method: 'PUT',
             body
         })
@@ -33,7 +33,7 @@ class UserModule extends FetchFactory<any> {
 
     uploadUserProfileImage(payload: UpdateProfileImageRequest) {
         const { body } = payload
-        return super.call('/api/user/profile', {
+        return super.call('/api/me/profile-image', {
             method: 'POST',
             body
         })

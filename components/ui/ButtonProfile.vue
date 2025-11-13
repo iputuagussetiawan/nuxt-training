@@ -86,7 +86,7 @@ const handleCloseDialog = () => {
                 </li>
                 <li>
                     <NuxtLink
-                        :to="`/dashboard/story/`"
+                        :to="{ name: 'dashboard-story' }"
                         class="button-profile__dropdown-link"
                     >
                         My Stories
@@ -105,10 +105,14 @@ const handleCloseDialog = () => {
 
         <!-- ✅ Logged Out State -->
         <div v-else class="button-profile-action">
-            <UiButton type="link" href="/register" variant="primary-outline">
+            <UiButton
+                type="link"
+                :to="{ name: 'register' }"
+                variant="primary-outline"
+            >
                 Register
             </UiButton>
-            <UiButton type="link" href="/login" variant="primary">
+            <UiButton type="link" :to="{ name: 'login' }" variant="primary">
                 Login
             </UiButton>
         </div>

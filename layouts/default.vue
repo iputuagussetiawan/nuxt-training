@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import DefaultHeader from '../components/layout/default/Header.vue'
 import DefaultFooter from '../components/layout/default/Footer.vue'
+// import { useAuthStore } from '../stores/auth'
+// const authStore = useAuthStore()
+// authStore.init()
 </script>
 
 <template>

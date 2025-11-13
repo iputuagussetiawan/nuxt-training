@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useAuthStore, useCookie } from '#imports'
+import { useAuthStore, useCookie, useNuxtApp } from '#imports'
 import { ref } from 'vue'
 
 // Props (optional default image)
@@ -7,11 +7,19 @@ interface Props {
     defaultImage?: string
 }
 
+const { $api } = useNuxtApp()
 const props = defineProps<Props>()
 const authStore = useAuthStore()
 
+const currentProfileImage = authStore.user?.profile_image
+
 const fileInput = ref<HTMLInputElement | null>(null)
 const previewUrl = ref<string | null>(null)
+const profileUploadError = ref<string | null>(null)
+
+if (currentProfileImage) {
+    previewUrl.value = currentProfileImage
+}
 
 const openFilePicker = () => {
     fileInput.value?.click()
@@ -31,22 +39,17 @@ const handleFileChange = async (event: Event) => {
         try {
             const formData = new FormData()
             formData.append('profile_image', file)
-            const response = await $fetch(
-                'https://timestory.tmdsite.my.id/api/user/upload-profile-image',
-                {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        Authorization: `Bearer ${useCookie('auth_token').value}`
-                    }
-                }
-            )
+            const response = await $api.user.uploadUserProfileImage({
+                body: formData
+            })
+            console.log('✅ Success Insert Story:', response)
 
             await authStore.getUserProfile()
 
-            console.log('✅ Success Register:', response)
+            console.log('✅ Success Upload Image:', response)
         } catch (error: any) {
-            console.error('❌ Error Register:', error)
+            console.error('❌ Error Upload Image:', error)
+            profileUploadError.value = error.message
         } finally {
             // isLoading.value = false
             console.log('finish')
@@ -55,71 +58,125 @@ const handleFileChange = async (event: Event) => {
 }
 </script>
 <template>
-    <div class="profile-upload">
-        <!-- Profile image preview -->
-        <div class="profile-image">
-            <img :src="previewUrl || defaultImage" alt="Profile Picture" />
+    <div class="profile-upload" :class="{ error: profileUploadError }">
+        <div class="profile-upload__inner">
+            <!-- Profile image preview -->
+            <div class="profile-upload__image-container">
+                <img
+                    class="profile-upload__image"
+                    :src="previewUrl || defaultImage"
+                    alt="Profile Picture"
+                />
+            </div>
+
+            <!-- Hidden file input -->
+            <input
+                ref="fileInput"
+                type="file"
+                accept="image/*"
+                class="profile-upload__input"
+                @change="handleFileChange"
+            />
+
+            <!-- Button -->
+            <button
+                type="button"
+                class="profile-upload__button"
+                @click="openFilePicker"
+            >
+                Change Picture
+            </button>
         </div>
-
-        <!-- Hidden file input -->
-        <input
-            ref="fileInput"
-            type="file"
-            accept="image/*"
-            class="hidden-input"
-            @change="handleFileChange"
-        />
-
-        <!-- Button -->
-        <button type="button" class="change-btn" @click="openFilePicker">
-            Change Picture
-        </button>
+        <div v-if="profileUploadError" class="profile-upload__error">
+            {{ profileUploadError }}
+        </div>
     </div>
 </template>
 
 <style scoped lang="scss">
 .profile-upload {
     margin-bottom: 24px;
-    display: flex;
-    align-items: center;
-    gap: 20px;
-}
 
-/* Circle image */
-.profile-image {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    overflow: hidden;
-    flex-shrink: 0;
+    .error &__image-container {
+        border: 2px dashed red;
+        &::before {
+            content: 'Image Error';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #fff;
+            font-size: 12px;
+            width: 100%;
+            text-align: center;
+            z-index: 2;
+        }
 
-    img {
+        &::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background-color: red;
+            opacity: 0.5;
+            font-size: 12px;
+            width: 100%;
+            text-align: center;
+        }
+    }
+
+    &__inner {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    &__image-container {
+        position: relative;
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        overflow: hidden;
+        flex-shrink: 0;
+    }
+
+    &__image {
         width: 100%;
         height: 100%;
         object-fit: cover;
     }
-}
 
-/* Hidden input field */
-.hidden-input {
-    display: none;
-}
+    &__input {
+        display: none;
+    }
 
-/* Button styling */
-.change-btn {
-    background: transparent;
-    color: #2b5e33;
-    border: 2px solid #2b5e33;
-    border-radius: 8px;
-    padding: 10px 20px;
-    font-size: 16px;
-    font-weight: 500;
-    transition: all 0.3s ease;
+    &__button {
+        background: transparent;
+        color: #2b5e33;
+        border: 2px solid #2b5e33;
+        border-radius: 8px;
+        padding: 10px 20px;
+        font-size: 16px;
+        font-weight: 500;
+        transition: all 0.3s ease;
 
-    &:hover {
-        background-color: #2b5e33;
+        &:hover {
+            background-color: #2b5e33;
+            color: #fff;
+            cursor: pointer;
+        }
+    }
+
+    &__error {
+        display: inline-block;
+        background-color: #e63946;
+        padding: 10px;
+        font-size: 14px;
+        border-radius: 4px;
         color: #fff;
-        cursor: pointer;
+        margin-top: 10px;
     }
 }
 </style>

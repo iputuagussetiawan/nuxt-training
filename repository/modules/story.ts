@@ -30,7 +30,7 @@ interface IStore {
 class StoryModule extends FetchFactory<any> {
     list(payload: IList) {
         // Use the base call() method from FetchFactory
-        return super.call('api/story', {
+        return super.call('api/stories', {
             method: 'GET',
             query: payload.query
         })
@@ -38,7 +38,7 @@ class StoryModule extends FetchFactory<any> {
 
     detail(payload: IDetail) {
         const { params } = payload
-        return super.call(`/api/story/${params.storyId}`, {
+        return super.call(`/api/stories/${params.storyId}`, {
             method: 'GET'
         })
     }

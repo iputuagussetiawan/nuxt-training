@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { NuxtLink } from '#components'
+
+// --- Types
 type ButtonType = 'button' | 'submit' | 'link'
 type ButtonVariant = 'primary' | 'primary-outline' | 'secondary' | 'icon'
 
 interface ButtonProps {
     type?: ButtonType
     variant?: ButtonVariant
-    href?: string // for link type
+    to?: string | Record<string, any> // for NuxtLink or external link
     disabled?: boolean
 }
 
@@ -17,29 +19,45 @@ const props = withDefaults(defineProps<ButtonProps>(), {
     disabled: false
 })
 
-// Classes based on variant
-const classes = computed(() => {
-    return {
-        btn: true,
-        'btn-primary': props.variant === 'primary',
-        'btn-primary-outline': props.variant === 'primary-outline',
-        'btn-secondary': props.variant === 'secondary',
-        'btn-icon': props.variant === 'icon',
-        'btn--disabled': props.disabled
-    }
+// --- Detect if link is external
+const isExternal = computed(() => {
+    if (props.type !== 'link' || !props.to) return false
+    if (typeof props.to !== 'string') return false
+    return /^(https?:)?\/\//.test(props.to)
 })
+
+// --- Classes based on variant
+const classes = computed(() => ({
+    btn: true,
+    'btn-primary': props.variant === 'primary',
+    'btn-primary-outline': props.variant === 'primary-outline',
+    'btn-secondary': props.variant === 'secondary',
+    'btn-icon': props.variant === 'icon',
+    'btn--disabled': props.disabled
+}))
 </script>
 
 <template>
-    <component
-        :is="props.type === 'link' ? NuxtLink : 'button'"
-        :to="props.type === 'link' ? props.href : undefined"
-        :type="props.type !== 'link' ? props.type : undefined"
-        :class="classes"
-        :disabled="props.type !== 'link' ? props.disabled : undefined"
+    <!-- ✅ External link -->
+    <a
+        v-if="type === 'link' && isExternal"
+        :href="typeof to === 'string' ? to : undefined"
+        class="btn"
+        target="_blank"
+        rel="noopener noreferrer"
     >
         <slot />
-    </component>
+    </a>
+
+    <!-- ✅ Internal NuxtLink -->
+    <NuxtLink v-else-if="type === 'link'" :to="to" :class="classes">
+        <slot />
+    </NuxtLink>
+
+    <!-- ✅ Regular button -->
+    <button v-else :type="type" :class="classes" :disabled="disabled">
+        <slot />
+    </button>
 </template>
 
 <style scoped lang="scss">
@@ -53,11 +71,8 @@ const classes = computed(() => {
     line-height: 1.33;
     border-radius: 8px;
     text-decoration: none;
-    transition: all 0.4s ease-in-out;
-
-    &:hover {
-        cursor: pointer;
-    }
+    transition: all 0.3s ease;
+    cursor: pointer;
 
     @media only screen and (max-width: 1399.98px) {
         padding: 10px 24px;
@@ -74,32 +89,35 @@ const classes = computed(() => {
     }
 }
 
+.btn-primary {
+    background-color: $color-primary;
+    border-color: $color-primary;
+    color: #fff;
+
+    &:hover {
+        background-color: $color-primary-hover;
+        border-color: $color-primary-hover;
+    }
+}
+
 .btn-primary-outline {
     color: $color-primary;
-    background-color: transparent;
+    background: transparent;
+
     &:hover {
-        background-color: transparent;
         color: $color-primary-hover;
         border-color: $color-primary-hover;
     }
 }
 
-.btn-primary {
-    border: 2px solid $color-primary;
-    background-color: $color-primary;
-    color: #fff;
-    &:hover {
-        background-color: $color-primary-hover;
-        border: 2px solid $color-primary-hover;
-        color: #fff;
-    }
+.btn-secondary {
+    background-color: #ddd;
+    color: #333;
 }
 
 .btn-icon {
     border: none;
-    padding: 0px;
-    border-radius: 0px;
-    text-decoration: none;
+    padding: 0;
     display: flex;
     align-items: center;
     justify-content: center;

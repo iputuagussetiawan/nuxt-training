@@ -27,7 +27,7 @@ interface IStore {
 class UserStoryModule extends FetchFactory<any> {
     list(payload: IList) {
         // Use the base call() method from FetchFactory
-        return super.call('/api/user/stories', {
+        return super.call('/api/me/stories', {
             method: 'GET',
             query: payload.query
         })

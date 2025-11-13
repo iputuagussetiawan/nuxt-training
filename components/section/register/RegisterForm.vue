@@ -17,7 +17,6 @@ const isLoading = ref(false)
 const errorMessage = ref<string>('')
 const registerFormSchema = yup.object({
     name: yup.string().required('Name is required'),
-    username: yup.string().required('Username is required'),
     email: yup
         .string()
         .email('Please enter a valid email')
@@ -70,11 +69,6 @@ const handleSubmit = async (values: IRegister) => {
                 name="name"
                 label="Full Name"
                 placeholder="Enter your name"
-            />
-            <UiFormInput
-                name="username"
-                label="User Name"
-                placeholder="User Name"
             />
             <UiFormInput
                 name="email"

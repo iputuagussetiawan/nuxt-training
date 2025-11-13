@@ -16,7 +16,7 @@ interface LoginRequest {
 class AuthModule extends FetchFactory<any> {
     register(payload: RegisterRequest) {
         const { body } = payload
-        return super.call('api/register', {
+        return super.call('/api/register', {
             method: 'POST',
             body
         })
@@ -24,14 +24,14 @@ class AuthModule extends FetchFactory<any> {
 
     login(payload: LoginRequest) {
         const { body } = payload
-        return super.call('api/login', {
+        return super.call('/api/login', {
             method: 'POST',
             body
         })
     }
 
     logout() {
-        return super.call('api/logout', {
+        return super.call('/api/logout', {
             method: 'DELETE'
         })
     }
