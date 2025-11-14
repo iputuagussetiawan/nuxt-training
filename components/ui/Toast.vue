@@ -4,36 +4,55 @@ import {
     ToastRoot,
     ToastTitle,
     ToastDescription,
+    ToastAction,
     ToastViewport
 } from 'reka-ui'
+import { storeToRefs } from 'pinia'
+import { useToastStore } from '~/stores/toast'
+import { computed } from 'vue'
 
-// props
-const props = defineProps<{
-    title?: string
-    description?: string
-}>()
-// v-model:open support
-const open = defineModel<boolean>('open', { default: false })
+const toastStore = useToastStore()
+const { open, title, description, autoClose } = storeToRefs(toastStore)
+
+const duration = computed(() => (autoClose.value ? 4000 : 0))
+
+function closeToast() {
+    toastStore.close()
+}
 </script>
 
 <template>
-    <ToastProvider swipeDirection="up" :duration="4000">
-        <ToastRoot v-model:open="open" class="ToastRoot">
+    <ToastProvider swipeDirection="up" :duration="duration">
+        <ToastRoot v-model:open="open" class="ToastRoot toast">
             <ToastTitle class="ToastTitle">
-                {{ props.title }}
+                <div class="toast__title">
+                    {{ title }}
+                </div>
             </ToastTitle>
+
             <ToastDescription class="ToastDescription">
-                {{ props.description }}
+                <div class="toast__description">
+                    {{ description }}
+                </div>
             </ToastDescription>
+
+            <!-- Show close button only when autoClose is false -->
+            <ToastAction v-if="!autoClose" as-child alt-text="Close toast">
+                <button class="Button small green" @click="closeToast">
+                    Close
+                </button>
+            </ToastAction>
         </ToastRoot>
-        <ToastViewport class="ToastViewport" />
+
+        <ToastViewport class="ToastViewport toast__viewport" />
     </ToastProvider>
 </template>
-
 <style lang="scss" scoped>
-/* reset */
-button {
-    all: unset;
+.toast {
+    &__title {
+        font-size: 20px;
+        font-weight: 700;
+    }
 }
 
 :deep(.ToastViewport) {

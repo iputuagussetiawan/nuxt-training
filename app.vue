@@ -1,23 +1,39 @@
 <script setup lang="ts">
 import { useAuthStore } from './stores/auth'
-import Toast from './components/ui/Toast.vue'
-import { ref } from 'vue'
+import UiToast from './components/ui/Toast.vue'
+import { useToastStore } from './stores/toast'
 
 const authStore = useAuthStore()
 authStore.init()
-const toastOpen = ref(false)
+
+function save() {
+    // simulate success
+    console.log('success')
+    useToastStore().success('Saved successfully!')
+}
+
+function remove() {
+    // simulate error
+    useToastStore().error('Something went wrong')
+}
+
+function customToast() {
+    useToastStore().show({
+        title: 'Hello',
+        description: 'Custom toast example',
+        autoClose: false
+    })
+}
 </script>
 
 <template>
     <div>
         <NuxtLayout>
             <NuxtPage />
+            <UiToast />
+            <button @click="save">Show Success</button>
+            <button @click="remove">Show Error</button>
+            <button @click="customToast">Show Custom Toast</button>
         </NuxtLayout>
-        <button @click="toastOpen = true">Show Toast</button>
-        <Toast
-            v-model:open="toastOpen"
-            title="Success!"
-            description="Your data was saved."
-        />
     </div>
 </template>
