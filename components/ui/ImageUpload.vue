@@ -6,6 +6,9 @@ import { useField } from 'vee-validate'
 const props = defineProps<{
     name: string
     label?: string
+    error?: string
+    // onUpload?: (file: File) => void
+    // onRemove?: () => void
 }>()
 
 // Integrate with VeeValidate form state
@@ -29,6 +32,11 @@ const onFileChange = (event: Event) => {
         // ✅ Preview & update form value
         selectedImage.value = URL.createObjectURL(file)
         setValue(file)
+
+        // 🚀 Call upload callback
+        // if (props.onUpload) {
+        //     props.onUpload(file)
+        // }
     }
 }
 
@@ -40,21 +48,36 @@ const removeImage = () => {
         `file-upload-${props.name}`
     ) as HTMLInputElement
     if (input) input.value = ''
+
+    // if (props.onRemove) {
+    //     props.onRemove()
+    // }
 }
 
 // Sync with form if value changes externally
 watch(
     () => value.value,
     (newVal) => {
-        if (newVal) {
-            selectedImage.value = URL.createObjectURL(newVal)
+        if (!newVal) {
+            selectedImage.value = null
+            return
         }
-    }
+
+        // If backend gives URL
+        if (typeof newVal === 'string') {
+            selectedImage.value = newVal
+            return
+        }
+
+        // If user uploads a File
+        selectedImage.value = URL.createObjectURL(newVal)
+    },
+    { immediate: true }
 )
 </script>
 
 <template>
-    <div class="upload" :class="{ ' error': errorMessage }">
+    <div class="upload" :class="{ ' error': errorMessage || error }">
         <span v-if="label" class="upload__label-text">{{ label }}</span>
         <div class="upload__inner">
             <!-- Upload placeholder -->
@@ -117,8 +140,8 @@ watch(
         </div>
 
         <!-- Validation message -->
-        <p v-if="errorMessage" class="upload__error">
-            {{ errorMessage }}
+        <p v-if="errorMessage || error" class="upload__error">
+            {{ errorMessage || error }}
         </p>
     </div>
 </template>
@@ -137,6 +160,24 @@ watch(
 
     &.error &__text {
         color: #e63946;
+    }
+
+    &.error &__preview {
+        border: 2px dashed #e63946;
+        &::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background-color: #e63946;
+            opacity: 0.5;
+            font-size: 12px;
+            width: 100%;
+            text-align: center;
+            z-index: 2;
+        }
     }
     &__inner {
         display: flex;
@@ -202,6 +243,7 @@ watch(
         right: 12px;
         display: flex;
         gap: 8px;
+        z-index: 10;
     }
 
     &__btn {

@@ -22,6 +22,12 @@ interface IStore {
     }
 }
 
+interface IImage {
+    body: {
+        cover_image: string
+    }
+}
+
 // Create the ProductModule class
 class StoryModule extends FetchFactory<any> {
     list(payload: IList) {
@@ -59,6 +65,14 @@ class StoryModule extends FetchFactory<any> {
         const { params } = payload
         return super.call(`/api/stories/${params.storyId}`, {
             method: 'DELETE'
+        })
+    }
+
+    uploadCoverImage(payload: IImage & IDetail) {
+        const { body, params } = payload
+        return super.call(`/api/stories/${params.storyId}/cover`, {
+            method: 'POST',
+            body
         })
     }
 }

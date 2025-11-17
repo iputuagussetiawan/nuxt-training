@@ -43,7 +43,7 @@ onMounted(() => {
     <section class="edit-story">
         <div class="container">
             <div class="edit-story__header">
-                <UiButton type="link" href="/dashboard/" variant="icon">
+                <UiButton type="link" href="/dashboard/story" variant="icon">
                     <svg
                         class="edit-story__header-icon"
                         width="60"

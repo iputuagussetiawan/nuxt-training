@@ -52,9 +52,10 @@ onMounted(() => {
                     />
                 </div>
 
-                <div class="story-detail__info-container">
-                    {{ storiesData?.content }}
-                </div>
+                <div
+                    class="story-detail__info-container"
+                    v-html="storiesData?.content"
+                ></div>
             </div>
         </div>
     </section>
