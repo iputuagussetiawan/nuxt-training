@@ -9,6 +9,7 @@ import type { IRegister } from '~/types/auth'
 import * as yup from 'yup'
 import UiButton from '~/components/ui/Button.vue'
 import UiFormInput from '~/components/ui/FormInput.vue'
+import { useToastStore } from '~/stores/toast'
 
 // 2. Variable Declarations
 const { $api } = useNuxtApp()

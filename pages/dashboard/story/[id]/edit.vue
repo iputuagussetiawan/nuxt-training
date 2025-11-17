@@ -19,7 +19,7 @@ const loading = ref(true)
 const getMyStoryDetail = async () => {
     try {
         loading.value = true
-        const response = await $api.userStory.detail({
+        const response = await $api.story.detail({
             params: {
                 storyId: id
             }

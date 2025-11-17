@@ -62,7 +62,7 @@ const emit = defineEmits(['update:modelValue'])
 const { value, errorMessage, handleChange } = useField<string>(props.name)
 
 const editor = useEditor({
-    content: '',
+    content: value.value || '',
     extensions: [
         StarterKit,
         Underline,
@@ -79,6 +79,17 @@ const editor = useEditor({
         emit('update:modelValue', html)
     }
 })
+
+watch(
+    () => value.value,
+    (val) => {
+        if (!editor.value) return
+        if (val !== editor.value.getHTML()) {
+            editor.value.commands.setContent(val || '')
+        }
+    },
+    { immediate: true } // IMPORTANT: loads initialValues on mount
+)
 
 const toggleSubscript = () => {
     if (!editor?.value) return

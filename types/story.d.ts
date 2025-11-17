@@ -2,7 +2,7 @@ export interface IStoryItem {
     id: number | string
     title: string
     content: string
-    content_image: string
+    cover_image: string
     author: {
         name: string
         profile_image: string | null | undefined
@@ -18,7 +18,6 @@ export interface IStoryForm {
     title: string
     category_id: string
     content: string
-    content_image: string
 }
 
 export interface IStoryReturn {

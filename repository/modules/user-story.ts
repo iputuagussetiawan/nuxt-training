@@ -39,29 +39,6 @@ class UserStoryModule extends FetchFactory<any> {
             method: 'GET'
         })
     }
-
-    store(payload: IStore) {
-        const { body } = payload
-        return super.call('/api/user/story', {
-            method: 'POST',
-            body
-        })
-    }
-
-    update(payload: IStore & IDetail) {
-        const { body, params } = payload
-        return super.call(`/api/user/story/${params.storyId}`, {
-            method: 'PATCH',
-            body
-        })
-    }
-
-    delete(payload: IDetail) {
-        const { params } = payload
-        return super.call(`/api/user/story/${params.storyId}`, {
-            method: 'DELETE'
-        })
-    }
 }
 
 export default UserStoryModule

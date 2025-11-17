@@ -14,7 +14,7 @@ interface IList {
 class CategoryModule extends FetchFactory<any> {
     list(payload: IList) {
         // Use the base call() method from FetchFactory
-        return super.call('/api/category', {
+        return super.call('/api/categories', {
             method: 'GET',
             query: payload.query
         })
