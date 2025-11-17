@@ -8,7 +8,9 @@ import MyStoriesBlank from './MyStoriesBlank.vue'
 import { useNuxtApp } from '#imports'
 import UiDialogConfirmation from '~/components/ui/DialogConfirmation.vue'
 import { useRouter } from 'vue-router'
+import { useToastStore } from '~/stores/toast'
 
+const toast = useToastStore()
 const myStoryList: Ref<IStoryItem[]> = ref([])
 const storyId: Ref<string> = ref('')
 const myStoriesMeta = ref({ last_page: 0 })
@@ -62,15 +64,16 @@ const handleConfirmDelete = async () => {
         let currentStoryId = storyId.value
         isLoadingDelete.value = true
 
-        const response = await $api.userStory.delete({
+        const response = await $api.story.delete({
             params: {
                 storyId: currentStoryId
             }
         })
         await getMyStories()
-        console.log(response)
-    } catch (error) {
+        toast.success('delete story successfully!')
+    } catch (error: any) {
         console.error('Error Delete Story:', error)
+        toast.error('delete story error!:' + error.message)
     } finally {
         isLoadingDelete.value = false
         isOpenDialogDelete.value = false
@@ -79,9 +82,7 @@ const handleConfirmDelete = async () => {
 
 const handleConfirmEdit = () => {
     try {
-        //TO-DO: Call the API to delete the story
         let currentStoryId = storyId.value
-
         router.push({
             name: 'dashboard-story-id-edit',
             params: { id: currentStoryId }
@@ -136,7 +137,7 @@ const handleConfirmEdit = () => {
                             v-for="story in myStoryList"
                             :key="story.id"
                             :id="story.id"
-                            :imageUrl="story.content_image"
+                            :imageUrl="story.cover_image"
                             :title="story.title"
                             :description="story.content"
                             :dateCreated="story.created_at"

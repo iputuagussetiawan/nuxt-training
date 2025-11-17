@@ -18,11 +18,13 @@ interface IStore {
     body: {
         title: string
         content: number
-        content_images: string
         category_id: string
-        user_id: string
-        updated_at: string
-        created_at: string
+    }
+}
+
+interface IImage {
+    body: {
+        cover_image: string
     }
 }
 
@@ -30,7 +32,7 @@ interface IStore {
 class StoryModule extends FetchFactory<any> {
     list(payload: IList) {
         // Use the base call() method from FetchFactory
-        return super.call('api/story', {
+        return super.call('api/stories', {
             method: 'GET',
             query: payload.query
         })
@@ -38,8 +40,39 @@ class StoryModule extends FetchFactory<any> {
 
     detail(payload: IDetail) {
         const { params } = payload
-        return super.call(`/api/story/${params.storyId}`, {
+        return super.call(`/api/stories/${params.storyId}`, {
             method: 'GET'
+        })
+    }
+
+    store(payload: IStore) {
+        const { body } = payload
+        return super.call('/api/stories', {
+            method: 'POST',
+            body
+        })
+    }
+
+    update(payload: IStore & IDetail) {
+        const { body, params } = payload
+        return super.call(`/api/stories/${params.storyId}`, {
+            method: 'PATCH',
+            body
+        })
+    }
+
+    delete(payload: IDetail) {
+        const { params } = payload
+        return super.call(`/api/stories/${params.storyId}`, {
+            method: 'DELETE'
+        })
+    }
+
+    uploadCoverImage(payload: IImage & IDetail) {
+        const { body, params } = payload
+        return super.call(`/api/stories/${params.storyId}/cover`, {
+            method: 'POST',
+            body
         })
     }
 }

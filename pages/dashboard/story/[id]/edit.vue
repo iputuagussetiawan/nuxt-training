@@ -19,7 +19,7 @@ const loading = ref(true)
 const getMyStoryDetail = async () => {
     try {
         loading.value = true
-        const response = await $api.userStory.detail({
+        const response = await $api.story.detail({
             params: {
                 storyId: id
             }
@@ -43,7 +43,7 @@ onMounted(() => {
     <section class="edit-story">
         <div class="container">
             <div class="edit-story__header">
-                <UiButton type="link" href="/dashboard/" variant="icon">
+                <UiButton type="link" href="/dashboard/story" variant="icon">
                     <svg
                         class="edit-story__header-icon"
                         width="60"

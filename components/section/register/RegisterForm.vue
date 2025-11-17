@@ -9,6 +9,7 @@ import type { IRegister } from '~/types/auth'
 import * as yup from 'yup'
 import UiButton from '~/components/ui/Button.vue'
 import UiFormInput from '~/components/ui/FormInput.vue'
+import { useToastStore } from '~/stores/toast'
 
 // 2. Variable Declarations
 const { $api } = useNuxtApp()
@@ -17,7 +18,6 @@ const isLoading = ref(false)
 const errorMessage = ref<string>('')
 const registerFormSchema = yup.object({
     name: yup.string().required('Name is required'),
-    username: yup.string().required('Username is required'),
     email: yup
         .string()
         .email('Please enter a valid email')
@@ -70,11 +70,6 @@ const handleSubmit = async (values: IRegister) => {
                 name="name"
                 label="Full Name"
                 placeholder="Enter your name"
-            />
-            <UiFormInput
-                name="username"
-                label="User Name"
-                placeholder="User Name"
             />
             <UiFormInput
                 name="email"

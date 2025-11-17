@@ -32,14 +32,17 @@ const dialogClass = computed(() => {
     ]
 })
 
-const emit = defineEmits(['update:modelValue'])
-const onUpdate = (value: boolean) => {
-    emit('update:modelValue', value)
-}
+// ✔ Creates a reactive v-model variable
+// ✔ Automatically defines modelValue prop
+// ✔ Automatically defines update:modelValue emit
+// ✔ Eliminates boilerplate code
+// ✔ Works natively with <MyDialog v-model> notation
+const open = defineModel<boolean>()
 </script>
 
 <template>
-    <DialogRoot class="dialog" :open="modelValue" @update:open="onUpdate">
+    <!-- $event is the new value with (true or false) -->
+    <DialogRoot class="dialog" :open="open" @update:open="open = $event">
         <DialogPortal>
             <DialogOverlay class="dialog__overlay" />
             <DialogContent :class="dialogClass">

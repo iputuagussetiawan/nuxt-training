@@ -36,7 +36,7 @@ interface BreadcrumbItem {
 const { $api } = useNuxtApp()
 const categoryData: Ref<ICategory[] | null> = ref(null)
 const selectedOption = ref('newest') // ✅ default value
-const selectedOptionCategory = ref() // ✅ default value
+const selectedOptionCategory = ref('2') // ✅ default value
 const loading = ref(true)
 const storiesData: Ref<IStoryItem[]> = ref([])
 const storiesMeta = ref({ last_page: 0 })
@@ -91,7 +91,7 @@ const getAllStory = async () => {
                 sort_by: selectedOption.value,
                 category_id: selectedOptionCategory.value,
                 search: searchStory.value,
-                limit: 10,
+                limit: 12,
                 page: currentPage.value
             }
         })
@@ -127,7 +127,7 @@ watch(currentPage, () => {
     <div>
         <section class="stories">
             <div class="container">
-                <h1 class="stories__title">All Story {{ currentPage }}</h1>
+                <h1 class="stories__title">All Story</h1>
             </div>
             <Breadcrumb :items="breadcrumbItems" />
             <div class="container">
@@ -221,7 +221,7 @@ watch(currentPage, () => {
                         <card-story
                             v-for="story in storiesData"
                             :key="story.id"
-                            :imageUrl="story.content_image"
+                            :imageUrl="story.cover_image"
                             :title="story.title"
                             :description="story.content"
                             :authorPhoto="story.author.profile_image ?? ''"

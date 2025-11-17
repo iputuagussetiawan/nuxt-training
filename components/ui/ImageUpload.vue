@@ -6,6 +6,7 @@ import { useField } from 'vee-validate'
 const props = defineProps<{
     name: string
     label?: string
+    error?: string
 }>()
 
 // Integrate with VeeValidate form state
@@ -15,21 +16,25 @@ const selectedImage = ref<string | null>(null)
 
 const onFileChange = (event: Event) => {
     const target = event.target as HTMLInputElement
-    if (target.files && target.files[0]) {
-        const file = target.files[0]
-        const fileType = file.type
+    if (!target.files || !target.files[0]) return
 
-        // ✅ Image type validation
-        if (!fileType.startsWith('image/')) {
-            alert('Please upload a valid image file (jpg, png, etc).')
-            target.value = ''
-            return
-        }
+    const file = target.files[0]
+    const validTypes = ['image/jpeg', 'image/jpg', 'image/png']
 
-        // ✅ Preview & update form value
-        selectedImage.value = URL.createObjectURL(file)
-        setValue(file)
+    if (!validTypes.includes(file.type)) {
+        alert('Only JPG, JPEG, and PNG files are allowed.')
+        target.value = ''
+        return
     }
+
+    if (file.size > 2 * 1024 * 1024) {
+        alert('Image must be smaller than 2 MB')
+        target.value = ''
+        return
+    }
+
+    selectedImage.value = URL.createObjectURL(file)
+    setValue(file)
 }
 
 const removeImage = () => {
@@ -46,15 +51,26 @@ const removeImage = () => {
 watch(
     () => value.value,
     (newVal) => {
-        if (newVal) {
-            selectedImage.value = URL.createObjectURL(newVal)
+        if (!newVal) {
+            selectedImage.value = null
+            return
         }
-    }
+
+        // If backend gives URL
+        if (typeof newVal === 'string') {
+            selectedImage.value = newVal
+            return
+        }
+
+        // If user uploads a File
+        selectedImage.value = URL.createObjectURL(newVal)
+    },
+    { immediate: true }
 )
 </script>
 
 <template>
-    <div class="upload" :class="{ ' error': errorMessage }">
+    <div class="upload" :class="{ ' error': errorMessage || error }">
         <span v-if="label" class="upload__label-text">{{ label }}</span>
         <div class="upload__inner">
             <!-- Upload placeholder -->
@@ -117,8 +133,8 @@ watch(
         </div>
 
         <!-- Validation message -->
-        <p v-if="errorMessage" class="upload__error">
-            {{ errorMessage }}
+        <p v-if="errorMessage || error" class="upload__error">
+            {{ errorMessage || error }}
         </p>
     </div>
 </template>
@@ -137,6 +153,24 @@ watch(
 
     &.error &__text {
         color: #e63946;
+    }
+
+    &.error &__preview {
+        border: 2px dashed #e63946;
+        &::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background-color: #e63946;
+            opacity: 0.5;
+            font-size: 12px;
+            width: 100%;
+            text-align: center;
+            z-index: 2;
+        }
     }
     &__inner {
         display: flex;
@@ -202,6 +236,7 @@ watch(
         right: 12px;
         display: flex;
         gap: 8px;
+        z-index: 10;
     }
 
     &__btn {

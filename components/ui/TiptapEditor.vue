@@ -7,6 +7,9 @@ import { Icon } from '@iconify/vue'
 import Underline from '@tiptap/extension-underline'
 import Placeholder from '@tiptap/extension-placeholder'
 
+import Superscript from '@tiptap/extension-superscript'
+import Subscript from '@tiptap/extension-subscript'
+
 const showHeadingMenu = ref(false)
 type Level = 0 | 1 | 2 | 3 | 4 | 5 | 6
 interface HeadingOption {
@@ -59,10 +62,12 @@ const emit = defineEmits(['update:modelValue'])
 const { value, errorMessage, handleChange } = useField<string>(props.name)
 
 const editor = useEditor({
-    content: '',
+    content: value.value || '',
     extensions: [
         StarterKit,
         Underline,
+        Superscript,
+        Subscript,
         Placeholder.configure({
             emptyEditorClass: 'is-editor-empty',
             placeholder: props.placeholder || 'Write your post content here…'
@@ -74,6 +79,41 @@ const editor = useEditor({
         emit('update:modelValue', html)
     }
 })
+
+watch(
+    () => value.value,
+    (val) => {
+        if (!editor.value) return
+        if (val !== editor.value.getHTML()) {
+            editor.value.commands.setContent(val || '')
+        }
+    },
+    { immediate: true } // IMPORTANT: loads initialValues on mount
+)
+
+const toggleSubscript = () => {
+    if (!editor?.value) return
+
+    // If superscript is active, remove it first
+    if (editor.value.isActive('superscript')) {
+        editor.value.chain().focus().unsetSuperscript().run()
+    }
+
+    // Then toggle subscript
+    editor.value.chain().focus().toggleSubscript().run()
+}
+
+const toggleSuperscript = () => {
+    if (!editor?.value) return
+
+    // If subscript is active, remove it first
+    if (editor.value.isActive('subscript')) {
+        editor.value.chain().focus().unsetSubscript().run()
+    }
+
+    // Then toggle superscript
+    editor.value.chain().focus().toggleSuperscript().run()
+}
 
 watch(value, (val) => {
     if (val && val !== editor?.value?.getHTML()) {
@@ -228,6 +268,31 @@ onBeforeUnmount(() => {
                         <Icon icon="lucide:redo" />
                     </button>
                 </div>
+
+                <div class="tiptap-editor__toolbar-group">
+                    <button
+                        class="tiptap-editor__button"
+                        @click="toggleSubscript"
+                        :class="{
+                            'tiptap-editor__button--active':
+                                editor?.isActive('subscript')
+                        }"
+                    >
+                        <Icon icon="lucide:subscript" />
+                    </button>
+
+                    <!-- Superscript -->
+                    <button
+                        class="tiptap-editor__button"
+                        @click="toggleSuperscript"
+                        :class="{
+                            'tiptap-editor__button--active':
+                                editor?.isActive('superscript')
+                        }"
+                    >
+                        <Icon icon="lucide:superscript" />
+                    </button>
+                </div>
             </div>
 
             <div class="tiptap-editor__content">
@@ -248,10 +313,14 @@ onBeforeUnmount(() => {
 :deep(p.is-editor-empty::before) {
     content: attr(data-placeholder);
     color: #9ca3af;
-    font-style: italic;
     pointer-events: none;
     height: 0;
     float: left;
+}
+
+:deep(.ProseMirror) {
+    outline: none;
+    border: none;
 }
 .tiptap-editor {
     position: relative;
@@ -297,8 +366,8 @@ onBeforeUnmount(() => {
         display: block;
         width: 100%;
         text-align: left;
-        padding: 6px 10px;
-        font-size: 14px;
+        padding: 10px 18px;
+        font-size: 16px;
         background: none;
         border: none;
         cursor: pointer;
@@ -309,7 +378,7 @@ onBeforeUnmount(() => {
         }
 
         &.active {
-            background: #2563eb;
+            background: $color-primary;
             color: #fff;
         }
     }
@@ -353,20 +422,22 @@ onBeforeUnmount(() => {
     }
 
     &__button {
-        border: 1px solid #ccc;
+        border: transparent;
         padding: 6px 10px;
         border-radius: 4px;
-        background: #f9fafb;
+        background: transparent;
         cursor: pointer;
         font-size: 18px;
-        transition: all 0.2s ease;
+        transition: all 0.4s ease;
+        font-weight: 400;
 
         svg {
             vertical-align: middle;
         }
 
         &:hover {
-            background-color: #e5e7eb;
+            background-color: #f2f3f5;
+            color: $color-primary;
         }
 
         &:focus {
@@ -375,9 +446,9 @@ onBeforeUnmount(() => {
         }
 
         &--active {
-            background-color: #2563eb;
+            background-color: $color-primary;
             color: #fff;
-            border-color: #2563eb;
+            border-color: $color-primary;
         }
     }
 

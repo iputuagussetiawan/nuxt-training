@@ -18,7 +18,7 @@ const isLoading = ref(false)
 const authStore = useAuthStore()
 const errorMessage = ref<string>('')
 const LoginValidationSchema = yup.object({
-    username_or_email: yup
+    email: yup
         .string()
         .email('Please enter a valid email')
         .required('Email is required'),
@@ -39,7 +39,7 @@ const handleLogin = async (values: ILogin) => {
         // ✅ Save token securely using Nuxt useCookie() using pinia
         authStore.setToken(response.data.token)
         authStore.setUserProfile(response.data.user)
-        router.push({ name: 'dashboard' })
+        router.push({ name: 'dashboard-story' })
     } catch (error: any) {
         console.error('❌ Error Login:', error)
         // ✅ Handle different error types safely
@@ -52,7 +52,7 @@ const handleLogin = async (values: ILogin) => {
                 'An unexpected error occurred. Please try again.'
         }
     } finally {
-        isLoading.value = true
+        isLoading.value = false
     }
 }
 </script>
@@ -64,7 +64,7 @@ const handleLogin = async (values: ILogin) => {
             class="login-form__form"
         >
             <UiFormInput
-                name="username_or_email"
+                name="email"
                 label="Username / Email"
                 placeholder="Enter your email"
             />
