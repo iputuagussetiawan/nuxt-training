@@ -91,7 +91,7 @@ const getAllStory = async () => {
                 sort_by: selectedOption.value,
                 category_id: selectedOptionCategory.value,
                 search: searchStory.value,
-                limit: 1,
+                limit: 12,
                 page: currentPage.value
             }
         })

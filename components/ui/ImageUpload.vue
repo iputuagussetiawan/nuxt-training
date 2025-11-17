@@ -7,8 +7,6 @@ const props = defineProps<{
     name: string
     label?: string
     error?: string
-    // onUpload?: (file: File) => void
-    // onRemove?: () => void
 }>()
 
 // Integrate with VeeValidate form state
@@ -18,26 +16,25 @@ const selectedImage = ref<string | null>(null)
 
 const onFileChange = (event: Event) => {
     const target = event.target as HTMLInputElement
-    if (target.files && target.files[0]) {
-        const file = target.files[0]
-        const fileType = file.type
+    if (!target.files || !target.files[0]) return
 
-        // ✅ Image type validation
-        if (!fileType.startsWith('image/')) {
-            alert('Please upload a valid image file (jpg, png, etc).')
-            target.value = ''
-            return
-        }
+    const file = target.files[0]
+    const validTypes = ['image/jpeg', 'image/jpg', 'image/png']
 
-        // ✅ Preview & update form value
-        selectedImage.value = URL.createObjectURL(file)
-        setValue(file)
-
-        // 🚀 Call upload callback
-        // if (props.onUpload) {
-        //     props.onUpload(file)
-        // }
+    if (!validTypes.includes(file.type)) {
+        alert('Only JPG, JPEG, and PNG files are allowed.')
+        target.value = ''
+        return
     }
+
+    if (file.size > 2 * 1024 * 1024) {
+        alert('Image must be smaller than 2 MB')
+        target.value = ''
+        return
+    }
+
+    selectedImage.value = URL.createObjectURL(file)
+    setValue(file)
 }
 
 const removeImage = () => {
@@ -48,10 +45,6 @@ const removeImage = () => {
         `file-upload-${props.name}`
     ) as HTMLInputElement
     if (input) input.value = ''
-
-    // if (props.onRemove) {
-    //     props.onRemove()
-    // }
 }
 
 // Sync with form if value changes externally
