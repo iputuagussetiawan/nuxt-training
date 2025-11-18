@@ -4,24 +4,28 @@ import UiToast from './components/ui/Toast.vue'
 import { useToastStore } from './stores/toast'
 
 const authStore = useAuthStore()
+
 authStore.init()
+const toast = useToastStore()
 
 function save() {
     // simulate success
     console.log('success')
-    useToastStore().success('Saved successfully!')
+    toast.show({
+        title: 'Saved!',
+        description: 'Your data has been updated.',
+        autoClose: false,
+        variant: 'success'
+    })
 }
 
 function remove() {
     // simulate error
-    useToastStore().error('Something went wrong')
-}
-
-function customToast() {
-    useToastStore().show({
-        title: 'Hello',
-        description: 'Custom toast example',
-        autoClose: false
+    toast.show({
+        title: 'Something went wrong',
+        description: 'Please try again.',
+        autoClose: false,
+        variant: 'error'
     })
 }
 </script>
@@ -33,7 +37,6 @@ function customToast() {
             <UiToast />
             <button @click="save">Show Success</button>
             <button @click="remove">Show Error</button>
-            <button @click="customToast">Show Custom Toast</button>
         </NuxtLayout>
     </div>
 </template>
