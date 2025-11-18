@@ -12,6 +12,7 @@ import { computed, onMounted, ref, watch, type Ref } from 'vue'
 import { useNuxtApp, useSeoMeta } from '#imports'
 import type { ICategory } from '~/types/category'
 import type { IStoryItem } from '~/types/story'
+import { useRouter, useRoute } from 'vue-router'
 
 import { watchDebounced } from '@vueuse/core'
 
@@ -26,6 +27,9 @@ useSeoMeta({
     twitterCard: 'summary_large_image'
 })
 
+const router = useRouter()
+const route = useRoute()
+
 // 2. Interface
 interface BreadcrumbItem {
     label: string
@@ -36,7 +40,7 @@ interface BreadcrumbItem {
 const { $api } = useNuxtApp()
 const categoryData: Ref<ICategory[] | null> = ref(null)
 const selectedOption = ref('newest') // ✅ default value
-const selectedOptionCategory = ref('2') // ✅ default value
+const selectedOptionCategory = ref('3') // ✅ default value
 const loading = ref(true)
 const storiesData: Ref<IStoryItem[]> = ref([])
 const storiesMeta = ref({ last_page: 0 })
@@ -49,13 +53,15 @@ const breadcrumbItems: BreadcrumbItem[] = [
 ]
 
 const allCategoryOptions = computed(() => {
-    if (categoryData.value) {
-        return categoryData.value.map((cat) => ({
+    if (!categoryData.value) return []
+
+    return [
+        { label: 'Select Category', value: '' }, // 👈 DEFAULT LABEL
+        ...categoryData.value.map((cat: ICategory) => ({
             label: cat.name,
             value: cat.id
         }))
-    }
-    return [] // always return an array for safety
+    ]
 })
 
 const SortOptions = [
@@ -70,19 +76,35 @@ const getAllCategories = async () => {
     try {
         const response = await $api.category.list({
             query: {
-                sort: 'asc',
-                limit: 10
+                sort: 'asc'
             }
         })
         categoryData.value = response.data
         selectedOptionCategory.value = response.data.find(
-            (item: ICategory) => item.name.toLowerCase() === 'romance'
+            (item: ICategory) => item.name.toLowerCase() === 'select category'
         )?.id
     } catch (error) {
         console.error('Failed to fetch all categories:', error)
     }
 }
 
+function syncFromUrl() {
+    selectedOption.value = (route.query.sort as string) || 'newest'
+    selectedOptionCategory.value = (route.query.category as string) || '1'
+    searchStory.value = (route.query.search as string) || ''
+    currentPage.value = Number(route.query.page) || 1
+}
+
+function updateUrl() {
+    router.replace({
+        query: {
+            search: searchStory.value || undefined,
+            sort: selectedOption.value || undefined,
+            category: selectedOptionCategory.value || undefined,
+            page: currentPage.value || 1
+        }
+    })
+}
 const getAllStory = async () => {
     try {
         loading.value = true
@@ -91,7 +113,7 @@ const getAllStory = async () => {
                 sort_by: selectedOption.value,
                 category_id: selectedOptionCategory.value,
                 search: searchStory.value,
-                limit: 12,
+                limit: 6,
                 page: currentPage.value
             }
         })
@@ -106,19 +128,36 @@ const getAllStory = async () => {
 
 // 5. Events
 onMounted(() => {
-    getAllCategories()
+    syncFromUrl()
+    getAllCategories().then(() => {
+        getAllStory()
+    })
+})
+
+watch(selectedOption, () => {
+    currentPage.value = 1
+    updateUrl()
+    getAllStory()
+})
+
+watch(selectedOptionCategory, () => {
+    currentPage.value = 1
+    updateUrl()
     getAllStory()
 })
 
 watchDebounced(
     searchStory,
     () => {
+        currentPage.value = 1
+        updateUrl()
         getAllStory()
     },
-    { debounce: 1000, maxWait: 5000 }
+    { debounce: 1000 }
 )
 
 watch(currentPage, () => {
+    updateUrl()
     getAllStory()
 })
 </script>
@@ -127,7 +166,9 @@ watch(currentPage, () => {
     <div>
         <section class="stories">
             <div class="container">
-                <h1 class="stories__title">All Story</h1>
+                <h1 class="stories__title">
+                    All Story : {{ selectedOptionCategory }}
+                </h1>
             </div>
             <Breadcrumb :items="breadcrumbItems" />
             <div class="container">

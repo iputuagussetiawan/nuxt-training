@@ -127,6 +127,10 @@ const nextPage = () => {
         color: #222;
         transition: all 0.3s ease;
 
+        &:hover {
+            cursor: pointer;
+        }
+
         &:hover:not(:disabled) {
             background-color: #466543;
             color: #fff;
