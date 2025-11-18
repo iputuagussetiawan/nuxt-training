@@ -26,12 +26,13 @@ const categoryData: Ref<ICategory[] | null> = ref(null)
 const selectedOptionCategory = ref() // ✅ default value
 const isLoading = ref(false)
 const errorMessage = ref<string>('')
+const imageUploadError = ref<string>('')
 
 const initialValues = ref({
     title: props.initialValues?.title || '',
     category_id: props.initialValues?.category.id || '',
     content: props.initialValues?.content || '',
-    content_image: props.initialValues?.content_image || ''
+    cover_image: props.initialValues?.cover_image || null
 })
 
 const allCategoryOptions = computed(() => {
@@ -49,7 +50,7 @@ const profileFormSchema = yup.object({
     title: yup.string().required('Title is required'),
     category_id: yup.string().required('Category is required'),
     content: yup.string().required('Content is required'),
-    content_image: yup.string().required('Cover Image is required')
+    cover_image: yup.string().required('Cover Image is required')
 })
 
 // 3. Methods/Functions
@@ -57,29 +58,31 @@ const handleSubmit = async (values: IStoryForm) => {
     errorMessage.value = ''
     try {
         isLoading.value = true
-        const data = new FormData()
-        data.append('title', values.title)
-        data.append('category_id', values.category_id)
-        data.append('content', values.content)
-        data.append('content_image', values.content_image)
-
-        console.log('value', values)
-        console.log('form data', data)
-
         let response
         if (props.storyId) {
             // ✅ UPDATE mode
-            response = await $api.userStory.update({
+            response = await $api.story.update({
                 params: { storyId: props.storyId },
-                body: data
+                body: values
             })
 
-            console.log('data', data)
+            console.log('data', values)
             console.log('✅ Success Update Story:', response)
         } else {
             // ✅ INSERT mode
-            response = await $api.userStory.store({ body: data })
+            response = await $api.story.store({ body: values })
             console.log('✅ Success Insert Story:', response)
+        }
+
+        const formData = new FormData()
+        formData.append('cover_image', values.cover_image)
+        if (formData) {
+            const responseImageUpload = await $api.story.uploadCoverImage({
+                body: formData,
+                params: { storyId: response.data.id }
+            })
+
+            console.log(responseImageUpload)
         }
         router.push({ name: 'dashboard-story' })
     } catch (error: any) {
@@ -143,16 +146,10 @@ onMounted(() => {
             placeholder="Select a category"
             :searchable="false"
         />
-        <!-- <UiFormInput
-            name="content"
-            label="Content"
-            type="textarea"
-            placeholder="Enter a content here"
-        /> -->
 
         <TiptapEditor name="content" label="Story Content" />
 
-        <UiImageUpload name="content_image" label="Cover Image" />
+        <UiImageUpload name="cover_image" label="Cover Image" />
         <div class="story-form__action">
             <UiButton
                 type="link"

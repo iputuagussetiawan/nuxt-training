@@ -4,6 +4,7 @@ import { formatDate } from '~/utils/FormatDate'
 interface CardStoryProps {
     id?: string | number // 👈 to identify which story to edit/delete
     imageUrl?: string
+
     title?: string
     description?: string
     authorPhoto?: string

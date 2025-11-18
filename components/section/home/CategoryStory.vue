@@ -89,7 +89,7 @@ onUnmounted(() => {
                         :key="story.id"
                     >
                         <CardStory
-                            :imageUrl="story.content_image"
+                            :imageUrl="story.cover_image"
                             :title="story.title"
                             :description="story.content"
                             :authorPhoto="
@@ -121,7 +121,7 @@ onUnmounted(() => {
                         :key="story.id"
                     >
                         <CardStory
-                            :imageUrl="story.content_image"
+                            :imageUrl="story.cover_image"
                             :title="story.title"
                             :description="story.content"
                             :authorPhoto="

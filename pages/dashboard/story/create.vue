@@ -7,7 +7,7 @@ import StoryForm from '~/components/section/mystory/StoryForm.vue'
     <section class="create-story">
         <div class="container">
             <div class="create-story__header">
-                <UiButton type="link" href="/dashboard/" variant="icon">
+                <UiButton type="link" href="/dashboard/story" variant="icon">
                     <svg
                         class="create-story__header-icon"
                         width="60"
