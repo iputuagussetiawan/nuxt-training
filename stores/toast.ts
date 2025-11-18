@@ -1,43 +1,49 @@
 import { defineStore } from 'pinia'
+import { ref } from 'vue'
 
-export const useToastStore = defineStore('toast', {
-    state: () => ({
-        open: false,
-        title: '',
-        description: '',
-        autoClose: true
-    }),
+export type ToastVariant = 'success' | 'error' | 'warning' | 'info' | 'default'
 
-    actions: {
-        show(options: {
+export const useToastStore = defineStore('toast', () => {
+    const toasts = ref<
+        Array<{
+            id: number
             title: string
             description?: string
-            autoClose?: boolean
-        }) {
-            this.open = true
-            this.title = options.title
-            this.description = options.description ?? ''
-            this.autoClose = options.autoClose ?? true
-        },
+            autoClose: boolean
+            variant: ToastVariant
+            icon?: any
+        }>
+    >([])
 
-        success(message: string) {
-            this.show({
-                title: 'Success',
-                description: message,
-                autoClose: true
-            })
-        },
+    function show(toast: {
+        title: string
+        description?: string
+        variant?: ToastVariant
+        autoClose?: boolean
+        icon?: any
+    }) {
+        const id = Date.now()
 
-        error(message: string) {
-            this.show({
-                title: 'Error',
-                description: message,
-                autoClose: false
-            })
-        },
+        const newToast = {
+            id,
+            title: toast.title,
+            description: toast.description ?? '',
+            variant: toast.variant ?? 'default',
+            autoClose: toast.autoClose ?? true, // default true
+            icon: toast.icon
+        }
 
-        close() {
-            this.open = false
+        toasts.value.push(newToast)
+
+        // auto close only if autoClose === true
+        if (newToast.autoClose) {
+            setTimeout(() => close(id), 4000)
         }
     }
+
+    function close(id: number) {
+        toasts.value = toasts.value.filter((t) => t.id !== id)
+    }
+
+    return { toasts, show, close }
 })

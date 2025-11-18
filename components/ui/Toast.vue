@@ -7,52 +7,164 @@ import {
     ToastAction,
     ToastViewport
 } from 'reka-ui'
-import { storeToRefs } from 'pinia'
+
+import { Icon } from '@iconify/vue'
 import { useToastStore } from '~/stores/toast'
-import { computed } from 'vue'
 
 const toastStore = useToastStore()
-const { open, title, description, autoClose } = storeToRefs(toastStore)
 
-const duration = computed(() => (autoClose.value ? 4000 : 0))
+function closeToast(id: number) {
+    toastStore.close(id)
+}
 
-function closeToast() {
-    toastStore.close()
+function getVariantIcon(t: any) {
+    if (t.icon) return t.icon
+
+    switch (t.variant) {
+        case 'success':
+            return 'mdi:check-circle-outline'
+        case 'error':
+            return 'mdi:close-circle-outline'
+        case 'warning':
+            return 'mdi:alert-circle-outline'
+        case 'info':
+            return 'mdi:information-box-outline'
+        default:
+            return 'mdi:bell-outline'
+    }
+}
+
+function getVariantColor(t: any) {
+    switch (t.variant) {
+        case 'success':
+            return 'toast-icon toast-icon--success'
+        case 'error':
+            return 'toast-icon toast-icon--error'
+        case 'warning':
+            return 'toast-icon toast-icon--warning'
+        case 'info':
+            return 'toast-icon toast-icon--info'
+        default:
+            return 'toast-icon'
+    }
 }
 </script>
 
 <template>
-    <ToastProvider swipeDirection="up" :duration="duration">
-        <ToastRoot v-model:open="open" class="ToastRoot toast">
-            <ToastTitle class="ToastTitle">
-                <div class="toast__title">
-                    {{ title }}
-                </div>
-            </ToastTitle>
-
-            <ToastDescription class="ToastDescription">
-                <div class="toast__description">
-                    {{ description }}
-                </div>
-            </ToastDescription>
-
-            <!-- Show close button only when autoClose is false -->
-            <ToastAction v-if="!autoClose" as-child alt-text="Close toast">
-                <button class="Button small green" @click="closeToast">
-                    Close
-                </button>
-            </ToastAction>
-        </ToastRoot>
-
+    <ToastProvider swipeDirection="up" :duration="0">
         <ToastViewport class="ToastViewport toast__viewport" />
+        <template v-for="t in toastStore.toasts" :key="t.id">
+            <ToastRoot
+                :open="true"
+                class="ToastRoot toast"
+                @update:open="closeToast(t.id)"
+            >
+                <Icon
+                    :icon="getVariantIcon(t)"
+                    :class="[' ', getVariantColor(t)]"
+                />
+                <div class="toast__info-container">
+                    <ToastTitle class="ToastTitle">
+                        <div class="toast__title">{{ t.title }}</div>
+                    </ToastTitle>
+
+                    <ToastDescription class="ToastDescription">
+                        <div class="toast__description">
+                            {{ t.description }}
+                        </div>
+                    </ToastDescription>
+                </div>
+
+                <!-- Close button -->
+                <ToastAction
+                    v-if="!t.autoClose"
+                    as-child
+                    alt-text="Close toast"
+                >
+                    <button class="toast__close" @click="closeToast(t.id)">
+                        <svg
+                            class="toast__close-icon"
+                            width="30"
+                            height="30"
+                            viewBox="0 0 30 30"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <path
+                                d="M22.5 7.5L7.5 22.5"
+                                stroke="#4b4b4b"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            />
+                            <path
+                                d="M7.5 7.5L22.5 22.5"
+                                stroke="#4b4b4b"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            />
+                        </svg>
+                    </button>
+                </ToastAction>
+            </ToastRoot>
+        </template>
     </ToastProvider>
 </template>
+
 <style lang="scss" scoped>
 .toast {
     &__title {
         font-size: 20px;
         font-weight: 700;
     }
+
+    &__incon {
+        font-size: 30px;
+    }
+
+    &__close {
+        position: absolute;
+        top: 8px;
+        right: 4px;
+        border: none;
+        background-color: transparent;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        &:hover {
+            cursor: pointer;
+        }
+
+        &:hover .toast__close-icon path {
+            stroke: $color-primary;
+        }
+    }
+
+    &__close-icon {
+        width: 20px;
+        height: 20px;
+
+        path {
+            transition: 0.4s ease;
+        }
+    }
+}
+
+:deep(.toast-icon) {
+    font-size: 30px;
+}
+
+:deep(.toast-icon--success) {
+    color: #466543;
+}
+:deep(.toast-icon--error) {
+    color: rgb(206, 26, 26);
+}
+:deep(.toast-icon--warning) {
+    color: rgb(197, 178, 6);
+}
+:deep(.toast-icon--info) {
+    color: rgb(8, 184, 190);
 }
 
 :deep(.ToastViewport) {
@@ -72,15 +184,14 @@ function closeToast() {
 }
 
 :deep(.ToastRoot) {
+    position: relative;
     background-color: white;
-    border-radius: 6px;
+    border-radius: 8px;
     box-shadow:
-        hsl(206 22% 7% / 35%) 0px 10px 38px -10px,
-        hsl(206 22% 7% / 20%) 0px 10px 20px -15px;
+        0 8px 20px hsla(206, 22%, 7%, 0.18),
+        0 16px 48px hsla(206, 22%, 7%, 0.1);
     padding: 15px;
-    display: grid;
-    grid-template-areas: 'title action' 'description action';
-    grid-template-columns: auto max-content;
+    display: flex;
     column-gap: 15px;
     align-items: center;
 }
