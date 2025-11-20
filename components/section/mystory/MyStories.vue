@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Button from '~/components/ui/Button.vue'
-import { computed, ref, type Ref } from 'vue'
+import { ref, type Ref } from 'vue'
 import type { IStoryItem } from '~/types/story'
 import CardStory from '~/components/ui/CardStory.vue'
 import Pagination from '~/components/ui/Pagination.vue'
@@ -9,7 +9,6 @@ import { useNuxtApp } from '#imports'
 import UiDialogConfirmation from '~/components/ui/DialogConfirmation.vue'
 import { useRouter } from 'vue-router'
 import { useToastStore } from '~/stores/toast'
-import { title } from 'process'
 
 const toast = useToastStore()
 const myStoryList: Ref<IStoryItem[]> = ref([])
@@ -22,7 +21,6 @@ const isOpenDialogDelete = ref(false)
 const router = useRouter()
 
 const isLoadingEdit = ref(false)
-const isOpenDialogEdit = ref(false)
 const { $api } = useNuxtApp()
 
 const getMyStories = async (): Promise<void> => {
@@ -86,22 +84,6 @@ const handleConfirmDelete = async () => {
         isOpenDialogDelete.value = false
     }
 }
-
-const handleConfirmEdit = () => {
-    try {
-        let currentStoryId = storyId.value
-        router.push({
-            name: 'dashboard-story-id-edit',
-            params: { id: currentStoryId }
-        })
-        isLoadingEdit.value = true
-    } catch (error) {
-        console.error('Error Delete Story:', error)
-    } finally {
-        isLoadingEdit.value = false
-        isOpenDialogDelete.value = false
-    }
-}
 </script>
 <template>
     <section class="my-story">
@@ -116,7 +98,6 @@ const handleConfirmEdit = () => {
                             <h3 class="my-story__action-title">
                                 Write your story
                             </h3>
-                            <p>Current Story Id: {{ storyId }}</p>
                             <div class="my-story__action-description">
                                 Share your unique voice with the world – start
                                 writing your story today!
@@ -171,17 +152,9 @@ const handleConfirmEdit = () => {
             v-model="isOpenDialogDelete"
             title="Delete Story"
             message="Are you sure want delete this story?"
-            buttonText="Delete Story"
+            buttonText="Delete"
             :isLoading="isLoadingDelete"
             @confirm="handleConfirmDelete"
-        />
-        <UiDialogConfirmation
-            v-model="isOpenDialogEdit"
-            title="Edit Story"
-            message="Are you sure want edit this story?"
-            buttonText="Edit Story"
-            :isLoading="isLoadingEdit"
-            @confirm="handleConfirmEdit"
         />
     </section>
 </template>

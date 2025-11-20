@@ -63,7 +63,7 @@ onMounted(() => {
                     </svg>
                 </UiButton>
 
-                <h1 class="edit-story__header-title">Edit Story : {{ id }}</h1>
+                <h1 class="edit-story__header-title">Edit Story</h1>
             </div>
 
             <div class="edit-story__body">
