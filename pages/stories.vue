@@ -273,7 +273,10 @@ watch(currentPage, () => {
                         />
                     </template>
                 </div>
-                <div class="stories__pagination">
+                <div
+                    class="stories__pagination"
+                    v-if="storiesMeta.last_page > 1"
+                >
                     <Pagination
                         v-model:current-page="currentPage"
                         :total-pages="storiesMeta.last_page"
@@ -384,6 +387,7 @@ watch(currentPage, () => {
     }
     &__grid {
         margin-top: 60px;
+        margin-bottom: 140px;
         display: grid;
         grid-template-columns: repeat(3, 1fr);
         gap: 60px 29px;

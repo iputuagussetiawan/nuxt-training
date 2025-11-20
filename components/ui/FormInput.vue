@@ -107,11 +107,12 @@ If it’s not a password field, just use the original input type.” -->
         border-radius: 8px;
         padding: 24px 30px;
         font-size: 18px;
-        line-height: 1;
+        line-height: 1.5;
         transition: 0.4s ease;
         display: block;
         width: 100%;
         color: #222222;
+        font-family: $font-primary;
 
         &.error-input {
             border-color: #e63946;

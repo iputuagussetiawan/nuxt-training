@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { useCookie } from '#app'
+import { useCookie, useNuxtApp } from '#app'
 import { ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import type { IUser } from '~/types/user'
@@ -7,6 +7,7 @@ import { useUser } from '~/composables/useUser'
 
 export const useAuthStore = defineStore('auth', () => {
     // ✅ State
+    const { $api } = useNuxtApp()
     const token = ref<string>('')
     const router = useRouter()
     const user = ref<IUser | null>(null)
@@ -30,9 +31,10 @@ export const useAuthStore = defineStore('auth', () => {
     }
 
     // ✅  (logout)
-    const logout = () => {
+    const logout = async () => {
         token.value = ''
         const authToken = useCookie('auth_token')
+        const response = await $api.auth.logout()
         authToken.value = null
         router.push('/')
     }

@@ -4,7 +4,8 @@ import FetchFactory from '../factory'
 import type {
     IUser,
     IUserUpdateProfileImage,
-    IUserUpdateProfile
+    IUserUpdateProfile,
+    IUserUpdatePassword
 } from '../../types/user'
 
 interface UpdateProfileImageRequest {
@@ -13,6 +14,10 @@ interface UpdateProfileImageRequest {
 
 interface UpdateProfileRequest {
     body: IUserUpdateProfile
+}
+
+interface ChangePasswordRequest {
+    body: IUserUpdatePassword
 }
 
 // Create the ProductModule class
@@ -27,6 +32,13 @@ class UserModule extends FetchFactory<any> {
         const { body } = payload
         return super.call('/api/me', {
             method: 'PATCH',
+            body
+        })
+    }
+    changePassword(payload: ChangePasswordRequest) {
+        const { body } = payload
+        return super.call('/api/me/change-password', {
+            method: 'POST',
             body
         })
     }

@@ -19,3 +19,9 @@ export interface IUserUpdateProfileImage {
     id: number
     profile_image: string
 }
+
+export interface IUserUpdatePassword {
+    old_password: string
+    new_password: string
+    new_password_confirmation: string
+}

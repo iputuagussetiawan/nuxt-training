@@ -9,6 +9,7 @@ import { useNuxtApp } from '#imports'
 import UiDialogConfirmation from '~/components/ui/DialogConfirmation.vue'
 import { useRouter } from 'vue-router'
 import { useToastStore } from '~/stores/toast'
+import { title } from 'process'
 
 const toast = useToastStore()
 const myStoryList: Ref<IStoryItem[]> = ref([])
@@ -46,10 +47,17 @@ const getMyStories = async (): Promise<void> => {
 getMyStories()
 
 const onEditStory = (id?: string | number) => {
-    console.log('Edit story with id:', id)
-    isOpenDialogEdit.value = true
     storyId.value = id as string
-    // navigate or open modal, etc.
+    try {
+        let currentStoryId = storyId.value
+        router.push({
+            name: 'dashboard-story-id-edit',
+            params: { id: currentStoryId }
+        })
+        isLoadingEdit.value = true
+    } catch (error) {
+        console.error('Error Edit Story:', error)
+    }
 }
 
 const onDeleteStory = async (id?: string | number) => {
@@ -70,10 +78,9 @@ const handleConfirmDelete = async () => {
             }
         })
         await getMyStories()
-        toast.success('delete story successfully!')
+        toast.show({ title: 'delete story success!', variant: 'success' })
     } catch (error: any) {
-        console.error('Error Delete Story:', error)
-        toast.error('delete story error!:' + error.message)
+        toast.show({ title: 'Error Delete Story', variant: 'error' })
     } finally {
         isLoadingDelete.value = false
         isOpenDialogDelete.value = false
