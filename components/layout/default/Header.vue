@@ -20,7 +20,8 @@ import NavBrand from '~/components/ui/NavBrand.vue'
 .navigation {
     padding: 20.5px 0px;
     box-shadow: 0px 2px 7px -4px rgba(0, 0, 0, 0.72);
-    @media only screen and (max-width: 991.98px) {
+
+    @media only screen and (max-width: 1399.98px) {
         padding: 16px 0px;
     }
     &__inner {
