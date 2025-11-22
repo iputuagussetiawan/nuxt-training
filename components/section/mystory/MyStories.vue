@@ -127,7 +127,7 @@ const handleConfirmDelete = async () => {
                             :id="story.id"
                             :imageUrl="story.cover_image"
                             :title="story.title"
-                            :description="story.content"
+                            :description="story.content_preview"
                             :dateCreated="story.created_at"
                             :linkTo="`/story/${story.id}`"
                             :for-author="true"

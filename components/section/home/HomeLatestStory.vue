@@ -98,7 +98,7 @@ onBeforeUnmount(() => {
                         <CardStory
                             :imageUrl="story.cover_image"
                             :title="story.title"
-                            :description="story.content"
+                            :description="story.content_preview"
                             :authorPhoto="
                                 story.author.profile_image ??
                                 'https://picsum.photos/50/50?random=' + story.id
