@@ -9,6 +9,7 @@ const authStore = useAuthStore()
 const isOpenDialogProfile = ref(false)
 const userName = computed(() => authStore.user?.name || 'User')
 const userEmail = computed(() => authStore.user?.email || 'yourmail@gmail.com')
+const userInfo = computed(() => authStore.user?.about || 'lorem ipsum')
 const userImage = computed(
     () =>
         authStore.user?.profile_image ||
@@ -36,10 +37,7 @@ const handleCloseDialogProfile = () => {
                         {{ userEmail }}
                     </p>
                     <div class="author-info__description">
-                        Avid reader and aspiring writer. Lover of mysteries,
-                        thrillers, and sci-fi. Coffee enthusiast and nature
-                        explorer. Always on the lookout for new stories and
-                        adventures.
+                        {{ userInfo }}
                     </div>
                 </div>
                 <div class="author-info__action">

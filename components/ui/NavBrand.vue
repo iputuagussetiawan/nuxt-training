@@ -17,7 +17,7 @@
         height: auto;
 
         @media only screen and (max-width: 1399.98px) {
-            max-width: 200px;
+            max-width: 180px;
         }
 
         @media only screen and (max-width: 1199.98px) {

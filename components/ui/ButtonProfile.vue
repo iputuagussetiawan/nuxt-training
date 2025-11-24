@@ -5,11 +5,9 @@ import { useAuthStore } from '~/stores/auth'
 import UiButton from './Button.vue'
 import UiProfileForm from '../section/ProfileForm.vue'
 import UiDialogConfirmation from './DialogConfirmation.vue'
-import { useNuxtApp } from '#imports'
 import UiDialog from './Dialog.vue'
 
 // 2. Variable Declarations
-const { $api } = useNuxtApp()
 const authStore = useAuthStore()
 const isOpenDialogProfile = ref(false)
 const isOpenDialogLogout = ref(false)
@@ -25,10 +23,8 @@ const userImage = computed(
 // 3. Methods/Functions
 const handleLogout = async () => {
     try {
-        const response = await $api.auth.logout()
-        console.log('✅ Success Logout:', response)
-        isLoadingLogout.value = true
         authStore.logout()
+        isLoadingLogout.value = true
     } catch (error) {
         console.error('Error logging out:', error)
     } finally {
@@ -150,6 +146,22 @@ const handleCloseDialog = () => {
         height: 65px;
         border-radius: 50%;
         overflow: hidden;
+
+        @media only screen and (max-width: 1399.98px) {
+            width: 42px;
+            height: 42px;
+        }
+
+        @media only screen and (max-width: 991.98px) {
+            width: 32px;
+            height: 32px;
+        }
+    }
+
+    &__info-container {
+        @media only screen and (max-width: 991.98px) {
+            display: none;
+        }
     }
 
     &__image {
@@ -160,9 +172,15 @@ const handleCloseDialog = () => {
 
     &__name {
         font-weight: 700;
-        font-size: 1.25rem;
-        line-height: 1.5;
+        font-size: 24px;
         color: #222;
+        max-width: 120px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        @media only screen and (max-width: 1399.98px) {
+            font-size: 20px;
+        }
     }
 
     &__dropdown {

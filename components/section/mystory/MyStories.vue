@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Button from '~/components/ui/Button.vue'
-import { computed, ref, type Ref } from 'vue'
+import { ref, type Ref } from 'vue'
 import type { IStoryItem } from '~/types/story'
 import CardStory from '~/components/ui/CardStory.vue'
 import Pagination from '~/components/ui/Pagination.vue'
@@ -21,7 +21,6 @@ const isOpenDialogDelete = ref(false)
 const router = useRouter()
 
 const isLoadingEdit = ref(false)
-const isOpenDialogEdit = ref(false)
 const { $api } = useNuxtApp()
 
 const getMyStories = async (): Promise<void> => {
@@ -46,10 +45,17 @@ const getMyStories = async (): Promise<void> => {
 getMyStories()
 
 const onEditStory = (id?: string | number) => {
-    console.log('Edit story with id:', id)
-    isOpenDialogEdit.value = true
     storyId.value = id as string
-    // navigate or open modal, etc.
+    try {
+        let currentStoryId = storyId.value
+        router.push({
+            name: 'dashboard-story-id-edit',
+            params: { id: currentStoryId }
+        })
+        isLoadingEdit.value = true
+    } catch (error) {
+        console.error('Error Edit Story:', error)
+    }
 }
 
 const onDeleteStory = async (id?: string | number) => {
@@ -70,28 +76,11 @@ const handleConfirmDelete = async () => {
             }
         })
         await getMyStories()
-        toast.success('delete story successfully!')
+        toast.show({ title: 'delete story success!', variant: 'success' })
     } catch (error: any) {
-        console.error('Error Delete Story:', error)
-        toast.error('delete story error!:' + error.message)
+        toast.show({ title: 'Error Delete Story', variant: 'error' })
     } finally {
         isLoadingDelete.value = false
-        isOpenDialogDelete.value = false
-    }
-}
-
-const handleConfirmEdit = () => {
-    try {
-        let currentStoryId = storyId.value
-        router.push({
-            name: 'dashboard-story-id-edit',
-            params: { id: currentStoryId }
-        })
-        isLoadingEdit.value = true
-    } catch (error) {
-        console.error('Error Delete Story:', error)
-    } finally {
-        isLoadingEdit.value = false
         isOpenDialogDelete.value = false
     }
 }
@@ -109,7 +98,6 @@ const handleConfirmEdit = () => {
                             <h3 class="my-story__action-title">
                                 Write your story
                             </h3>
-                            <p>Current Story Id: {{ storyId }}</p>
                             <div class="my-story__action-description">
                                 Share your unique voice with the world – start
                                 writing your story today!
@@ -139,7 +127,7 @@ const handleConfirmEdit = () => {
                             :id="story.id"
                             :imageUrl="story.cover_image"
                             :title="story.title"
-                            :description="story.content"
+                            :description="story.content_preview"
                             :dateCreated="story.created_at"
                             :linkTo="`/story/${story.id}`"
                             :for-author="true"
@@ -164,17 +152,9 @@ const handleConfirmEdit = () => {
             v-model="isOpenDialogDelete"
             title="Delete Story"
             message="Are you sure want delete this story?"
-            buttonText="Delete Story"
+            buttonText="Delete"
             :isLoading="isLoadingDelete"
             @confirm="handleConfirmDelete"
-        />
-        <UiDialogConfirmation
-            v-model="isOpenDialogEdit"
-            title="Edit Story"
-            message="Are you sure want edit this story?"
-            buttonText="Edit Story"
-            :isLoading="isLoadingEdit"
-            @confirm="handleConfirmEdit"
         />
     </section>
 </template>

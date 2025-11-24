@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import { formatDate } from '~/utils/FormatDate'
 
 interface CardStoryProps {
@@ -34,6 +35,13 @@ const handleEdit = () => {
 const handleDelete = () => {
     emit('delete', props.id)
 }
+
+const limitedAuthor = computed(() => {
+    if (!props.author) return ''
+    return props.author.length > 20
+        ? props.author.slice(0, 20) + '…'
+        : props.author
+})
 </script>
 
 <template>
@@ -138,7 +146,7 @@ const handleDelete = () => {
                 <div class="skeleton__text short"></div>
             </template>
             <template v-else>
-                {{ props.description }}
+                <div v-html="props.description"></div>
             </template>
         </div>
 
@@ -166,7 +174,7 @@ const handleDelete = () => {
                         <div class="skeleton__text short"></div>
                     </template>
                     <template v-else>
-                        {{ props.author }}
+                        {{ limitedAuthor }}
                     </template>
                 </div>
             </div>
@@ -311,6 +319,9 @@ const handleDelete = () => {
         -webkit-box-orient: vertical;
         overflow: hidden;
         text-overflow: ellipsis;
+        :deep(p) {
+            margin: 0;
+        }
 
         @media only screen and (max-width: 1399.98px) {
             font-size: 16px;

@@ -46,7 +46,7 @@ onMounted(() => {
             <div class="story-detail__body">
                 <div class="story-detail__image-container">
                     <img
-                        :src="storiesData?.content_image ?? ''"
+                        :src="storiesData?.cover_image ?? ''"
                         :alt="storiesData?.title"
                         class="story-detail__image"
                     />

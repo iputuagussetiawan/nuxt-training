@@ -2,6 +2,7 @@ export interface IStoryItem {
     id: number | string
     title: string
     content: string
+    content_preview?: string
     cover_image: string
     author: {
         name: string

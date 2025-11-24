@@ -50,7 +50,13 @@ const profileFormSchema = yup.object({
     title: yup.string().required('Title is required'),
     category_id: yup.string().required('Category is required'),
     content: yup.string().required('Content is required'),
-    cover_image: yup.string().required('Cover Image is required')
+    cover_image: yup
+        .mixed<File | string>()
+        .nullable()
+        .test('is-valid-cover', 'Invalid cover', (value) => {
+            // allow: File, string, null
+            return typeof value === 'string' || value instanceof File
+        })
 })
 
 // 3. Methods/Functions
@@ -74,15 +80,20 @@ const handleSubmit = async (values: IStoryForm) => {
             console.log('✅ Success Insert Story:', response)
         }
 
-        const formData = new FormData()
-        formData.append('cover_image', values.cover_image)
-        if (formData) {
+        const cover = values.cover_image as string | File
+
+        if (cover !== null && cover instanceof File) {
+            const formData = new FormData()
+            formData.append('cover_image', cover)
+
             const responseImageUpload = await $api.story.uploadCoverImage({
                 body: formData,
                 params: { storyId: response.data.id }
             })
 
-            console.log(responseImageUpload)
+            console.log('📤 Image uploaded:', responseImageUpload)
+        } else {
+            console.log('⚠️ No new image uploaded — keeping old image.')
         }
         router.push({ name: 'dashboard-story' })
     } catch (error: any) {

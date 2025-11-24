@@ -91,7 +91,7 @@ onUnmounted(() => {
                         <CardStory
                             :imageUrl="story.cover_image"
                             :title="story.title"
-                            :description="story.content"
+                            :description="story.content_preview"
                             :authorPhoto="
                                 story.author.profile_image ??
                                 'https://picsum.photos/50/50?random=' + story.id
@@ -123,7 +123,7 @@ onUnmounted(() => {
                         <CardStory
                             :imageUrl="story.cover_image"
                             :title="story.title"
-                            :description="story.content"
+                            :description="story.content_preview"
                             :authorPhoto="
                                 story.author.profile_image ??
                                 'https://picsum.photos/50/50?random=' + story.id
@@ -158,6 +158,10 @@ onUnmounted(() => {
         grid-template-rows: auto auto;
         gap: 46px 30px;
         align-items: start;
+
+        :deep(.card-story:not(.card-story--big) .card-story__image-container) {
+            height: 320px;
+        }
 
         @media only screen and (max-width: 991.98px) {
             gap: 32px;

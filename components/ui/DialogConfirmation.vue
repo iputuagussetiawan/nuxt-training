@@ -130,6 +130,7 @@ const handleCancel = () => {
     }
 
     &__content {
+        text-align: center;
         width: 40vw;
         height: auto;
         max-width: 500px;
@@ -147,11 +148,24 @@ const handleCancel = () => {
         animation: contentShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
     }
 
+    &__title {
+        margin: 0px 0px 20px 0px;
+        font-size: 36px;
+        font-weight: 700;
+        color: #222222;
+    }
+
+    &__description {
+        font-size: 18px;
+        font-weight: 400;
+        color: #222222;
+    }
+
     &__action {
         display: flex;
-        justify-content: flex-end;
-        gap: 1rem;
-        margin-top: 1.5rem;
+        justify-content: center;
+        gap: 44px;
+        margin-top: 30px;
     }
 
     &__button {

@@ -1,4 +1,19 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+const search = ref('')
+
+function onEnter(e: KeyboardEvent) {
+    if (e.key === 'Enter' && search.value.trim() !== '') {
+        router.push({
+            path: '/stories',
+            query: { search: search.value }
+        })
+    }
+}
+</script>
 
 <template>
     <section class="welcome">
@@ -12,6 +27,8 @@
                 </div>
                 <div class="welcome__search-container">
                     <input
+                        v-model="search"
+                        @keydown="onEnter"
                         class="welcome__search-input"
                         type="search"
                         placeholder="Search story"
