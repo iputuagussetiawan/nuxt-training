@@ -1,3 +1,4 @@
+div
 <script setup lang="ts">
 // 1. Imports
 import '~/assets/scss/components/ui/Input.scss'
@@ -40,7 +41,7 @@ interface BreadcrumbItem {
 const { $api } = useNuxtApp()
 const categoryData: Ref<ICategory[] | null> = ref(null)
 const selectedOption = ref('newest') // ✅ default value
-const selectedOptionCategory = ref('3') // ✅ default value
+const selectedOptionCategory: Ref<string | number> = ref('all') // ✅ default value// ✅ default value
 const loading = ref(true)
 const storiesData: Ref<IStoryItem[]> = ref([])
 const storiesMeta = ref({ last_page: 0 })
@@ -53,15 +54,27 @@ const breadcrumbItems: BreadcrumbItem[] = [
 ]
 
 const allCategoryOptions = computed(() => {
-    if (!categoryData.value) return []
+    if (!categoryData.value) return [{ label: 'All Category', value: 'all' }]
 
     return [
-        { label: 'Select Category', value: '' }, // 👈 DEFAULT LABEL
+        { label: 'All Category', value: 'all' }, // 👈 DEFAULT LABEL
         ...categoryData.value.map((cat: ICategory) => ({
             label: cat.name,
             value: cat.id
         }))
     ]
+})
+
+const selectedOptionCategoryLabel = computed(() => {
+    if (!categoryData.value) return 'All'
+
+    if (selectedOptionCategory.value === 'all') return 'All'
+
+    const found = categoryData.value.find(
+        (cat) => cat.id === selectedOptionCategory.value
+    )
+
+    return found ? found.name : 'All'
 })
 
 const SortOptions = [
@@ -80,22 +93,20 @@ const getAllCategories = async () => {
             }
         })
         categoryData.value = response.data
-        selectedOptionCategory.value = response.data.find(
-            (item: ICategory) => item.name.toLowerCase() === 'select category'
-        )?.id
     } catch (error) {
         console.error('Failed to fetch all categories:', error)
     }
 }
 
-function syncFromUrl() {
+const syncFromUrl = () => {
     selectedOption.value = (route.query.sort as string) || 'newest'
-    selectedOptionCategory.value = (route.query.category as string) || '1'
+    selectedOptionCategory.value =
+        Number(route.query.category as string) || 'all'
     searchStory.value = (route.query.search as string) || ''
     currentPage.value = Number(route.query.page) || 1
 }
 
-function updateUrl() {
+const updateUrl = () => {
     router.replace({
         query: {
             search: searchStory.value || undefined,
@@ -108,14 +119,28 @@ function updateUrl() {
 const getAllStory = async () => {
     try {
         loading.value = true
+
+        type TQuery = {
+            sort_by: string
+            search: string
+            limit: number
+            page: number
+            category_id?: number | string
+        }
+
+        const query: TQuery = {
+            sort_by: selectedOption.value,
+            search: searchStory.value,
+            limit: 6,
+            page: currentPage.value
+        }
+
+        if (selectedOptionCategory.value !== 'all') {
+            query.category_id = selectedOptionCategory.value
+        }
+
         const response = await $api.story.list({
-            query: {
-                sort_by: selectedOption.value,
-                category_id: selectedOptionCategory.value,
-                search: searchStory.value,
-                limit: 6,
-                page: currentPage.value
-            }
+            query: query
         })
         storiesData.value = response.data
         storiesMeta.value = response.meta
@@ -167,9 +192,10 @@ watch(currentPage, () => {
         <section class="stories">
             <div class="container">
                 <h1 class="stories__title">
-                    All Story : {{ selectedOptionCategory }}
+                    All Story : {{ selectedOptionCategoryLabel }}
                 </h1>
             </div>
+
             <Breadcrumb :items="breadcrumbItems" />
             <div class="container">
                 <div class="stories__action">
@@ -181,21 +207,19 @@ watch(currentPage, () => {
                                 >
                             </div>
                             <div class="stories__filter-select">
-                                <client-only>
-                                    <v-select
-                                        v-model="selectedOption"
-                                        :options="SortOptions"
-                                        :searchable="false"
-                                        :reduce="
-                                            (
-                                                option: (typeof SortOptions)[number]
-                                            ) => option.value
-                                        "
-                                        name="sort-by"
-                                        id="sort-by"
-                                        @update:modelValue="getAllStory"
-                                    />
-                                </client-only>
+                                <v-select
+                                    v-model="selectedOption"
+                                    :options="SortOptions"
+                                    :searchable="false"
+                                    :reduce="
+                                        (
+                                            option: (typeof SortOptions)[number]
+                                        ) => option.value
+                                    "
+                                    name="sort-by"
+                                    id="sort-by"
+                                    @update:modelValue="getAllStory"
+                                />
                             </div>
                         </div>
                         <div class="stories__filter-item">
@@ -205,21 +229,19 @@ watch(currentPage, () => {
                                 >
                             </div>
                             <div class="stories__filter-select">
-                                <client-only>
-                                    <v-select
-                                        v-model="selectedOptionCategory"
-                                        :options="allCategoryOptions"
-                                        :reduce="
-                                            (
-                                                option: (typeof allCategoryOptions)[number]
-                                            ) => option.value
-                                        "
-                                        :searchable="false"
-                                        name="category"
-                                        id="category"
-                                        @update:modelValue="getAllStory"
-                                    />
-                                </client-only>
+                                <v-select
+                                    v-model="selectedOptionCategory"
+                                    :options="allCategoryOptions"
+                                    :reduce="
+                                        (
+                                            option: (typeof allCategoryOptions)[number]
+                                        ) => option.value
+                                    "
+                                    :searchable="false"
+                                    name="category"
+                                    id="category"
+                                    @update:modelValue="getAllStory"
+                                />
                             </div>
                         </div>
                     </div>
