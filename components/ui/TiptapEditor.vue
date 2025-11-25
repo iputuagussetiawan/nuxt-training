@@ -138,6 +138,7 @@ onBeforeUnmount(() => {
                 <div class="tiptap-editor__toolbar-group">
                     <div class="tiptap-editor__dropdown">
                         <button
+                            type="button"
                             class="tiptap-editor__button"
                             @click="showHeadingMenu = !showHeadingMenu"
                         >
@@ -151,6 +152,7 @@ onBeforeUnmount(() => {
                             @click.stop
                         >
                             <button
+                                type="button"
                                 v-for="level in headingOptions"
                                 :key="level.label"
                                 class="tiptap-editor__dropdown-item"
@@ -171,6 +173,7 @@ onBeforeUnmount(() => {
                 </div>
                 <div class="tiptap-editor__toolbar-group">
                     <button
+                        type="button"
                         @click="editor.chain().focus().toggleBold().run()"
                         :disabled="
                             !editor.can().chain().focus().toggleBold().run()
@@ -184,6 +187,7 @@ onBeforeUnmount(() => {
                         <Icon icon="lucide:bold" />
                     </button>
                     <button
+                        type="button"
                         @click="editor.chain().focus().toggleItalic().run()"
                         :disabled="
                             !editor.can().chain().focus().toggleItalic().run()
@@ -197,6 +201,7 @@ onBeforeUnmount(() => {
                         <Icon icon="lucide:italic" />
                     </button>
                     <button
+                        type="button"
                         @click="editor.chain().focus().toggleUnderline().run()"
                         :disabled="
                             !editor
@@ -215,6 +220,7 @@ onBeforeUnmount(() => {
                         <Icon icon="lucide:underline" />
                     </button>
                     <button
+                        type="button"
                         @click="editor.chain().focus().toggleStrike().run()"
                         :disabled="
                             !editor.can().chain().focus().toggleStrike().run()
@@ -231,6 +237,7 @@ onBeforeUnmount(() => {
 
                 <div class="tiptap-editor__toolbar-group">
                     <button
+                        type="button"
                         @click="editor.chain().focus().toggleBulletList().run()"
                         :class="{
                             'tiptap-editor__button--active':
@@ -241,6 +248,7 @@ onBeforeUnmount(() => {
                         <Icon icon="lucide:list" />
                     </button>
                     <button
+                        type="button"
                         @click="
                             editor.chain().focus().toggleOrderedList().run()
                         "
@@ -256,12 +264,14 @@ onBeforeUnmount(() => {
 
                 <div class="tiptap-editor__toolbar-group">
                     <button
+                        type="button"
                         class="tiptap-editor__button"
                         @click="editor.chain().focus().undo().run()"
                     >
                         <Icon icon="lucide:undo" />
                     </button>
                     <button
+                        type="button"
                         class="tiptap-editor__button"
                         @click="editor.chain().focus().redo().run()"
                     >
@@ -271,6 +281,7 @@ onBeforeUnmount(() => {
 
                 <div class="tiptap-editor__toolbar-group">
                     <button
+                        type="button"
                         class="tiptap-editor__button"
                         @click="toggleSubscript"
                         :class="{
@@ -283,6 +294,7 @@ onBeforeUnmount(() => {
 
                     <!-- Superscript -->
                     <button
+                        type="button"
                         class="tiptap-editor__button"
                         @click="toggleSuperscript"
                         :class="{
